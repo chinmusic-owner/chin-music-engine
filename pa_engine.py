@@ -162,19 +162,23 @@ def resolve_duel(
 # Stage 2 — Contact Quality
 # ---------------------------------------------------------------------------
 
-# Contact score thresholds (Q is on a 0–100 scale after sigmoid normalization)
-_HARD_THRESHOLD   = 62.0
-_WEAK_THRESHOLD   = 38.0
+# Contact score thresholds (Q is on a 0–100 scale after sigmoid normalization).
+# Calibrated so typical matchup (Q_final ~54–58) produces a mix of all three tiers.
+# Hard: elite contact — extra-base threat. Weak: routine play territory.
+_HARD_THRESHOLD   = 57.0
+_WEAK_THRESHOLD   = 43.0
 
 # How strongly CMD variance spreads outcomes.
-# At CMD=0: sigma ≈ 5.0; at CMD=100: sigma ≈ 0.0 (perfectly tight CMD).
-_CMD_VARIANCE_DIVISOR = 20.0
+# Divisor of 13 gives sigma ≈ 3.5–5 for typical pitchers, creating
+# enough spread to push borderline contact into Hard or Weak tiers.
+_CMD_VARIANCE_DIVISOR = 13.0
 
 # Sigmoid normalization parameters for the raw contact score.
-# The raw Q is centered around 50 (average matchup ≈ 46–50).
-# Scale of 12 gives a smooth spread: Q_raw=80 → ~92, Q_raw=20 → ~8.
-# This prevents pile-up at hard clamp boundaries and compresses extreme values gracefully.
-_CONTACT_SIGMOID_CENTER = 50.0
+# Center calibrated so a typical matchup (Q_raw ≈ 38–42) maps into the Medium tier.
+# Derivation: average traits produce Q_raw ≈ 40; center=37 maps that to ~57 (Medium).
+# Hard tier (≥62) requires Q_raw ≥ ~43 — above-average batter or weak pitcher.
+# Weak tier (≤38) requires Q_raw ≤ ~32 — poor batter or dominant pitcher.
+_CONTACT_SIGMOID_CENTER = 37.0
 _CONTACT_SIGMOID_SCALE  = 12.0
 
 
@@ -291,22 +295,29 @@ def resolve_contact(
 
 
 # ---------------------------------------------------------------------------
-# Stage 2.5 — BIP Outcome Mapping (Contact → HR/Triple/Double/Single/Out)
+# Stage 2.5 — BIP Outcome Mapping
 # ---------------------------------------------------------------------------
-
-# Probability floors — no BIP outcome can be fully impossible.
-_BIP_FLOOR: dict[str, float] = {
-    "HR": 0.003, "Triple": 0.001, "Double": 0.010, "Single": 0.030, "Out": 0.030,
+#
+# Two-step process:
+#   Step 1 — HR gate: nonlinear function of effective_pow + contact_score.
+#             Fires only on Medium or Hard contact (Weak → hr_prob = 0).
+#   Step 2 — Non-HR multinomial: tier-based table over Out/1B/2B/3B/ROE.
+#             GAP and spray apply small modifiers to 2B/3B columns only.
+#
+# Tier non-HR base probabilities (sum to 1.0):
+#   Weak:   Out 0.850  1B 0.120  2B 0.020  3B 0.005  ROE 0.005
+#   Medium: Out 0.700  1B 0.200  2B 0.080  3B 0.010  ROE 0.010
+#   Hard:   Out 0.550  1B 0.180  2B 0.230  3B 0.020  ROE 0.020
+_NON_HR_BASE: dict[str, dict[str, float]] = {
+    "Weak":   {"Out": 0.850, "Single": 0.120, "Double": 0.020, "Triple": 0.005, "Error": 0.005},
+    "Medium": {"Out": 0.700, "Single": 0.200, "Double": 0.080, "Triple": 0.010, "Error": 0.010},
+    "Hard":   {"Out": 0.550, "Single": 0.180, "Double": 0.230, "Triple": 0.020, "Error": 0.020},
 }
 
-# Base distributions by contact tier.
-# These anchor the simulation at realistic BABIP/XBH rates before trait modifiers.
-# Triples are intentionally rare; removed probability redistributed to Doubles.
-_BIP_BASE: dict[str, dict[str, float]] = {
-    "Hard":   {"HR": 0.22, "Triple": 0.008, "Double": 0.215, "Single": 0.260, "Out": 0.317},
-    "Medium": {"HR": 0.04, "Triple": 0.005, "Double": 0.140, "Single": 0.340, "Out": 0.475},
-    "Weak":   {"HR": 0.01, "Triple": 0.002, "Double": 0.028, "Single": 0.200, "Out": 0.760},
-}
+# GAP shifts probability from Out toward Double; capped so totals stay sane.
+_GAP_DOUBLE_MOD  = 0.05   # max ±5% on Double at extreme GAP
+# Spray bonus on Triple for Center/Oppo hits (gap power into the alleys).
+_SPRAY_TRIPLE_BONUS = 0.003
 
 
 def map_bip_outcome(
@@ -320,79 +331,77 @@ def map_bip_outcome(
 ) -> dict:
     """
     Stage 2.5 — BIP Outcome Mapping.
-    Converts a batted ball (contact quality + score + spray) into a final
-    pre-defense outcome distribution: HR / Triple / Double / Single / Out.
 
-    Sits between Stage 2 (Contact) and Stage 3 (Defense). Defense will later
-    convert Out → potential Error and adjust hit types by fielder traits.
+    Step 1 — HR gate (Medium/Hard only):
+        hr_driver = effective_pow * 0.6 + contact_score * 0.4
+        hr_norm   = hr_driver / 100
+        hr_prob   = 0.035 + (hr_norm ** 2) * 0.155   (caps ~19% at extreme inputs)
+        Weak contact → hr_prob forced to 0.
 
-    HR formula (nonlinear / diminishing returns):
-      hr_driver = effective_pow * 0.6 + contact_score * 0.4
-      hr_norm   = hr_driver / 100
-      hr_prob   = 0.04 + (hr_norm ** 2) * 0.18
-    This caps HR at ~22% for perfect traits rather than allowing 30%+ runaway rates.
-
-    Args:
-        contact_quality: "Weak" | "Medium" | "Hard"
-        contact_score:   0–100 (sigmoid-normalized from Stage 2)
-        spray_vector:    "Pull" | "Center" | "Oppo"
-        effective_pow:   CON-gated POW from Stage 2 (passed through to avoid recompute)
-        batter:          trait dict — must contain GAP
-        constants:       loaded sim_constants.json
-        rng:             seeded random.Random (same instance, advanced from Stage 2)
+    Step 2 — Non-HR multinomial sampled from _NON_HR_BASE[tier] with
+        small GAP/spray adjustments to 2B and 3B columns.
 
     Returns:
         {
-            "bip_outcome": "HR" | "Triple" | "Double" | "Single" | "Out",
-            "bip_probabilities": {HR, Triple, Double, Single, Out},
-            "hr_driver": float  (exposed for debugging)
+            "bip_outcome":       str,
+            "bip_probabilities": dict,   # full pre-defense distribution including HR gate
+            "hr_driver":         float,
         }
     """
     GAP = batter["GAP"]
 
-    base = dict(_BIP_BASE[contact_quality])
-
-    # HR: nonlinear diminishing returns — squares hr_norm so extreme traits
-    # compress rather than produce runaway rates. Caps at ~19% for perfect inputs.
+    # ── Step 1: HR gate ──────────────────────────────────────────────────
     hr_driver = effective_pow * 0.6 + contact_score * 0.4
     hr_norm   = hr_driver / 100.0
-    hr_prob   = 0.035 + (hr_norm ** 2) * 0.155
+    if contact_quality == "Weak":
+        hr_prob = 0.0
+    else:
+        hr_prob = 0.035 + (hr_norm ** 2) * 0.155
 
-    # XBH: GAP drives doubles and triples. Oppo/Center spray amplifies Triple.
-    gap_edge           = (GAP - 50) / 50.0              # -1 to +1
-    xbh_mod            = gap_edge * 0.07
-    # Triple spray bonus tightened — keeps triples rare even on favorable spray
-    triple_spray_bonus = 0.004 if spray_vector in ("Center", "Oppo") else -0.002
+    if rng.random() < hr_prob:
+        probs = {"HR": 1.0, "Triple": 0.0, "Double": 0.0, "Single": 0.0, "Out": 0.0, "Error": 0.0}
+        return {
+            "bip_outcome":       "HR",
+            "bip_probabilities": probs,
+            "hr_driver":         round(hr_driver, 4),
+        }
 
-    # Apply all modifiers; HR is fully replaced by the nonlinear formula above.
-    # Triple GAP multiplier reduced to 0.10 (was 0.35); excess redirected to Double.
-    probs = {
-        "HR":     hr_prob,
-        "Triple": base["Triple"] + xbh_mod * 0.10 + triple_spray_bonus,
-        "Double": base["Double"] + xbh_mod,
-        "Single": base["Single"],
-        "Out":    base["Out"],
-    }
+    # ── Step 2: Non-HR multinomial ───────────────────────────────────────
+    probs = dict(_NON_HR_BASE[contact_quality])
 
-    # Enforce floors and renormalize so probabilities always sum to exactly 1.0
-    for label, floor in _BIP_FLOOR.items():
-        probs[label] = max(floor, probs[label])
+    # GAP shifts weight from Out toward Double (positive) or away (negative)
+    gap_edge   = (GAP - 50) / 50.0          # –1 to +1
+    double_adj = gap_edge * _GAP_DOUBLE_MOD
+    probs["Double"] = max(0.0, probs["Double"] + double_adj)
+    probs["Out"]    = max(0.0, probs["Out"]    - double_adj)
+
+    # Center/Oppo spray nudges a tiny amount of Double into Triple
+    if spray_vector in ("Center", "Oppo"):
+        shift = min(_SPRAY_TRIPLE_BONUS, probs["Double"])
+        probs["Triple"] += shift
+        probs["Double"] -= shift
+
+    # Renormalize to exactly 1.0
     total = sum(probs.values())
     probs = {k: v / total for k, v in probs.items()}
 
-    # Sample outcome using the seeded RNG
-    roll = rng.random()
+    # Sample
+    roll       = rng.random()
     cumulative = 0.0
     bip_outcome = "Out"
-    for label in ("HR", "Triple", "Double", "Single", "Out"):
+    for label in ("Single", "Double", "Triple", "Error", "Out"):
         cumulative += probs[label]
         if roll < cumulative:
             bip_outcome = label
             break
 
+    # Merge HR=0 into the returned probability dict for transparency
+    probs["HR"] = round(hr_prob, 4)
+    probs = {k: round(v, 4) for k, v in probs.items()}
+
     return {
         "bip_outcome":       bip_outcome,
-        "bip_probabilities": {k: round(v, 4) for k, v in probs.items()},
+        "bip_probabilities": probs,
         "hr_driver":         round(hr_driver, 4),
     }
 
@@ -476,7 +485,7 @@ def resolve_defense(
     if bip_outcome == "Out":
         # Ball heading toward the fielder — does he convert it?
         # Harder hit balls (liners) are trickier despite being "outs" by trajectory.
-        p_catch = _clamp(0.55 + rng_norm * 0.35 + cq_factor, 0.50, 0.97)
+        p_catch = _clamp(0.82 + rng_norm * 0.12 + cq_factor, 0.60, 0.97)
         if rng.random() < p_catch:
             rng_check = "reached"
             # HND check: muffed ball → Error
