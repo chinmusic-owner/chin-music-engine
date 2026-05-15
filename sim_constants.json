@@ -14,7 +14,7 @@
     "a_pow": 0.40,
     "b_con": 0.35,
     "d_gap": 0.25,
-    "c_stf": 0.25
+    "c_stf": 0.20
   },
   "ace_tax_threshold": 150,
   "ace_tax_alpha": 0.3,

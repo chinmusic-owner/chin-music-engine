@@ -141,6 +141,7 @@ def simulate_pa(req: PARequest):
             spray_vector=contact["spray_vector"],
             effective_pow=contact["effective_pow"],
             batter=batter,
+            pitcher=pitcher,
             constants=sim_constants,
             rng=rng,
         )

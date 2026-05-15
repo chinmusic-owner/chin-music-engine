@@ -53,6 +53,7 @@ def simulate_pa(batter, pitcher, constants, pa_index, game_index=1):
         spray_vector    = contact["spray_vector"],
         effective_pow   = contact["effective_pow"],
         batter          = batter_traits,
+        pitcher         = pitcher_traits,
         constants       = constants,
         rng             = rng,
     )
@@ -72,50 +73,13 @@ def simulate_pa(batter, pitcher, constants, pa_index, game_index=1):
     }
 
 
-def run_series(batter_name, pitcher_name, n=100):
-    with open("sim_constants.json") as f:
-        constants = json.load(f)
+def _make_player(name, role, traits, bats="R", throws="R"):
+    """Build a minimal player object compatible with simulate_pa."""
+    return {"name": name, "primary_role": role, "traits": traits, "bats": bats, "throws": throws}
 
-    roster  = load_roster(PILOT_FILE)
-    batter  = find_player(roster, batter_name,  "Hitter")
-    pitcher = find_player(roster, pitcher_name, "Pitcher")
 
-    if not batter or not pitcher:
-        print(f"Could not find '{batter_name}' or '{pitcher_name}' in roster.")
-        return
-
-    print(f"\nSimulating {n} PAs: {batter['name']} vs {pitcher['name']}")
-    print(f"Batter:  POW {batter['traits']['POW']}  EYE {batter['traits']['EYE']}  "
-          f"CON {batter['traits']['CON']}  AK {batter['traits']['AK']}")
-    print(f"Pitcher: STF {pitcher['traits']['STF']}  CTL {pitcher['traits']['CTL']}  "
-          f"CMD {pitcher['traits']['CMD']}  STA {pitcher['traits']['STA']}")
-    print(f"Seed: {SIM_SEED}\n")
-
-    # Distribute PAs across games of ~9 PAs each (realistic PA-per-game count).
-    # This ensures each PA draws from a unique game seed, not just sequential
-    # pa_index increments within a single game.
-    PAS_PER_GAME = 9
-    counts         = Counter()
-    bip_total      = 0
-    contact_counts = Counter()   # Hard / Medium / Weak
-    hard_hr        = 0           # HRs that came off Hard contact
-
-    for i in range(n):
-        game_index = (i // PAS_PER_GAME) + 1
-        pa_in_game = (i %  PAS_PER_GAME) + 1
-        result = simulate_pa(batter, pitcher, constants,
-                             pa_index=pa_in_game, game_index=game_index)
-
-        counts[result["final"]] += 1
-
-        if result["bip"]:
-            bip_total += 1
-            cq = result["contact_quality"]
-            contact_counts[cq] += 1
-            if result["final"] == "HR" and cq == "Hard":
-                hard_hr += 1
-
-    # Ordered display
+def _print_series(batter, pitcher, counts, bip_total, contact_counts, tier_out, hard_hr, n):
+    """Print the full results block for a completed series."""
     order = ["HR", "Triple", "Double", "Single", "BB", "HBP", "Out", "Error", "K"]
     total = sum(counts.values())
 
@@ -128,41 +92,125 @@ def run_series(batter_name, pitcher_name, n=100):
         pct   = count / total
         bar   = "█" * int(pct * 40)
         print(f"  {outcome:<8} {count:>6}  {pct:>6.1%}  {bar}")
-
     print("─" * 50)
     print(f"  {'TOTAL':<8} {total:>6}")
 
-    # Quick sanity check vs real baseball expectations
-    hits   = counts["HR"] + counts["Triple"] + counts["Double"] + counts["Single"]
-    obp    = (hits + counts["BB"] + counts["HBP"]) / total
-    slg_num = (counts["Single"] + 2*counts["Double"] + 3*counts["Triple"] + 4*counts["HR"])
+    hits    = counts["HR"] + counts["Triple"] + counts["Double"] + counts["Single"]
     ab      = total - counts["BB"] - counts["HBP"]
-    slg     = slg_num / ab if ab > 0 else 0
-    ba      = hits / ab if ab > 0 else 0
-
-    babip_num = hits - counts["HR"]
+    slg_num = counts["Single"] + 2*counts["Double"] + 3*counts["Triple"] + 4*counts["HR"]
+    ba      = hits / ab if ab else 0
+    obp     = (hits + counts["BB"] + counts["HBP"]) / total
+    slg     = slg_num / ab if ab else 0
     babip_den = ab - counts["K"] - counts["HR"]
-    babip = babip_num / babip_den if babip_den > 0 else 0
+    babip   = (hits - counts["HR"]) / babip_den if babip_den else 0
 
     print(f"\n  BA:  {ba:.3f}   OBP: {obp:.3f}   SLG: {slg:.3f}   OPS: {ba+slg:.3f}")
     print(f"  BABIP: {babip:.3f}")
     print(f"  HR%: {counts['HR']/total:.1%}   K%: {counts['K']/total:.1%}   BB%: {counts['BB']/total:.1%}")
 
-    # ── Contact breakdown ──────────────────────────────────────────────────
-    print(f"\n  Contact% (BIP / total PA):  {bip_total}/{total} = {bip_total/total:.1%}")
-    print(f"\n  Contact Quality (of {bip_total} BIPs):")
+    print(f"\n  Contact%: {bip_total}/{total} = {bip_total/total:.1%}")
+    print(f"\n  {'Tier':<8} {'BIPs':>5}  {'BIP%':>6}  {'Outs':>5}  {'Out%':>6}  Bar")
+    print("  " + "─" * 44)
     for tier in ("Hard", "Medium", "Weak"):
-        cnt = contact_counts[tier]
-        pct = cnt / bip_total if bip_total else 0
-        bar = "█" * int(pct * 30)
-        print(f"    {tier:<7} {cnt:>4}  {pct:>6.1%}  {bar}")
+        cnt  = contact_counts[tier]
+        outs = tier_out[tier]
+        bpct = cnt  / bip_total if bip_total else 0
+        opct = outs / cnt       if cnt       else 0
+        bar  = "█" * int(bpct * 25)
+        print(f"  {tier:<8} {cnt:>5}  {bpct:>6.1%}  {outs:>5}  {opct:>6.1%}  {bar}")
 
-    hard_total = contact_counts["Hard"]
+    hard_total  = contact_counts["Hard"]
+    hard_pct    = hard_total / bip_total if bip_total else 0
     hr_per_hard = hard_hr / hard_total if hard_total else 0
-    print(f"\n  HR / PA:            {counts['HR']}/{total} = {counts['HR']/total:.1%}")
-    print(f"  HR / Hard contact:  {hard_hr} HR on {hard_total} hard-hit balls = {hr_per_hard:.1%}")
+    print(f"\n  Hard%: {hard_pct:.1%}  |  HR/PA: {counts['HR']/total:.1%}  |  HR/Hard: {hr_per_hard:.1%}")
     print()
 
 
+def _run(batter, pitcher, constants, n):
+    """Simulate n PAs and collect stats; returns nothing — prints inline."""
+    t = batter["traits"]
+    p = pitcher["traits"]
+    print(f"\n{'═'*58}")
+    print(f"  {batter['name']}  vs  {pitcher['name']}  ({n:,} PAs)")
+    print(f"  Batter:  POW {t.get('POW','-'):>3}  EYE {t.get('EYE','-'):>3}  "
+          f"CON {t.get('CON','-'):>3}  AK {t.get('AK','-'):>3}  GAP {t.get('GAP','-'):>3}")
+    print(f"  Pitcher: STF {p.get('STF','-'):>3}  CTL {p.get('CTL','-'):>3}  "
+          f"CMD {p.get('CMD','-'):>3}  STA {p.get('STA','-'):>3}")
+    print(f"{'═'*58}\n")
+
+    PAS_PER_GAME   = 9
+    counts         = Counter()
+    bip_total      = 0
+    contact_counts = Counter()
+    tier_out       = Counter()
+    hard_hr        = 0
+
+    for i in range(n):
+        game_index = (i // PAS_PER_GAME) + 1
+        pa_in_game = (i %  PAS_PER_GAME) + 1
+        result = simulate_pa(batter, pitcher, constants,
+                             pa_index=pa_in_game, game_index=game_index)
+        counts[result["final"]] += 1
+        if result["bip"]:
+            bip_total += 1
+            cq = result["contact_quality"]
+            contact_counts[cq] += 1
+            if result["final"] in ("Out", "Error"):
+                tier_out[cq] += 1
+            if result["final"] == "HR" and cq == "Hard":
+                hard_hr += 1
+
+    _print_series(batter, pitcher, counts, bip_total, contact_counts, tier_out, hard_hr, n)
+
+
+def run_series(batter_name, pitcher_name, n=100):
+    with open("sim_constants.json") as f:
+        constants = json.load(f)
+    roster  = load_roster(PILOT_FILE)
+    batter  = find_player(roster, batter_name,  "Hitter")
+    pitcher = find_player(roster, pitcher_name, "Pitcher")
+    if not batter or not pitcher:
+        print(f"Could not find '{batter_name}' or '{pitcher_name}' in roster.")
+        return
+    _run(batter, pitcher, constants, n)
+
+
+def run_matrix(n=5000):
+    with open("sim_constants.json") as f:
+        constants = json.load(f)
+
+    roster  = load_roster(PILOT_FILE)
+    ruth    = find_player(roster, "Babe Ruth",  "Hitter")
+    hoyt    = find_player(roster, "Waite Hoyt", "Pitcher")
+
+    avg_pitcher = _make_player("Avg Pitcher", "Pitcher",
+                               {"STF": 50, "CTL": 50, "CMD": 50, "STA": 50})
+    elite_pitcher = _make_player("Elite Pitcher", "Pitcher",
+                                 {"STF": 80, "CTL": 80, "CMD": 80, "STA": 75})
+    avg_hitter = _make_player("Avg Hitter", "Hitter",
+                              {"POW": 50, "EYE": 50, "CON": 55, "AK": 50, "GAP": 50})
+    contact_hitter = _make_player("Contact Hitter", "Hitter",
+                                  {"POW": 45, "EYE": 60, "CON": 80, "AK": 75, "GAP": 55})
+
+    matchups = [
+        (ruth,          avg_pitcher,   "Ruth vs Average Pitcher"),
+        (ruth,          elite_pitcher, "Ruth vs Elite Pitcher"),
+        (avg_hitter,    hoyt,          "Average Hitter vs Hoyt"),
+        (contact_hitter, hoyt,         "Contact Hitter vs Hoyt"),
+    ]
+
+    print(f"\nSeed: {SIM_SEED}  |  {n:,} PAs per matchup")
+    for batter, pitcher, _ in matchups:
+        _run(batter, pitcher, constants, n)
+
+
 if __name__ == "__main__":
-    run_series("Babe Ruth", "Waite Hoyt", n=5000)
+    with open("sim_constants.json") as f:
+        _c = json.load(f)
+    roster = load_roster(PILOT_FILE)
+    ruth   = find_player(roster, "Babe Ruth",  "Hitter")
+    avg_p  = _make_player("Avg Pitcher",  "Pitcher", {"STF": 50, "CTL": 50, "CMD": 50, "STA": 50})
+    avg_h  = _make_player("Avg Hitter",   "Hitter",  {"POW": 50, "EYE": 50, "CON": 55, "AK": 50, "GAP": 50})
+
+    _run(ruth,  avg_p, _c, 5000)
+    _run(avg_h, avg_p, _c, 5000)

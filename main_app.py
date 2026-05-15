@@ -94,6 +94,7 @@ def simulate_pa(
             spray_vector    = contact["spray_vector"],
             effective_pow   = contact["effective_pow"],
             batter          = batter_traits,
+            pitcher         = pitcher_traits,
             constants       = constants,
             rng             = rng,
         )

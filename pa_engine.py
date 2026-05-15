@@ -161,23 +161,44 @@ def resolve_duel(
 # ---------------------------------------------------------------------------
 # Stage 2 — Contact Quality
 # ---------------------------------------------------------------------------
+#
+# Tier classification uses DIRECT probability sampling from bounded logistic
+# functions, not fixed thresholds on a normalized score.  This naturally
+# enforces soft floors/ceilings across the entire trait space:
+#
+#   P(Hard) ∈ [_HARD_FLOOR, _HARD_CEIL]  — never hits 0% or 100%
+#   P(Weak) ∈ [_WEAK_FLOOR, _WEAK_CEIL]
+#   P(Medium) = 1 − P(Hard) − P(Weak)   (renormalized, always > 0)
+#
+# Both curves are centered on Q_noisy (Q_raw + CMD noise).  The Hard logistic
+# rises with Q_noisy; the Weak logistic falls with Q_noisy.
+#
+#   P(Hard) = FLOOR + (CEIL−FLOOR) × σ((Q_noisy − MID) / SCALE)
+#   P(Weak) = FLOOR + (CEIL−FLOOR) × σ((MID_WEAK  − Q_noisy) / SCALE)
+#
+# Calibrated so that:
+#   • Ruth vs avg pitcher   →  ~45% Hard
+#   • Ruth vs elite pitcher →  ~20% Hard   (above floor)
+#   • Avg hitter vs Hoyt    →  ~10% Hard   (at floor)
+#   • Contact hitter vs Hoyt → ~30% Hard
 
-# Contact score thresholds (Q is on a 0–100 scale after sigmoid normalization).
-# Calibrated so typical matchup (Q_final ~54–58) produces a mix of all three tiers.
-# Hard: elite contact — extra-base threat. Weak: routine play territory.
-_HARD_THRESHOLD   = 57.0
-_WEAK_THRESHOLD   = 43.0
+_HARD_FLOOR   = 0.10
+_HARD_CEIL    = 0.60
+_HARD_Q_MID   = 44.0    # Q_noisy where P(Hard) = midpoint (35%)
+_HARD_Q_SCALE = 3.0     # steepness; smaller = sharper cliff (DO NOT go below 2.5)
 
-# How strongly CMD variance spreads outcomes.
-# Divisor of 13 gives sigma ≈ 3.5–5 for typical pitchers, creating
-# enough spread to push borderline contact into Hard or Weak tiers.
+_WEAK_FLOOR   = 0.03
+_WEAK_CEIL    = 0.40
+_WEAK_Q_MID   = 35.0    # Q_noisy where P(Weak) = midpoint (21.5%)
+_WEAK_Q_SCALE = 3.0
+
+# CMD variance: low CMD = wider spread. Floor prevents elite pitchers from
+# eliminating variance entirely, which would cause Hard% to collapse to the floor.
 _CMD_VARIANCE_DIVISOR = 13.0
+_CMD_SIGMA_FLOOR      = 2.5
 
-# Sigmoid normalization parameters for the raw contact score.
-# Center calibrated so a typical matchup (Q_raw ≈ 38–42) maps into the Medium tier.
-# Derivation: average traits produce Q_raw ≈ 40; center=37 maps that to ~57 (Medium).
-# Hard tier (≥62) requires Q_raw ≥ ~43 — above-average batter or weak pitcher.
-# Weak tier (≤38) requires Q_raw ≤ ~32 — poor batter or dominant pitcher.
+# Sigmoid for Q_final (contact_score) — used by Stage 2.5 HR gate only.
+# Not used for tier classification any more.
 _CONTACT_SIGMOID_CENTER = 37.0
 _CONTACT_SIGMOID_SCALE  = 12.0
 
@@ -260,25 +281,42 @@ def resolve_contact(
 
     # POW gated by CON: logistic gate centered at CON=50.
     # CON=95 → gate≈0.97 (nearly full POW); CON=50 → gate=0.50; CON=30 → gate≈0.18.
-    con_gate = _logistic((CON - 50) / 15.0)
+    # Shift center from 50 → 45 so CON 50–60 hitters lose ~35–40% of POW
+    # instead of 40–50%.  Elite CON (80+) is barely affected; low-end CON still penalized.
+    con_gate = _logistic((CON - 45) / 15.0)
     effective_pow = POW * con_gate
 
     # Raw contact score (unbounded; batter side is a weighted avg since a+b+d=1.0)
     Q_raw = a * effective_pow + b * CON + d * GAP - c * STF
 
-    # CMD variance: low CMD = wider spread of outcomes (more mistakes, more weak contact)
-    cmd_sigma = (100.0 - CMD) / _CMD_VARIANCE_DIVISOR
-    cmd_noise = rng.gauss(0.0, cmd_sigma) if cmd_sigma > 0 else 0.0
-    Q_noisy = Q_raw + cmd_noise
+    # CMD variance: low CMD = wider spread. Floor prevents sigma from collapsing
+    # for elite pitchers, which would create an artificial Hard% cliff.
+    cmd_sigma = max((100.0 - CMD) / _CMD_VARIANCE_DIVISOR, _CMD_SIGMA_FLOOR)
+    cmd_noise = rng.gauss(0.0, cmd_sigma)
+    Q_noisy   = Q_raw + cmd_noise
 
-    # Sigmoid normalization → bounded 0–100.
-    # Smoothly compresses extreme values instead of hard-clamping at boundaries.
+    # Sigmoid normalization for contact_score (used by Stage 2.5 HR gate).
     Q_final = 100.0 * _logistic((Q_noisy - _CONTACT_SIGMOID_CENTER) / _CONTACT_SIGMOID_SCALE)
 
-    # Map score to contact quality tier
-    if Q_final >= _HARD_THRESHOLD:
+    # ── Soft-bounded tier sampling ──────────────────────────────────────
+    # Each tier probability is a bounded logistic of Q_noisy, ensuring
+    # Hard% stays in [10%, 60%] and Weak% in [3%, 40%] for any matchup.
+    p_hard   = _HARD_FLOOR + (_HARD_CEIL - _HARD_FLOOR) * _logistic(
+                   (Q_noisy - _HARD_Q_MID) / _HARD_Q_SCALE)
+    p_weak   = _WEAK_FLOOR + (_WEAK_CEIL - _WEAK_FLOOR) * _logistic(
+                   (_WEAK_Q_MID - Q_noisy) / _WEAK_Q_SCALE)
+    p_medium = max(0.0, 1.0 - p_hard - p_weak)
+
+    # Renormalize in case floating-point pushes sum above 1.0
+    _tier_sum = p_hard + p_medium + p_weak
+    p_hard   /= _tier_sum
+    p_medium /= _tier_sum
+    p_weak   /= _tier_sum
+
+    roll = rng.random()
+    if roll < p_hard:
         quality = "Hard"
-    elif Q_final >= _WEAK_THRESHOLD:
+    elif roll < p_hard + p_medium:
         quality = "Medium"
     else:
         quality = "Weak"
@@ -301,21 +339,26 @@ def resolve_contact(
 # Two-step process:
 #   Step 1 — HR gate: nonlinear function of effective_pow + contact_score.
 #             Fires only on Medium or Hard contact (Weak → hr_prob = 0).
-#   Step 2 — Non-HR multinomial: tier-based table over Out/1B/2B/3B/ROE.
-#             GAP and spray apply small modifiers to 2B/3B columns only.
+#   Step 2 — Non-HR multinomial: tier-based table over Out/1B/2B/3B/ROE,
+#             modified by pitcher suppression and batter GAP/spray.
 #
 # Tier non-HR base probabilities (sum to 1.0):
-#   Weak:   Out 0.850  1B 0.120  2B 0.020  3B 0.005  ROE 0.005
-#   Medium: Out 0.700  1B 0.200  2B 0.080  3B 0.010  ROE 0.010
-#   Hard:   Out 0.550  1B 0.180  2B 0.230  3B 0.020  ROE 0.020
+#   Weak:   Out 0.830  1B 0.140  2B 0.020  3B 0.005  ROE 0.005  (+0.02 to Single, -0.02 Out)
+#   Medium: Out 0.760  1B 0.160  2B 0.065  3B 0.008  ROE 0.007  (-0.04 Out, +0.03 Single, +0.01 Double)
+#   Hard:   Out 0.650  1B 0.140  2B 0.180  3B 0.015  ROE 0.015  (unchanged)
 _NON_HR_BASE: dict[str, dict[str, float]] = {
-    "Weak":   {"Out": 0.850, "Single": 0.120, "Double": 0.020, "Triple": 0.005, "Error": 0.005},
-    "Medium": {"Out": 0.700, "Single": 0.200, "Double": 0.080, "Triple": 0.010, "Error": 0.010},
-    "Hard":   {"Out": 0.550, "Single": 0.180, "Double": 0.230, "Triple": 0.020, "Error": 0.020},
+    "Weak":   {"Out": 0.830, "Single": 0.140, "Double": 0.020, "Triple": 0.005, "Error": 0.005},
+    "Medium": {"Out": 0.780, "Single": 0.145, "Double": 0.060, "Triple": 0.008, "Error": 0.007},
+    "Hard":   {"Out": 0.650, "Single": 0.140, "Double": 0.180, "Triple": 0.015, "Error": 0.015},
 }
 
+# Pitcher suppression scaling — bonus added to Out weight before renormalization.
+# Formula: bonus = max(0, (trait - 50) / 50) * _PITCHER_SUP_SCALE
+# At trait=70: bonus ≈ 0.06  |  At trait=90: bonus ≈ 0.12  |  capped at 0.15
+_PITCHER_SUP_SCALE = 0.12   # CMD suppresses Medium/Weak Out; STF suppresses Hard Out
+
 # GAP shifts probability from Out toward Double; capped so totals stay sane.
-_GAP_DOUBLE_MOD  = 0.05   # max ±5% on Double at extreme GAP
+_GAP_DOUBLE_MOD  = 0.04   # max ±4% on Double at extreme GAP
 # Spray bonus on Triple for Center/Oppo hits (gap power into the alleys).
 _SPRAY_TRIPLE_BONUS = 0.003
 
@@ -326,6 +369,7 @@ def map_bip_outcome(
     spray_vector: str,
     effective_pow: float,
     batter: dict,
+    pitcher: dict,
     constants: dict,
     rng: random.Random,
 ) -> dict:
@@ -333,13 +377,24 @@ def map_bip_outcome(
     Stage 2.5 — BIP Outcome Mapping.
 
     Step 1 — HR gate (Medium/Hard only):
-        hr_driver = effective_pow * 0.6 + contact_score * 0.4
-        hr_norm   = hr_driver / 100
-        hr_prob   = 0.035 + (hr_norm ** 2) * 0.155   (caps ~19% at extreme inputs)
-        Weak contact → hr_prob forced to 0.
+        pow_norm     = POW / 100                          (raw POW — not CON-gated)
+        cs_norm      = contact_score / 100
+        hr_base      = 0.08 + (pow_norm ** 2.5) * 0.18 * (0.6 + 0.4 * cs_norm)
+        quality_mult = 1.0 (Hard) | 0.25 (Medium)
+        hr_prob      = quality_mult * hr_base
+        Weak contact → hr_prob = 0.
 
-    Step 2 — Non-HR multinomial sampled from _NON_HR_BASE[tier] with
-        small GAP/spray adjustments to 2B and 3B columns.
+        Calibration targets:
+            POW 50  → HR/Hard ~8–10 %
+            POW 75  → HR/Hard ~12–15 %
+            POW 95+ → HR/Hard ~18–25 %
+
+    Step 2 — Non-HR multinomial sampled from _NON_HR_BASE[tier] with:
+        - Pitcher suppression: CMD raises Out% on Medium/Weak; STF raises Out% on Hard.
+          Formula: bonus = max(0, (trait - 50) / 50) * _PITCHER_SUP_SCALE
+          Excess Out weight is taken proportionally from all hit columns.
+        - Batter GAP: shifts weight from Out toward Double.
+        - Spray: Center/Oppo nudges a sliver of Double into Triple.
 
     Returns:
         {
@@ -349,25 +404,56 @@ def map_bip_outcome(
         }
     """
     GAP = batter["GAP"]
+    POW = batter["POW"]
+    CMD = pitcher["CMD"]
+    STF = pitcher["STF"]
 
     # ── Step 1: HR gate ──────────────────────────────────────────────────
-    hr_driver = effective_pow * 0.6 + contact_score * 0.4
-    hr_norm   = hr_driver / 100.0
+    # Raw POW (not CON-gated) drives HR conversion — clearing the fence is a
+    # function of raw power, not contact consistency.
+    # POW^2.5 tail gives strong separation: POW 50 ≈ 9%, POW 75 ≈ 13%, POW 99 ≈ 23%.
+    # Contact score boosts HR% on sharper contact (better-hit ball = more carry).
+    # Medium contact can still produce HRs but at 25% the rate of Hard contact.
+    pow_norm = POW / 100.0
+    cs_norm  = contact_score / 100.0
+    hr_base  = 0.08 + (pow_norm ** 2.5) * 0.18 * (0.6 + 0.4 * cs_norm)
+
     if contact_quality == "Weak":
-        hr_prob = 0.0
-    else:
-        hr_prob = 0.035 + (hr_norm ** 2) * 0.155
+        hr_prob   = 0.0
+        hr_driver = 0.0
+    elif contact_quality == "Hard":
+        hr_prob   = hr_base
+        hr_driver = round(pow_norm ** 2.5 * 100.0, 4)
+    else:  # Medium
+        hr_prob   = hr_base * 0.25
+        hr_driver = round(pow_norm ** 2.5 * 100.0, 4)
 
     if rng.random() < hr_prob:
         probs = {"HR": 1.0, "Triple": 0.0, "Double": 0.0, "Single": 0.0, "Out": 0.0, "Error": 0.0}
         return {
             "bip_outcome":       "HR",
             "bip_probabilities": probs,
-            "hr_driver":         round(hr_driver, 4),
+            "hr_driver":         hr_driver,
         }
 
     # ── Step 2: Non-HR multinomial ───────────────────────────────────────
     probs = dict(_NON_HR_BASE[contact_quality])
+
+    # Pitcher suppression: bonus added to Out, removed proportionally from hit cols.
+    # CMD suppresses Medium and Weak contact; STF suppresses Hard contact.
+    if contact_quality in ("Medium", "Weak"):
+        sup_bonus = max(0.0, (CMD - 50) / 50.0) * _PITCHER_SUP_SCALE
+    else:  # Hard
+        sup_bonus = max(0.0, (STF - 50) / 50.0) * _PITCHER_SUP_SCALE
+
+    if sup_bonus > 0:
+        hit_keys = ("Single", "Double", "Triple", "Error")
+        hit_total = sum(probs[k] for k in hit_keys)
+        actual_bonus = min(sup_bonus, hit_total * 0.90)  # never strip more than 90% of hits
+        probs["Out"] += actual_bonus
+        scale = (hit_total - actual_bonus) / hit_total if hit_total else 1.0
+        for k in hit_keys:
+            probs[k] *= scale
 
     # GAP shifts weight from Out toward Double (positive) or away (negative)
     gap_edge   = (GAP - 50) / 50.0          # –1 to +1
