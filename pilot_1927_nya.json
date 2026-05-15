@@ -1,0 +1,1035 @@
+[
+  {
+    "player_id": "collipa01",
+    "card_id": "collipa01|1927",
+    "season": 1927,
+    "team_id": "NYA",
+    "name": "Pat Collins",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 49,
+      "GAP": 34,
+      "POW": 83,
+      "EYE": 84,
+      "AK": 32,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr": 2.115,
+      "rel_bb": 2.167,
+      "rel_k": 1.502,
+      "rel_babip": 0.971,
+      "rel_gap": 0.698
+    },
+    "reliability": {
+      "CON": 0.51,
+      "GAP": 0.51,
+      "POW": 0.51,
+      "EYE": 0.51,
+      "AK": 0.51,
+      "BNT": 0.51
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1927,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-15T18:33:53.777994Z"
+  },
+  {
+    "player_id": "combsea01",
+    "card_id": "combsea01|1927",
+    "season": 1927,
+    "team_id": "NYA",
+    "name": "Earle Combs",
+    "bats": "L",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 60,
+      "GAP": 67,
+      "POW": 39,
+      "EYE": 53,
+      "AK": 58,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr": 0.782,
+      "rel_bb": 1.073,
+      "rel_k": 0.837,
+      "rel_babip": 1.269,
+      "rel_gap": 1.479
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1927,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-15T18:33:53.777994Z"
+  },
+  {
+    "player_id": "duganjo01",
+    "card_id": "duganjo01|1927",
+    "season": 1927,
+    "team_id": "NYA",
+    "name": "Joe Dugan",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 50,
+      "GAP": 56,
+      "POW": 15,
+      "EYE": 40,
+      "AK": 27,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr": 0.445,
+      "rel_bb": 0.798,
+      "rel_k": 1.705,
+      "rel_babip": 1.01,
+      "rel_gap": 1.156
+    },
+    "reliability": {
+      "CON": 0.58,
+      "GAP": 0.58,
+      "POW": 0.58,
+      "EYE": 0.58,
+      "AK": 0.58,
+      "BNT": 0.58
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1927,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-15T18:33:53.777994Z"
+  },
+  {
+    "player_id": "durstce01",
+    "card_id": "durstce01|1927",
+    "season": 1927,
+    "team_id": "NYA",
+    "name": "Cedric Durst",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 46,
+      "GAP": 47,
+      "POW": 1,
+      "EYE": 24,
+      "AK": 50,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr": 0.0,
+      "rel_bb": 0.548,
+      "rel_k": 0.996,
+      "rel_babip": 0.904,
+      "rel_gap": 0.926
+    },
+    "reliability": {
+      "CON": 0.31,
+      "GAP": 0.31,
+      "POW": 0.31,
+      "EYE": 0.31,
+      "AK": 0.31,
+      "BNT": 0.31
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1927,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-15T18:33:53.777994Z"
+  },
+  {
+    "player_id": "gazelmi01",
+    "card_id": "gazelmi01|1927",
+    "season": 1927,
+    "team_id": "NYA",
+    "name": "Mike Gazella",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 55,
+      "GAP": 69,
+      "POW": 1,
+      "EYE": 81,
+      "AK": 15,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr": 0.0,
+      "rel_bb": 2.039,
+      "rel_k": 2.212,
+      "rel_babip": 1.114,
+      "rel_gap": 1.541
+    },
+    "reliability": {
+      "CON": 0.32,
+      "GAP": 0.32,
+      "POW": 0.32,
+      "EYE": 0.32,
+      "AK": 0.32,
+      "BNT": 0.32
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1927,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-15T18:33:53.777994Z"
+  },
+  {
+    "player_id": "gehrilo01",
+    "card_id": "gehrilo01|1927",
+    "season": 1927,
+    "team_id": "NYA",
+    "name": "Lou Gehrig",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 61,
+      "GAP": 76,
+      "POW": 99,
+      "EYE": 79,
+      "AK": 13,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr": 6.265,
+      "rel_bb": 1.929,
+      "rel_k": 2.319,
+      "rel_babip": 1.301,
+      "rel_gap": 1.795
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1927,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-15T18:33:53.777994Z"
+  },
+  {
+    "player_id": "grabojo01",
+    "card_id": "grabojo01|1927",
+    "season": 1927,
+    "team_id": "NYA",
+    "name": "Johnny Grabowski",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 51,
+      "GAP": 19,
+      "POW": 1,
+      "EYE": 56,
+      "AK": 38,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr": 0.0,
+      "rel_bb": 1.135,
+      "rel_k": 1.328,
+      "rel_babip": 1.034,
+      "rel_gap": 0.494
+    },
+    "reliability": {
+      "CON": 0.42,
+      "GAP": 0.42,
+      "POW": 0.42,
+      "EYE": 0.42,
+      "AK": 0.42,
+      "BNT": 0.42
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1927,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-15T18:33:53.777994Z"
+  },
+  {
+    "player_id": "hoytwa01",
+    "card_id": "hoytwa01|1927",
+    "season": 1927,
+    "team_id": "NYA",
+    "name": "Waite Hoyt",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 42,
+      "GAP": 22,
+      "POW": 1,
+      "EYE": 6,
+      "AK": 32,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr": 0.0,
+      "rel_bb": 0.362,
+      "rel_k": 1.507,
+      "rel_babip": 0.833,
+      "rel_gap": 0.525
+    },
+    "reliability": {
+      "CON": 0.25,
+      "GAP": 0.25,
+      "POW": 0.25,
+      "EYE": 0.25,
+      "AK": 0.25,
+      "BNT": 0.25
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1927,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-15T18:33:53.777994Z"
+  },
+  {
+    "player_id": "koenima01",
+    "card_id": "koenima01|1927",
+    "season": 1927,
+    "team_id": "NYA",
+    "name": "Mark Koenig",
+    "bats": "B",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 50,
+      "GAP": 50,
+      "POW": 20,
+      "EYE": 24,
+      "AK": 64,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr": 0.503,
+      "rel_bb": 0.557,
+      "rel_k": 0.73,
+      "rel_babip": 1.009,
+      "rel_gap": 1.001
+    },
+    "reliability": {
+      "CON": 0.65,
+      "GAP": 0.65,
+      "POW": 0.65,
+      "EYE": 0.65,
+      "AK": 0.65,
+      "BNT": 0.65
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1927,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-15T18:33:53.777994Z"
+  },
+  {
+    "player_id": "lazzeto01",
+    "card_id": "lazzeto01|1927",
+    "season": 1927,
+    "team_id": "NYA",
+    "name": "Tony Lazzeri",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 56,
+      "GAP": 51,
+      "POW": 92,
+      "EYE": 62,
+      "AK": 11,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr": 2.613,
+      "rel_bb": 1.33,
+      "rel_k": 2.466,
+      "rel_babip": 1.158,
+      "rel_gap": 1.034
+    },
+    "reliability": {
+      "CON": 0.68,
+      "GAP": 0.68,
+      "POW": 0.68,
+      "EYE": 0.68,
+      "AK": 0.68,
+      "BNT": 0.68
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1927,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-15T18:33:53.777994Z"
+  },
+  {
+    "player_id": "meusebo01",
+    "card_id": "meusebo01|1927",
+    "season": 1927,
+    "team_id": "NYA",
+    "name": "Bob Meusel",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 60,
+      "GAP": 75,
+      "POW": 62,
+      "EYE": 49,
+      "AK": 20,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr": 1.318,
+      "rel_bb": 0.985,
+      "rel_k": 1.98,
+      "rel_babip": 1.271,
+      "rel_gap": 1.775
+    },
+    "reliability": {
+      "CON": 0.65,
+      "GAP": 0.65,
+      "POW": 0.65,
+      "EYE": 0.65,
+      "AK": 0.65,
+      "BNT": 0.65
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1927,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-15T18:33:53.777994Z"
+  },
+  {
+    "player_id": "morehra01",
+    "card_id": "morehra01|1927",
+    "season": 1927,
+    "team_id": "NYA",
+    "name": "Ray Morehart",
+    "bats": "L",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 48,
+      "GAP": 35,
+      "POW": 12,
+      "EYE": 70,
+      "AK": 31,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr": 0.414,
+      "rel_bb": 1.595,
+      "rel_k": 1.544,
+      "rel_babip": 0.959,
+      "rel_gap": 0.717
+    },
+    "reliability": {
+      "CON": 0.43,
+      "GAP": 0.43,
+      "POW": 0.43,
+      "EYE": 0.43,
+      "AK": 0.43,
+      "BNT": 0.43
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1927,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-15T18:33:53.777994Z"
+  },
+  {
+    "player_id": "ruthba01",
+    "card_id": "ruthba01|1927",
+    "season": 1927,
+    "team_id": "NYA",
+    "name": "Babe Ruth",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 57,
+      "GAP": 49,
+      "POW": 99,
+      "EYE": 90,
+      "AK": 10,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr": 8.222,
+      "rel_bb": 2.493,
+      "rel_k": 2.526,
+      "rel_babip": 1.163,
+      "rel_gap": 0.975
+    },
+    "reliability": {
+      "CON": 0.69,
+      "GAP": 0.69,
+      "POW": 0.69,
+      "EYE": 0.69,
+      "AK": 0.69,
+      "BNT": 0.69
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1927,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-15T18:33:53.777994Z"
+  },
+  {
+    "player_id": "giardjo01",
+    "card_id": "giardjo01|1927",
+    "season": 1927,
+    "team_id": "NYA",
+    "name": "Joe Giard",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Pitcher",
+    "pitcher_role": "RP",
+    "traits": {
+      "STF": 66,
+      "CTL": 26,
+      "CMD": 66,
+      "STA": 1
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.434,
+      "rel_p_bb": 1.747,
+      "rel_p_hr": 0.692,
+      "rel_sta": 0.241
+    },
+    "reliability": {
+      "STF": 0.25,
+      "CTL": 0.25,
+      "CMD": 0.25,
+      "STA": 0.25
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1927,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-15T18:33:53.777994Z"
+  },
+  {
+    "player_id": "hoytwa01",
+    "card_id": "hoytwa01|1927",
+    "season": 1927,
+    "team_id": "NYA",
+    "name": "Waite Hoyt",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 70,
+      "CTL": 70,
+      "CMD": 55,
+      "STA": 56
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.581,
+      "rel_p_bb": 0.637,
+      "rel_p_hr": 0.888,
+      "rel_sta": 1.144
+    },
+    "reliability": {
+      "STF": 0.72,
+      "CTL": 0.72,
+      "CMD": 0.72,
+      "STA": 0.72
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1927,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-15T18:33:53.777994Z"
+  },
+  {
+    "player_id": "moorewi01",
+    "card_id": "moorewi01|1927",
+    "season": 1927,
+    "team_id": "NYA",
+    "name": "Wilcy Moore",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "RP",
+    "traits": {
+      "STF": 72,
+      "CTL": 58,
+      "CMD": 99,
+      "STA": 28
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.656,
+      "rel_p_bb": 0.835,
+      "rel_p_hr": 0.32,
+      "rel_sta": 0.609
+    },
+    "reliability": {
+      "STF": 0.69,
+      "CTL": 0.69,
+      "CMD": 0.69,
+      "STA": 0.69
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1927,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-15T18:33:53.777994Z"
+  },
+  {
+    "player_id": "pennohe01",
+    "card_id": "pennohe01|1927",
+    "season": 1927,
+    "team_id": "NYA",
+    "name": "Herb Pennock",
+    "bats": "B",
+    "throws": "L",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 55,
+      "CTL": 67,
+      "CMD": 78,
+      "STA": 56
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.114,
+      "rel_p_bb": 0.672,
+      "rel_p_hr": 0.527,
+      "rel_sta": 1.152
+    },
+    "reliability": {
+      "STF": 0.69,
+      "CTL": 0.69,
+      "CMD": 0.69,
+      "STA": 0.69
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1927,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-15T18:33:53.777994Z"
+  },
+  {
+    "player_id": "pipgrge01",
+    "card_id": "pipgrge01|1927",
+    "season": 1927,
+    "team_id": "NYA",
+    "name": "George Pipgras",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 85,
+      "CTL": 37,
+      "CMD": 99,
+      "STA": 55
+    },
+    "normalized_rates": {
+      "rel_p_k": 2.214,
+      "rel_p_bb": 1.349,
+      "rel_p_hr": 0.264,
+      "rel_sta": 1.132
+    },
+    "reliability": {
+      "STF": 0.64,
+      "CTL": 0.64,
+      "CMD": 0.64,
+      "STA": 0.64
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1927,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-15T18:33:53.777994Z"
+  },
+  {
+    "player_id": "ruethdu01",
+    "card_id": "ruethdu01|1927",
+    "season": 1927,
+    "team_id": "NYA",
+    "name": "Dutch Ruether",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 54,
+      "CTL": 59,
+      "CMD": 52,
+      "STA": 50
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.102,
+      "rel_p_bb": 0.816,
+      "rel_p_hr": 0.945,
+      "rel_sta": 1.011
+    },
+    "reliability": {
+      "STF": 0.66,
+      "CTL": 0.66,
+      "CMD": 0.66,
+      "STA": 0.66
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1927,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-15T18:33:53.777994Z"
+  },
+  {
+    "player_id": "shawkbo01",
+    "card_id": "shawkbo01|1927",
+    "season": 1927,
+    "team_id": "NYA",
+    "name": "Bob Shawkey",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "RP",
+    "traits": {
+      "STF": 87,
+      "CTL": 48,
+      "CMD": 81,
+      "STA": 1
+    },
+    "normalized_rates": {
+      "rel_p_k": 2.326,
+      "rel_p_bb": 1.037,
+      "rel_p_hr": 0.488,
+      "rel_sta": 0.328
+    },
+    "reliability": {
+      "STF": 0.32,
+      "CTL": 0.32,
+      "CMD": 0.32,
+      "STA": 0.32
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1927,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-15T18:33:53.777994Z"
+  },
+  {
+    "player_id": "shockur01",
+    "card_id": "shockur01|1927",
+    "season": 1927,
+    "team_id": "NYA",
+    "name": "Urban Shocker",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 40,
+      "CTL": 72,
+      "CMD": 55,
+      "STA": 52
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.802,
+      "rel_p_bb": 0.602,
+      "rel_p_hr": 0.885,
+      "rel_sta": 1.058
+    },
+    "reliability": {
+      "STF": 0.68,
+      "CTL": 0.68,
+      "CMD": 0.68,
+      "STA": 0.68
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1927,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-15T18:33:53.777994Z"
+  },
+  {
+    "player_id": "thomamy01",
+    "card_id": "thomamy01|1927",
+    "season": 1927,
+    "team_id": "NYA",
+    "name": "Myles Thomas",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "RP",
+    "traits": {
+      "STF": 58,
+      "CTL": 38,
+      "CMD": 53,
+      "STA": 28
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.204,
+      "rel_p_bb": 1.328,
+      "rel_p_hr": 0.93,
+      "rel_sta": 0.603
+    },
+    "reliability": {
+      "STF": 0.5,
+      "CTL": 0.5,
+      "CMD": 0.5,
+      "STA": 0.5
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1927,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-15T18:33:53.777994Z"
+  }
+]
