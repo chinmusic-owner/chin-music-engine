@@ -1,0 +1,206 @@
+[
+  {
+    "player_id": "elite_contact",
+    "card_id": "elite_contact|stress",
+    "season": 0,
+    "team_id": "STRESS",
+    "name": "Elite Contact",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 95,
+      "POW": 40,
+      "EYE": 85,
+      "AK": 90,
+      "GAP": 55,
+      "BNT": 50
+    },
+    "normalized_rates": {},
+    "reliability": {},
+    "trait_provenance": {
+      "mode": "synthetic",
+      "build_version": "stress-test-1.0",
+      "source_version": "stress_test_players.json",
+      "components": [
+        {
+          "name": "archetype",
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "stress-test-1.0",
+    "source_version": "stress_test_players.json",
+    "build_timestamp": "2026-05-16T13:58:01.031639Z"
+  },
+  {
+    "player_id": "tto_slugger",
+    "card_id": "tto_slugger|stress",
+    "season": 0,
+    "team_id": "STRESS",
+    "name": "TTO Slugger",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 55,
+      "POW": 95,
+      "EYE": 80,
+      "AK": 45,
+      "GAP": 65,
+      "BNT": 30
+    },
+    "normalized_rates": {},
+    "reliability": {},
+    "trait_provenance": {
+      "mode": "synthetic",
+      "build_version": "stress-test-1.0",
+      "source_version": "stress_test_players.json",
+      "components": [
+        {
+          "name": "archetype",
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "stress-test-1.0",
+    "source_version": "stress_test_players.json",
+    "build_timestamp": "2026-05-16T13:58:01.031639Z"
+  },
+  {
+    "player_id": "replacement",
+    "card_id": "replacement|stress",
+    "season": 0,
+    "team_id": "STRESS",
+    "name": "Replacement Hitter",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 50,
+      "POW": 50,
+      "EYE": 50,
+      "AK": 50,
+      "GAP": 50,
+      "BNT": 50
+    },
+    "normalized_rates": {},
+    "reliability": {},
+    "trait_provenance": {
+      "mode": "synthetic",
+      "build_version": "stress-test-1.0",
+      "source_version": "stress_test_players.json",
+      "components": [
+        {
+          "name": "archetype",
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "stress-test-1.0",
+    "source_version": "stress_test_players.json",
+    "build_timestamp": "2026-05-16T13:58:01.031639Z"
+  },
+  {
+    "player_id": "power_pitcher",
+    "card_id": "power_pitcher|stress",
+    "season": 0,
+    "team_id": "STRESS",
+    "name": "Power Pitcher",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 95,
+      "CTL": 50,
+      "CMD": 65,
+      "STA": 85
+    },
+    "normalized_rates": {},
+    "reliability": {},
+    "trait_provenance": {
+      "mode": "synthetic",
+      "build_version": "stress-test-1.0",
+      "source_version": "stress_test_players.json",
+      "components": [
+        {
+          "name": "archetype",
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "stress-test-1.0",
+    "source_version": "stress_test_players.json",
+    "build_timestamp": "2026-05-16T13:58:01.031639Z"
+  },
+  {
+    "player_id": "control_pitcher",
+    "card_id": "control_pitcher|stress",
+    "season": 0,
+    "team_id": "STRESS",
+    "name": "Control Pitcher",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 75,
+      "CTL": 92,
+      "CMD": 90,
+      "STA": 88
+    },
+    "normalized_rates": {},
+    "reliability": {},
+    "trait_provenance": {
+      "mode": "synthetic",
+      "build_version": "stress-test-1.0",
+      "source_version": "stress_test_players.json",
+      "components": [
+        {
+          "name": "archetype",
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "stress-test-1.0",
+    "source_version": "stress_test_players.json",
+    "build_timestamp": "2026-05-16T13:58:01.031639Z"
+  },
+  {
+    "player_id": "wild_flame",
+    "card_id": "wild_flame|stress",
+    "season": 0,
+    "team_id": "STRESS",
+    "name": "Wild Flamethrower",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 98,
+      "CTL": 30,
+      "CMD": 40,
+      "STA": 80
+    },
+    "normalized_rates": {},
+    "reliability": {},
+    "trait_provenance": {
+      "mode": "synthetic",
+      "build_version": "stress-test-1.0",
+      "source_version": "stress_test_players.json",
+      "components": [
+        {
+          "name": "archetype",
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "stress-test-1.0",
+    "source_version": "stress_test_players.json",
+    "build_timestamp": "2026-05-16T13:58:01.031639Z"
+  }
+]

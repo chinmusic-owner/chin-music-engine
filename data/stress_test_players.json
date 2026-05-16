@@ -1,0 +1,89 @@
+[
+  {
+    "id": "elite_contact",
+    "name": "Elite Contact",
+    "role": "Hitter",
+    "bats": "R",
+    "throws": "R",
+    "traits": {
+      "CON": 95,
+      "POW": 40,
+      "EYE": 85,
+      "AK":  90,
+      "GAP": 55,
+      "BNT": 50
+    }
+  },
+  {
+    "id": "tto_slugger",
+    "name": "TTO Slugger",
+    "role": "Hitter",
+    "bats": "R",
+    "throws": "R",
+    "traits": {
+      "CON": 55,
+      "POW": 95,
+      "EYE": 80,
+      "AK":  45,
+      "GAP": 65,
+      "BNT": 30
+    }
+  },
+  {
+    "id": "replacement",
+    "name": "Replacement Hitter",
+    "role": "Hitter",
+    "bats": "R",
+    "throws": "R",
+    "traits": {
+      "CON": 50,
+      "POW": 50,
+      "EYE": 50,
+      "AK":  50,
+      "GAP": 50,
+      "BNT": 50
+    }
+  },
+  {
+    "id": "power_pitcher",
+    "name": "Power Pitcher",
+    "role": "Pitcher",
+    "bats": "R",
+    "throws": "R",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 95,
+      "CTL": 50,
+      "CMD": 65,
+      "STA": 85
+    }
+  },
+  {
+    "id": "control_pitcher",
+    "name": "Control Pitcher",
+    "role": "Pitcher",
+    "bats": "R",
+    "throws": "R",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 75,
+      "CTL": 92,
+      "CMD": 90,
+      "STA": 88
+    }
+  },
+  {
+    "id": "wild_flame",
+    "name": "Wild Flamethrower",
+    "role": "Pitcher",
+    "bats": "R",
+    "throws": "R",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 98,
+      "CTL": 30,
+      "CMD": 40,
+      "STA": 80
+    }
+  }
+]
