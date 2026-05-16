@@ -1,0 +1,10 @@
+batter_id,pitcher_id,n_pa,k_pct,bb_pct,hr_pct,avg,obp,slg,babip
+elite_contact,power_pitcher,20000,0.1514,0.1203,0.0341,0.306,0.396,0.491,0.339
+elite_contact,control_pitcher,20000,0.1085,0.0771,0.0461,0.337,0.394,0.57,0.344
+elite_contact,wild_flame,20000,0.16,0.1384,0.0312,0.31,0.415,0.488,0.353
+tto_slugger,power_pitcher,20000,0.277,0.1171,0.0563,0.27,0.364,0.52,0.333
+tto_slugger,control_pitcher,20000,0.2392,0.0737,0.0803,0.301,0.36,0.624,0.328
+tto_slugger,wild_flame,20000,0.2823,0.1328,0.051,0.273,0.379,0.509,0.35
+replacement,power_pitcher,20000,0.2824,0.0859,0.0133,0.201,0.277,0.28,0.276
+replacement,control_pitcher,20000,0.252,0.0442,0.0162,0.188,0.232,0.268,0.239
+replacement,wild_flame,20000,0.2878,0.1071,0.0137,0.205,0.3,0.293,0.289

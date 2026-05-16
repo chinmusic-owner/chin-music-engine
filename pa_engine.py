@@ -24,6 +24,12 @@ K_CEILING  = 0.55
 BB_CEILING = 0.25
 HBP_CEILING = 0.030
 
+# Global BABIP calibration multiplier (Stage 2.5 — non-HR BIP outcomes).
+# Applied to Single/Double/Triple probabilities before renormalization.
+# 1.0 = no adjustment. Raise to increase BABIP; lower to decrease it.
+# Calibrated so that Stone (1906) vs Falkenberg (1906) produces BABIP ≈ .300.
+GLOBAL_BABIP_ADJUST = 0.82
+
 
 # ---------------------------------------------------------------------------
 # Seeding (Section 7 — Deterministic Seeding)
@@ -416,7 +422,11 @@ def map_bip_outcome(
     # Medium contact can still produce HRs but at 25% the rate of Hard contact.
     pow_norm = POW / 100.0
     cs_norm  = contact_score / 100.0
-    hr_base  = 0.08 + (pow_norm ** 2.5) * 0.18 * (0.6 + 0.4 * cs_norm)
+    # HR floor scales with POW so low-power batters cannot clear the fence at
+    # 8% per Hard BIP.  At POW=100 the total is identical to the original
+    # formula (0.02 + 0.06 = 0.08); at POW=40 the floor drops to 0.044.
+    hr_floor = 0.02 + 0.06 * pow_norm
+    hr_base  = hr_floor + (pow_norm ** 2.5) * 0.18 * (0.6 + 0.4 * cs_norm)
 
     if contact_quality == "Weak":
         hr_prob   = 0.0
@@ -466,6 +476,13 @@ def map_bip_outcome(
         shift = min(_SPRAY_TRIPLE_BONUS, probs["Double"])
         probs["Triple"] += shift
         probs["Double"] -= shift
+
+    # Global BABIP calibration: scale hit outcomes before final renormalization.
+    # Renormalization then redistributes the remaining weight onto Out/Error,
+    # keeping all probabilities valid and summing to exactly 1.0.
+    if GLOBAL_BABIP_ADJUST != 1.0:
+        for hit_key in ("Single", "Double", "Triple"):
+            probs[hit_key] = probs.get(hit_key, 0.0) * GLOBAL_BABIP_ADJUST
 
     # Renormalize to exactly 1.0
     total = sum(probs.values())

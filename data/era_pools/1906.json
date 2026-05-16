@@ -1,0 +1,2442 @@
+[
+  {
+    "player_id": "flickel01",
+    "card_id": "flickel01|1906",
+    "season": 1906,
+    "team_id": "CLE",
+    "name": "Elmer Flick",
+    "bats": "L",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 60,
+      "GAP": 79,
+      "POW": 23,
+      "EYE": 54,
+      "AK": 54,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.076,
+      "rel_iso": 1.034,
+      "rel_xbh": 1.24,
+      "rel_hr": 0.485,
+      "rel_bb": 1.108,
+      "rel_k": 0.912,
+      "rel_babip": 1.252,
+      "rel_gap": 1.957
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "shannsp01",
+    "card_id": "shannsp01|1906",
+    "season": 1906,
+    "team_id": "SLN",
+    "name": "Spike Shannon",
+    "bats": "L",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 53,
+      "GAP": 6,
+      "POW": 1,
+      "EYE": 67,
+      "AK": 43,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.01,
+      "rel_iso": 0.149,
+      "rel_xbh": 0.225,
+      "rel_hr": 0.0,
+      "rel_bb": 1.485,
+      "rel_k": 1.175,
+      "rel_babip": 1.076,
+      "rel_gap": 0.361
+    },
+    "reliability": {
+      "CON": 0.69,
+      "GAP": 0.69,
+      "POW": 0.69,
+      "EYE": 0.69,
+      "AK": 0.69,
+      "BNT": 0.69
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "bennepu01",
+    "card_id": "bennepu01|1906",
+    "season": 1906,
+    "team_id": "SLN",
+    "name": "Pug Bennett",
+    "bats": "L",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 53,
+      "GAP": 42,
+      "POW": 1,
+      "EYE": 58,
+      "AK": 48,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.079,
+      "rel_iso": 0.442,
+      "rel_xbh": 0.543,
+      "rel_hr": 0.505,
+      "rel_bb": 1.195,
+      "rel_k": 1.05,
+      "rel_babip": 1.074,
+      "rel_gap": 0.836
+    },
+    "reliability": {
+      "CON": 0.69,
+      "GAP": 0.69,
+      "POW": 0.69,
+      "EYE": 0.69,
+      "AK": 0.69,
+      "BNT": 0.69
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "stahlch01",
+    "card_id": "stahlch01|1906",
+    "season": 1906,
+    "team_id": "BOS",
+    "name": "Chick Stahl",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 54,
+      "GAP": 54,
+      "POW": 19,
+      "EYE": 51,
+      "AK": 73,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.322,
+      "rel_iso": 0.642,
+      "rel_xbh": 0.78,
+      "rel_hr": 2.046,
+      "rel_bb": 1.017,
+      "rel_k": 0.592,
+      "rel_babip": 1.09,
+      "rel_gap": 1.105
+    },
+    "reliability": {
+      "CON": 0.68,
+      "GAP": 0.68,
+      "POW": 0.68,
+      "EYE": 0.68,
+      "AK": 0.68,
+      "BNT": 0.68
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "stonege01",
+    "card_id": "stonege01|1906",
+    "season": 1906,
+    "team_id": "SLA",
+    "name": "George Stone",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 68,
+      "GAP": 73,
+      "POW": 40,
+      "EYE": 56,
+      "AK": 37,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.491,
+      "rel_iso": 1.137,
+      "rel_xbh": 1.188,
+      "rel_hr": 3.117,
+      "rel_bb": 1.142,
+      "rel_k": 1.337,
+      "rel_babip": 1.504,
+      "rel_gap": 1.683
+    },
+    "reliability": {
+      "CON": 0.68,
+      "GAP": 0.68,
+      "POW": 0.68,
+      "EYE": 0.68,
+      "AK": 0.68,
+      "BNT": 0.68
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "lajoina01",
+    "card_id": "lajoina01|1906",
+    "season": 1906,
+    "team_id": "CLE",
+    "name": "Nap Lajoie",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 62,
+      "GAP": 83,
+      "POW": 17,
+      "EYE": 32,
+      "AK": 99,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.01,
+      "rel_iso": 0.873,
+      "rel_xbh": 1.331,
+      "rel_hr": 0.0,
+      "rel_bb": 0.661,
+      "rel_k": 0.286,
+      "rel_babip": 1.328,
+      "rel_gap": 2.139
+    },
+    "reliability": {
+      "CON": 0.68,
+      "GAP": 0.68,
+      "POW": 0.68,
+      "EYE": 0.68,
+      "AK": 0.68,
+      "BNT": 0.68
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "keelewi01",
+    "card_id": "keelewi01|1906",
+    "season": 1906,
+    "team_id": "NYA",
+    "name": "Willie Keeler",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 54,
+      "GAP": 11,
+      "POW": 1,
+      "EYE": 45,
+      "AK": 99,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.164,
+      "rel_iso": 0.269,
+      "rel_xbh": 0.304,
+      "rel_hr": 1.044,
+      "rel_bb": 0.883,
+      "rel_k": 0.075,
+      "rel_babip": 1.101,
+      "rel_gap": 0.413
+    },
+    "reliability": {
+      "CON": 0.68,
+      "GAP": 0.68,
+      "POW": 0.68,
+      "EYE": 0.68,
+      "AK": 0.68,
+      "BNT": 0.68
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "parenfr01",
+    "card_id": "parenfr01|1906",
+    "season": 1906,
+    "team_id": "BOS",
+    "name": "Freddy Parent",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 46,
+      "GAP": 46,
+      "POW": 1,
+      "EYE": 34,
+      "AK": 72,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.082,
+      "rel_iso": 0.491,
+      "rel_xbh": 0.587,
+      "rel_hr": 0.524,
+      "rel_bb": 0.686,
+      "rel_k": 0.606,
+      "rel_babip": 0.906,
+      "rel_gap": 0.905
+    },
+    "reliability": {
+      "CON": 0.68,
+      "GAP": 0.68,
+      "POW": 0.68,
+      "EYE": 0.68,
+      "AK": 0.68,
+      "BNT": 0.68
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "caseydo01",
+    "card_id": "caseydo01|1906",
+    "season": 1906,
+    "team_id": "BRO",
+    "name": "James Casey",
+    "bats": "B",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 47,
+      "GAP": 48,
+      "POW": 1,
+      "EYE": 56,
+      "AK": 61,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.01,
+      "rel_iso": 0.46,
+      "rel_xbh": 0.59,
+      "rel_hr": 0.0,
+      "rel_bb": 1.159,
+      "rel_k": 0.777,
+      "rel_babip": 0.926,
+      "rel_gap": 0.948
+    },
+    "reliability": {
+      "CON": 0.68,
+      "GAP": 0.68,
+      "POW": 0.68,
+      "EYE": 0.68,
+      "AK": 0.68,
+      "BNT": 0.68
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "hemphch01",
+    "card_id": "hemphch01|1906",
+    "season": 1906,
+    "team_id": "SLA",
+    "name": "Charlie Hemphill",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 57,
+      "GAP": 57,
+      "POW": 22,
+      "EYE": 48,
+      "AK": 46,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.333,
+      "rel_iso": 0.749,
+      "rel_xbh": 0.831,
+      "rel_hr": 2.118,
+      "rel_bb": 0.963,
+      "rel_k": 1.087,
+      "rel_babip": 1.171,
+      "rel_gap": 1.182
+    },
+    "reliability": {
+      "CON": 0.68,
+      "GAP": 0.68,
+      "POW": 0.68,
+      "EYE": 0.68,
+      "AK": 0.68,
+      "BNT": 0.68
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "turnete01",
+    "card_id": "turnete01|1906",
+    "season": 1906,
+    "team_id": "CLE",
+    "name": "Terry Turner",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 55,
+      "GAP": 62,
+      "POW": 11,
+      "EYE": 40,
+      "AK": 68,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.168,
+      "rel_iso": 0.641,
+      "rel_xbh": 0.858,
+      "rel_hr": 1.064,
+      "rel_bb": 0.787,
+      "rel_k": 0.661,
+      "rel_babip": 1.128,
+      "rel_gap": 1.302
+    },
+    "reliability": {
+      "CON": 0.68,
+      "GAP": 0.68,
+      "POW": 0.68,
+      "EYE": 0.68,
+      "AK": 0.68,
+      "BNT": 0.68
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "hartsto01",
+    "card_id": "hartsto01|1906",
+    "season": 1906,
+    "team_id": "PHA",
+    "name": "Topsy Hartsel",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 51,
+      "GAP": 56,
+      "POW": 4,
+      "EYE": 80,
+      "AK": 57,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.084,
+      "rel_iso": 0.627,
+      "rel_xbh": 0.742,
+      "rel_hr": 0.534,
+      "rel_bb": 1.986,
+      "rel_k": 0.849,
+      "rel_babip": 1.024,
+      "rel_gap": 1.153
+    },
+    "reliability": {
+      "CON": 0.67,
+      "GAP": 0.67,
+      "POW": 0.67,
+      "EYE": 0.67,
+      "AK": 0.67,
+      "BNT": 0.67
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "sheckji01",
+    "card_id": "sheckji01|1906",
+    "season": 1906,
+    "team_id": "CHN",
+    "name": "Jimmy Sheckard",
+    "bats": "L",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 53,
+      "GAP": 65,
+      "POW": 10,
+      "EYE": 68,
+      "AK": 47,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.084,
+      "rel_iso": 0.725,
+      "rel_xbh": 0.91,
+      "rel_hr": 0.535,
+      "rel_bb": 1.515,
+      "rel_k": 1.066,
+      "rel_babip": 1.08,
+      "rel_gap": 1.424
+    },
+    "reliability": {
+      "CON": 0.67,
+      "GAP": 0.67,
+      "POW": 0.67,
+      "EYE": 0.67,
+      "AK": 0.67,
+      "BNT": 0.67
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "seymocy01",
+    "card_id": "seymocy01|1906",
+    "season": 1906,
+    "team_id": "CIN",
+    "name": "Cy Seymour",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 53,
+      "GAP": 47,
+      "POW": 35,
+      "EYE": 48,
+      "AK": 69,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.673,
+      "rel_iso": 0.733,
+      "rel_xbh": 0.767,
+      "rel_hr": 4.276,
+      "rel_bb": 0.949,
+      "rel_k": 0.649,
+      "rel_babip": 1.08,
+      "rel_gap": 0.924
+    },
+    "reliability": {
+      "CON": 0.67,
+      "GAP": 0.67,
+      "POW": 0.67,
+      "EYE": 0.67,
+      "AK": 0.67,
+      "BNT": 0.67
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "mageesh01",
+    "card_id": "mageesh01|1906",
+    "season": 1906,
+    "team_id": "PHI",
+    "name": "Sherry Magee",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 55,
+      "GAP": 73,
+      "POW": 38,
+      "EYE": 57,
+      "AK": 54,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.507,
+      "rel_iso": 0.99,
+      "rel_xbh": 1.202,
+      "rel_hr": 3.217,
+      "rel_bb": 1.179,
+      "rel_k": 0.915,
+      "rel_babip": 1.112,
+      "rel_gap": 1.699
+    },
+    "reliability": {
+      "CON": 0.67,
+      "GAP": 0.67,
+      "POW": 0.67,
+      "EYE": 0.67,
+      "AK": 0.67,
+      "BNT": 0.67
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "huggimi01",
+    "card_id": "huggimi01|1906",
+    "season": 1906,
+    "team_id": "CIN",
+    "name": "Miller Huggins",
+    "bats": "B",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 56,
+      "GAP": 34,
+      "POW": 1,
+      "EYE": 71,
+      "AK": 71,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.01,
+      "rel_iso": 0.365,
+      "rel_xbh": 0.433,
+      "rel_hr": 0.0,
+      "rel_bb": 1.613,
+      "rel_k": 0.621,
+      "rel_babip": 1.139,
+      "rel_gap": 0.696
+    },
+    "reliability": {
+      "CON": 0.67,
+      "GAP": 0.67,
+      "POW": 0.67,
+      "EYE": 0.67,
+      "AK": 0.67,
+      "BNT": 0.67
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "malonbi01",
+    "card_id": "malonbi01|1906",
+    "season": 1906,
+    "team_id": "BRO",
+    "name": "Billy Maloney",
+    "bats": "L",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 50,
+      "GAP": 43,
+      "POW": 1,
+      "EYE": 55,
+      "AK": 24,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.01,
+      "rel_iso": 0.408,
+      "rel_xbh": 0.531,
+      "rel_hr": 0.0,
+      "rel_bb": 1.115,
+      "rel_k": 1.804,
+      "rel_babip": 1.005,
+      "rel_gap": 0.852
+    },
+    "reliability": {
+      "CON": 0.67,
+      "GAP": 0.67,
+      "POW": 0.67,
+      "EYE": 0.67,
+      "AK": 0.67,
+      "BNT": 0.67
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "nealoji01",
+    "card_id": "nealoji01|1906",
+    "season": 1906,
+    "team_id": "PIT",
+    "name": "Joe Nealon",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 51,
+      "GAP": 61,
+      "POW": 20,
+      "EYE": 58,
+      "AK": 51,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.255,
+      "rel_iso": 0.773,
+      "rel_xbh": 0.872,
+      "rel_hr": 1.622,
+      "rel_bb": 1.212,
+      "rel_k": 0.985,
+      "rel_babip": 1.027,
+      "rel_gap": 1.285
+    },
+    "reliability": {
+      "CON": 0.67,
+      "GAP": 0.67,
+      "POW": 0.67,
+      "EYE": 0.67,
+      "AK": 0.67,
+      "BNT": 0.67
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "conrowi01",
+    "card_id": "conrowi01|1906",
+    "season": 1906,
+    "team_id": "NYA",
+    "name": "Wid Conroy",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 49,
+      "GAP": 52,
+      "POW": 20,
+      "EYE": 53,
+      "AK": 48,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.341,
+      "rel_iso": 0.688,
+      "rel_xbh": 0.752,
+      "rel_hr": 2.166,
+      "rel_bb": 1.076,
+      "rel_k": 1.049,
+      "rel_babip": 0.985,
+      "rel_gap": 1.053
+    },
+    "reliability": {
+      "CON": 0.67,
+      "GAP": 0.67,
+      "POW": 0.67,
+      "EYE": 0.67,
+      "AK": 0.67,
+      "BNT": 0.67
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "chaseha01",
+    "card_id": "chaseha01|1906",
+    "season": 1906,
+    "team_id": "NYA",
+    "name": "Hal Chase",
+    "bats": "R",
+    "throws": "L",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 61,
+      "GAP": 61,
+      "POW": 1,
+      "EYE": 1,
+      "AK": 62,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.01,
+      "rel_iso": 0.573,
+      "rel_xbh": 0.802,
+      "rel_hr": 0.0,
+      "rel_bb": 0.298,
+      "rel_k": 0.753,
+      "rel_babip": 1.272,
+      "rel_gap": 1.289
+    },
+    "reliability": {
+      "CON": 0.67,
+      "GAP": 0.67,
+      "POW": 0.67,
+      "EYE": 0.67,
+      "AK": 0.67,
+      "BNT": 0.67
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "donahji02",
+    "card_id": "donahji02|1906",
+    "season": 1906,
+    "team_id": "CHA",
+    "name": "Jiggs Donahue",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 49,
+      "GAP": 48,
+      "POW": 1,
+      "EYE": 55,
+      "AK": 90,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.086,
+      "rel_iso": 0.487,
+      "rel_xbh": 0.614,
+      "rel_hr": 0.548,
+      "rel_bb": 1.112,
+      "rel_k": 0.396,
+      "rel_babip": 0.97,
+      "rel_gap": 0.947
+    },
+    "reliability": {
+      "CON": 0.67,
+      "GAP": 0.67,
+      "POW": 0.67,
+      "EYE": 0.67,
+      "AK": 0.67,
+      "BNT": 0.67
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "tennefr02",
+    "card_id": "tennefr02|1906",
+    "season": 1906,
+    "team_id": "BSN",
+    "name": "Fred Tenney",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 56,
+      "GAP": 40,
+      "POW": 1,
+      "EYE": 63,
+      "AK": 55,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.086,
+      "rel_iso": 0.454,
+      "rel_xbh": 0.516,
+      "rel_hr": 0.548,
+      "rel_bb": 1.344,
+      "rel_k": 0.887,
+      "rel_babip": 1.137,
+      "rel_gap": 0.789
+    },
+    "reliability": {
+      "CON": 0.67,
+      "GAP": 0.67,
+      "POW": 0.67,
+      "EYE": 0.67,
+      "AK": 0.67,
+      "BNT": 0.67
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "dolanco01",
+    "card_id": "dolanco01|1906",
+    "season": 1906,
+    "team_id": "BSN",
+    "name": "Cozy Dolan",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 50,
+      "GAP": 48,
+      "POW": 1,
+      "EYE": 61,
+      "AK": 54,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.01,
+      "rel_iso": 0.406,
+      "rel_xbh": 0.59,
+      "rel_hr": 0.0,
+      "rel_bb": 1.276,
+      "rel_k": 0.904,
+      "rel_babip": 1.0,
+      "rel_gap": 0.948
+    },
+    "reliability": {
+      "CON": 0.67,
+      "GAP": 0.67,
+      "POW": 0.67,
+      "EYE": 0.67,
+      "AK": 0.67,
+      "BNT": 0.67
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "thomaro01",
+    "card_id": "thomaro01|1906",
+    "season": 1906,
+    "team_id": "PHI",
+    "name": "Roy Thomas",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 50,
+      "GAP": 33,
+      "POW": 1,
+      "EYE": 90,
+      "AK": 66,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.01,
+      "rel_iso": 0.388,
+      "rel_xbh": 0.418,
+      "rel_hr": 0.0,
+      "rel_bb": 2.483,
+      "rel_k": 0.698,
+      "rel_babip": 1.007,
+      "rel_gap": 0.672
+    },
+    "reliability": {
+      "CON": 0.67,
+      "GAP": 0.67,
+      "POW": 0.67,
+      "EYE": 0.67,
+      "AK": 0.67,
+      "BNT": 0.67
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "davisha01",
+    "card_id": "davisha01|1906",
+    "season": 1906,
+    "team_id": "PHA",
+    "name": "Harry Davis",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 55,
+      "GAP": 79,
+      "POW": 58,
+      "EYE": 56,
+      "AK": 53,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 1.038,
+      "rel_iso": 1.329,
+      "rel_xbh": 1.503,
+      "rel_hr": 6.594,
+      "rel_bb": 1.139,
+      "rel_k": 0.938,
+      "rel_babip": 1.123,
+      "rel_gap": 1.939
+    },
+    "reliability": {
+      "CON": 0.67,
+      "GAP": 0.67,
+      "POW": 0.67,
+      "EYE": 0.67,
+      "AK": 0.67,
+      "BNT": 0.67
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "anderjo01",
+    "card_id": "anderjo01|1906",
+    "season": 1906,
+    "team_id": "WS1",
+    "name": "John Anderson",
+    "bats": "B",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 51,
+      "GAP": 56,
+      "POW": 14,
+      "EYE": 14,
+      "AK": 73,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.26,
+      "rel_iso": 0.574,
+      "rel_xbh": 0.79,
+      "rel_hr": 1.651,
+      "rel_bb": 0.442,
+      "rel_k": 0.589,
+      "rel_babip": 1.033,
+      "rel_gap": 1.149
+    },
+    "reliability": {
+      "CON": 0.67,
+      "GAP": 0.67,
+      "POW": 0.67,
+      "EYE": 0.67,
+      "AK": 0.67,
+      "BNT": 0.67
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "crawfsa01",
+    "card_id": "crawfsa01|1906",
+    "season": 1906,
+    "team_id": "DET",
+    "name": "Sam Crawford",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 54,
+      "GAP": 71,
+      "POW": 22,
+      "EYE": 45,
+      "AK": 99,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.174,
+      "rel_iso": 0.891,
+      "rel_xbh": 1.065,
+      "rel_hr": 1.105,
+      "rel_bb": 0.888,
+      "rel_k": 0.319,
+      "rel_babip": 1.097,
+      "rel_gap": 1.63
+    },
+    "reliability": {
+      "CON": 0.67,
+      "GAP": 0.67,
+      "POW": 0.67,
+      "EYE": 0.67,
+      "AK": 0.67,
+      "BNT": 0.67
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "smootho01",
+    "card_id": "smootho01|1906",
+    "season": 1906,
+    "team_id": "SLN",
+    "name": "Homer Smoot",
+    "bats": "L",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 52,
+      "GAP": 55,
+      "POW": 2,
+      "EYE": 25,
+      "AK": 42,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.087,
+      "rel_iso": 0.594,
+      "rel_xbh": 0.719,
+      "rel_hr": 0.553,
+      "rel_bb": 0.561,
+      "rel_k": 1.2,
+      "rel_babip": 1.048,
+      "rel_gap": 1.115
+    },
+    "reliability": {
+      "CON": 0.67,
+      "GAP": 0.67,
+      "POW": 0.67,
+      "EYE": 0.67,
+      "AK": 0.67,
+      "BNT": 0.67
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "steinha01",
+    "card_id": "steinha01|1906",
+    "season": 1906,
+    "team_id": "CHN",
+    "name": "Harry Steinfeldt",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 61,
+      "GAP": 67,
+      "POW": 23,
+      "EYE": 54,
+      "AK": 62,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.262,
+      "rel_iso": 0.827,
+      "rel_xbh": 0.994,
+      "rel_hr": 1.662,
+      "rel_bb": 1.101,
+      "rel_k": 0.753,
+      "rel_babip": 1.28,
+      "rel_gap": 1.476
+    },
+    "reliability": {
+      "CON": 0.67,
+      "GAP": 0.67,
+      "POW": 0.67,
+      "EYE": 0.67,
+      "AK": 0.67,
+      "BNT": 0.67
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "schulfr01",
+    "card_id": "schulfr01|1906",
+    "season": 1906,
+    "team_id": "CHN",
+    "name": "Frank Schulte",
+    "bats": "L",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 53,
+      "GAP": 59,
+      "POW": 38,
+      "EYE": 36,
+      "AK": 63,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.612,
+      "rel_iso": 0.919,
+      "rel_xbh": 0.945,
+      "rel_hr": 3.885,
+      "rel_bb": 0.728,
+      "rel_k": 0.738,
+      "rel_babip": 1.071,
+      "rel_gap": 1.239
+    },
+    "reliability": {
+      "CON": 0.67,
+      "GAP": 0.67,
+      "POW": 0.67,
+      "EYE": 0.67,
+      "AK": 0.67,
+      "BNT": 0.67
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "youngir01",
+    "card_id": "youngir01|1906",
+    "season": 1906,
+    "team_id": "BSN",
+    "name": "Irv Young",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 51,
+      "CTL": 58,
+      "CMD": 28,
+      "STA": 60
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.025,
+      "rel_p_bb": 0.824,
+      "rel_p_hr": 1.644,
+      "rel_sta": 1.249
+    },
+    "reliability": {
+      "STF": 0.78,
+      "CTL": 0.78,
+      "CMD": 0.78,
+      "STA": 0.78
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "mcginjo01",
+    "card_id": "mcginjo01|1906",
+    "season": 1906,
+    "team_id": "NY1",
+    "name": "Joe McGinnity",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 37,
+      "CTL": 64,
+      "CMD": 99,
+      "STA": 62
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.74,
+      "rel_p_bb": 0.732,
+      "rel_p_hr": 0.244,
+      "rel_sta": 1.311
+    },
+    "reliability": {
+      "STF": 0.77,
+      "CTL": 0.77,
+      "CMD": 0.77,
+      "STA": 0.77
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "mullige01",
+    "card_id": "mullige01|1906",
+    "season": 1906,
+    "team_id": "DET",
+    "name": "George Mullin",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 44,
+      "CTL": 45,
+      "CMD": 64,
+      "STA": 57
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.869,
+      "rel_p_bb": 1.116,
+      "rel_p_hr": 0.733,
+      "rel_sta": 1.179
+    },
+    "reliability": {
+      "STF": 0.77,
+      "CTL": 0.77,
+      "CMD": 0.77,
+      "STA": 0.77
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "orthal01",
+    "card_id": "orthal01|1906",
+    "season": 1906,
+    "team_id": "NYA",
+    "name": "Al Orth",
+    "bats": "L",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 48,
+      "CTL": 66,
+      "CMD": 80,
+      "STA": 59
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.961,
+      "rel_p_bb": 0.697,
+      "rel_p_hr": 0.5,
+      "rel_sta": 1.241
+    },
+    "reliability": {
+      "STF": 0.77,
+      "CTL": 0.77,
+      "CMD": 0.77,
+      "STA": 0.77
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "hessot01",
+    "card_id": "hessot01|1906",
+    "season": 1906,
+    "team_id": "CLE",
+    "name": "Otto Hess",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 59,
+      "CTL": 54,
+      "CMD": 50,
+      "STA": 62
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.22,
+      "rel_p_bb": 0.908,
+      "rel_p_hr": 1.011,
+      "rel_sta": 1.324
+    },
+    "reliability": {
+      "STF": 0.77,
+      "CTL": 0.77,
+      "CMD": 0.77,
+      "STA": 0.77
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "chesbja01",
+    "card_id": "chesbja01|1906",
+    "season": 1906,
+    "team_id": "NYA",
+    "name": "Jack Chesbro",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 55,
+      "CTL": 59,
+      "CMD": 80,
+      "STA": 54
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.117,
+      "rel_p_bb": 0.806,
+      "rel_p_hr": 0.508,
+      "rel_sta": 1.105
+    },
+    "reliability": {
+      "STF": 0.77,
+      "CTL": 0.77,
+      "CMD": 0.77,
+      "STA": 0.77
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "willivi01",
+    "card_id": "willivi01|1906",
+    "season": 1906,
+    "team_id": "PIT",
+    "name": "Vic Willis",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 48,
+      "CTL": 57,
+      "CMD": 50,
+      "STA": 61
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.945,
+      "rel_p_bb": 0.847,
+      "rel_p_hr": 0.0,
+      "rel_sta": 1.278
+    },
+    "reliability": {
+      "STF": 0.76,
+      "CTL": 0.76,
+      "CMD": 0.76,
+      "STA": 0.76
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "lindavi01",
+    "card_id": "lindavi01|1906",
+    "season": 1906,
+    "team_id": "BSN",
+    "name": "Vive Lindaman",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 45,
+      "CTL": 49,
+      "CMD": 47,
+      "STA": 59
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.886,
+      "rel_p_bb": 1.014,
+      "rel_p_hr": 1.066,
+      "rel_sta": 1.22
+    },
+    "reliability": {
+      "STF": 0.76,
+      "CTL": 0.76,
+      "CMD": 0.76,
+      "STA": 0.76
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "rhoadbo01",
+    "card_id": "rhoadbo01|1906",
+    "season": 1906,
+    "team_id": "CLE",
+    "name": "Bob Rhoads",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 34,
+      "CTL": 48,
+      "CMD": 37,
+      "STA": 62
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.692,
+      "rel_p_bb": 1.046,
+      "rel_p_hr": 1.344,
+      "rel_sta": 1.324
+    },
+    "reliability": {
+      "STF": 0.76,
+      "CTL": 0.76,
+      "CMD": 0.76,
+      "STA": 0.76
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "falkecy01",
+    "card_id": "falkecy01|1906",
+    "season": 1906,
+    "team_id": "WS1",
+    "name": "Cy Falkenberg",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 64,
+      "CTL": 41,
+      "CMD": 99,
+      "STA": 57
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.388,
+      "rel_p_bb": 1.232,
+      "rel_p_hr": 0.27,
+      "rel_sta": 1.185
+    },
+    "reliability": {
+      "STF": 0.76,
+      "CTL": 0.76,
+      "CMD": 0.76,
+      "STA": 0.76
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "sparktu01",
+    "card_id": "sparktu01|1906",
+    "season": 1906,
+    "team_id": "PHI",
+    "name": "Tully Sparks",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 45,
+      "CTL": 65,
+      "CMD": 47,
+      "STA": 59
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.89,
+      "rel_p_bb": 0.708,
+      "rel_p_hr": 1.08,
+      "rel_sta": 1.223
+    },
+    "reliability": {
+      "STF": 0.75,
+      "CTL": 0.75,
+      "CMD": 0.75,
+      "STA": 0.75
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "pfeffbi01",
+    "card_id": "pfeffbi01|1906",
+    "season": 1906,
+    "team_id": "BSN",
+    "name": "Big Jeff Pfeffer",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 59,
+      "CTL": 38,
+      "CMD": 47,
+      "STA": 58
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.236,
+      "rel_p_bb": 1.304,
+      "rel_p_hr": 1.082,
+      "rel_sta": 1.2
+    },
+    "reliability": {
+      "STF": 0.75,
+      "CTL": 0.75,
+      "CMD": 0.75,
+      "STA": 0.75
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "weimeja01",
+    "card_id": "weimeja01|1906",
+    "season": 1906,
+    "team_id": "CIN",
+    "name": "Jake Weimer",
+    "bats": "R",
+    "throws": "L",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 54,
+      "CTL": 44,
+      "CMD": 50,
+      "STA": 55
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.107,
+      "rel_p_bb": 1.136,
+      "rel_p_hr": 0.0,
+      "rel_sta": 1.116
+    },
+    "reliability": {
+      "STF": 0.75,
+      "CTL": 0.75,
+      "CMD": 0.75,
+      "STA": 0.75
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "lushjo01",
+    "card_id": "lushjo01|1906",
+    "season": 1906,
+    "team_id": "PHI",
+    "name": "Johnny Lush",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 58,
+      "CTL": 36,
+      "CMD": 76,
+      "STA": 56
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.2,
+      "rel_p_bb": 1.383,
+      "rel_p_hr": 0.55,
+      "rel_sta": 1.147
+    },
+    "reliability": {
+      "STF": 0.75,
+      "CTL": 0.75,
+      "CMD": 0.75,
+      "STA": 0.75
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "scanldo01",
+    "card_id": "scanldo01|1906",
+    "season": 1906,
+    "team_id": "BRO",
+    "name": "Doc Scanlan",
+    "bats": "L",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 48,
+      "CTL": 33,
+      "CMD": 36,
+      "STA": 60
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.957,
+      "rel_p_bb": 1.481,
+      "rel_p_hr": 1.378,
+      "rel_sta": 1.247
+    },
+    "reliability": {
+      "STF": 0.75,
+      "CTL": 0.75,
+      "CMD": 0.75,
+      "STA": 0.75
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "tayloja02",
+    "card_id": "tayloja02|1906",
+    "season": 1906,
+    "team_id": "SLN",
+    "name": "Jack Taylor",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 19,
+      "CTL": 50,
+      "CMD": 46,
+      "STA": 62
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.487,
+      "rel_p_bb": 1.004,
+      "rel_p_hr": 1.104,
+      "rel_sta": 1.309
+    },
+    "reliability": {
+      "STF": 0.75,
+      "CTL": 0.75,
+      "CMD": 0.75,
+      "STA": 0.75
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "dornegu01",
+    "card_id": "dornegu01|1906",
+    "season": 1906,
+    "team_id": "BSN",
+    "name": "Gus Dorner",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 44,
+      "CTL": 40,
+      "CMD": 36,
+      "STA": 60
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.876,
+      "rel_p_bb": 1.258,
+      "rel_p_hr": 1.39,
+      "rel_sta": 1.248
+    },
+    "reliability": {
+      "STF": 0.75,
+      "CTL": 0.75,
+      "CMD": 0.75,
+      "STA": 0.75
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "owenfr01",
+    "card_id": "owenfr01|1906",
+    "season": 1906,
+    "team_id": "CHA",
+    "name": "Frank Owen",
+    "bats": "B",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 23,
+      "CTL": 69,
+      "CMD": 44,
+      "STA": 57
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.544,
+      "rel_p_bb": 0.651,
+      "rel_p_hr": 1.141,
+      "rel_sta": 1.163
+    },
+    "reliability": {
+      "STF": 0.74,
+      "CTL": 0.74,
+      "CMD": 0.74,
+      "STA": 0.74
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "stricel01",
+    "card_id": "stricel01|1906",
+    "season": 1906,
+    "team_id": "BRO",
+    "name": "Elmer Stricklett",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 36,
+      "CTL": 53,
+      "CMD": 74,
+      "STA": 58
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.729,
+      "rel_p_bb": 0.933,
+      "rel_p_hr": 0.573,
+      "rel_sta": 1.19
+    },
+    "reliability": {
+      "STF": 0.74,
+      "CTL": 0.74,
+      "CMD": 0.74,
+      "STA": 0.74
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  },
+  {
+    "player_id": "dugglbi01",
+    "card_id": "dugglbi01|1906",
+    "season": 1906,
+    "team_id": "PHI",
+    "name": "Bill Duggleby",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 34,
+      "CTL": 59,
+      "CMD": 33,
+      "STA": 63
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.701,
+      "rel_p_bb": 0.815,
+      "rel_p_hr": 1.459,
+      "rel_sta": 1.335
+    },
+    "reliability": {
+      "STF": 0.74,
+      "CTL": 0.74,
+      "CMD": 0.74,
+      "STA": 0.74
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1906,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:47.942672Z"
+  }
+]

@@ -1,0 +1,2442 @@
+[
+  {
+    "player_id": "biggicr01",
+    "card_id": "biggicr01|1999",
+    "season": 1999,
+    "team_id": "HOU",
+    "name": "Craig Biggio",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 54,
+      "GAP": 67,
+      "POW": 59,
+      "EYE": 60,
+      "AK": 56,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 1.126,
+      "rel_iso": 1.296,
+      "rel_xbh": 1.442,
+      "rel_hr": 0.732,
+      "rel_bb": 1.243,
+      "rel_k": 0.869,
+      "rel_babip": 1.092,
+      "rel_gap": 1.464
+    },
+    "reliability": {
+      "CON": 0.71,
+      "GAP": 0.71,
+      "POW": 0.71,
+      "EYE": 0.71,
+      "AK": 0.71,
+      "BNT": 0.71
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "jeterde01",
+    "card_id": "jeterde01|1999",
+    "season": 1999,
+    "team_id": "NYA",
+    "name": "Derek Jeter",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 62,
+      "GAP": 59,
+      "POW": 71,
+      "EYE": 61,
+      "AK": 52,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 1.707,
+      "rel_iso": 1.613,
+      "rel_xbh": 1.417,
+      "rel_hr": 1.109,
+      "rel_bb": 1.3,
+      "rel_k": 0.953,
+      "rel_babip": 1.311,
+      "rel_gap": 1.215
+    },
+    "reliability": {
+      "CON": 0.71,
+      "GAP": 0.71,
+      "POW": 0.71,
+      "EYE": 0.71,
+      "AK": 0.71,
+      "BNT": 0.71
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "bagweje01",
+    "card_id": "bagweje01|1999",
+    "season": 1999,
+    "team_id": "HOU",
+    "name": "Jeff Bagwell",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 53,
+      "GAP": 47,
+      "POW": 91,
+      "EYE": 83,
+      "AK": 48,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 3.016,
+      "rel_iso": 2.281,
+      "rel_xbh": 1.574,
+      "rel_hr": 1.96,
+      "rel_bb": 2.149,
+      "rel_k": 1.053,
+      "rel_babip": 1.069,
+      "rel_gap": 0.934
+    },
+    "reliability": {
+      "CON": 0.71,
+      "GAP": 0.71,
+      "POW": 0.71,
+      "EYE": 0.71,
+      "AK": 0.71,
+      "BNT": 0.71
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "surhobj01",
+    "card_id": "surhobj01|1999",
+    "season": 1999,
+    "team_id": "BAL",
+    "name": "B. J. Surhoff",
+    "bats": "L",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 51,
+      "GAP": 52,
+      "POW": 75,
+      "EYE": 29,
+      "AK": 69,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 2.019,
+      "rel_iso": 1.467,
+      "rel_xbh": 1.375,
+      "rel_hr": 1.312,
+      "rel_bb": 0.623,
+      "rel_k": 0.649,
+      "rel_babip": 1.032,
+      "rel_gap": 1.045
+    },
+    "reliability": {
+      "CON": 0.71,
+      "GAP": 0.71,
+      "POW": 0.71,
+      "EYE": 0.71,
+      "AK": 0.71,
+      "BNT": 0.71
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "alfoned01",
+    "card_id": "alfoned01|1999",
+    "season": 1999,
+    "team_id": "NYN",
+    "name": "Edgardo Alfonzo",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 52,
+      "GAP": 55,
+      "POW": 75,
+      "EYE": 59,
+      "AK": 65,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 1.95,
+      "rel_iso": 1.572,
+      "rel_xbh": 1.418,
+      "rel_hr": 1.267,
+      "rel_bb": 1.232,
+      "rel_k": 0.709,
+      "rel_babip": 1.036,
+      "rel_gap": 1.127
+    },
+    "reliability": {
+      "CON": 0.71,
+      "GAP": 0.71,
+      "POW": 0.71,
+      "EYE": 0.71,
+      "AK": 0.71,
+      "BNT": 0.71
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "beltrca01",
+    "card_id": "beltrca01|1999",
+    "season": 1999,
+    "team_id": "KCA",
+    "name": "Carlos Beltran",
+    "bats": "B",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 53,
+      "GAP": 46,
+      "POW": 66,
+      "EYE": 32,
+      "AK": 49,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 1.593,
+      "rel_iso": 1.285,
+      "rel_xbh": 1.154,
+      "rel_hr": 1.035,
+      "rel_bb": 0.669,
+      "rel_k": 1.028,
+      "rel_babip": 1.08,
+      "rel_gap": 0.915
+    },
+    "reliability": {
+      "CON": 0.71,
+      "GAP": 0.71,
+      "POW": 0.71,
+      "EYE": 0.71,
+      "AK": 0.71,
+      "BNT": 0.71
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "olerujo01",
+    "card_id": "olerujo01|1999",
+    "season": 1999,
+    "team_id": "NYN",
+    "name": "John Olerud",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 51,
+      "GAP": 52,
+      "POW": 62,
+      "EYE": 76,
+      "AK": 76,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 1.376,
+      "rel_iso": 1.316,
+      "rel_xbh": 1.196,
+      "rel_hr": 0.894,
+      "rel_bb": 1.817,
+      "rel_k": 0.552,
+      "rel_babip": 1.017,
+      "rel_gap": 1.049
+    },
+    "reliability": {
+      "CON": 0.71,
+      "GAP": 0.71,
+      "POW": 0.71,
+      "EYE": 0.71,
+      "AK": 0.71,
+      "BNT": 0.71
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "perezne01",
+    "card_id": "perezne01|1999",
+    "season": 1999,
+    "team_id": "COL",
+    "name": "Neifi Perez",
+    "bats": "B",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 48,
+      "GAP": 51,
+      "POW": 47,
+      "EYE": 11,
+      "AK": 85,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.869,
+      "rel_iso": 0.981,
+      "rel_xbh": 1.031,
+      "rel_hr": 0.565,
+      "rel_bb": 0.407,
+      "rel_k": 0.451,
+      "rel_babip": 0.956,
+      "rel_gap": 1.022
+    },
+    "reliability": {
+      "CON": 0.71,
+      "GAP": 0.71,
+      "POW": 0.71,
+      "EYE": 0.71,
+      "AK": 0.71,
+      "BNT": 0.71
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "belleal01",
+    "card_id": "belleal01|1999",
+    "season": 1999,
+    "team_id": "BAL",
+    "name": "Albert Belle",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 48,
+      "GAP": 50,
+      "POW": 86,
+      "EYE": 67,
+      "AK": 66,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 2.683,
+      "rel_iso": 1.945,
+      "rel_xbh": 1.527,
+      "rel_hr": 1.743,
+      "rel_bb": 1.471,
+      "rel_k": 0.686,
+      "rel_babip": 0.965,
+      "rel_gap": 0.997
+    },
+    "reliability": {
+      "CON": 0.71,
+      "GAP": 0.71,
+      "POW": 0.71,
+      "EYE": 0.71,
+      "AK": 0.71,
+      "BNT": 0.71
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "knoblch01",
+    "card_id": "knoblch01|1999",
+    "season": 1999,
+    "team_id": "NYA",
+    "name": "Chuck Knoblauch",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 49,
+      "GAP": 54,
+      "POW": 61,
+      "EYE": 59,
+      "AK": 82,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 1.324,
+      "rel_iso": 1.294,
+      "rel_xbh": 1.214,
+      "rel_hr": 0.86,
+      "rel_bb": 1.225,
+      "rel_k": 0.484,
+      "rel_babip": 0.983,
+      "rel_gap": 1.093
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "sosasa01",
+    "card_id": "sosasa01|1999",
+    "season": 1999,
+    "team_id": "CHN",
+    "name": "Sammy Sosa",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 49,
+      "GAP": 35,
+      "POW": 99,
+      "EYE": 56,
+      "AK": 34,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 4.633,
+      "rel_iso": 2.764,
+      "rel_xbh": 1.863,
+      "rel_hr": 3.01,
+      "rel_bb": 1.152,
+      "rel_k": 1.451,
+      "rel_babip": 0.977,
+      "rel_gap": 0.71
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "velarra01",
+    "card_id": "velarra01|1999",
+    "season": 1999,
+    "team_id": "ANA",
+    "name": "Randy Velarde",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 57,
+      "GAP": 44,
+      "POW": 55,
+      "EYE": 52,
+      "AK": 58,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 1.185,
+      "rel_iso": 1.098,
+      "rel_xbh": 1.012,
+      "rel_hr": 0.77,
+      "rel_bb": 1.041,
+      "rel_k": 0.838,
+      "rel_babip": 1.18,
+      "rel_gap": 0.88
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "griffke02",
+    "card_id": "griffke02|1999",
+    "season": 1999,
+    "team_id": "SEA",
+    "name": "Ken Griffey",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 46,
+      "GAP": 40,
+      "POW": 96,
+      "EYE": 63,
+      "AK": 53,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 3.56,
+      "rel_iso": 2.312,
+      "rel_xbh": 1.625,
+      "rel_hr": 2.313,
+      "rel_bb": 1.355,
+      "rel_k": 0.925,
+      "rel_babip": 0.917,
+      "rel_gap": 0.799
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "jonesch06",
+    "card_id": "jonesch06|1999",
+    "season": 1999,
+    "team_id": "ATL",
+    "name": "Chipper Jones",
+    "bats": "B",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 52,
+      "GAP": 57,
+      "POW": 96,
+      "EYE": 78,
+      "AK": 59,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 3.361,
+      "rel_iso": 2.499,
+      "rel_xbh": 1.85,
+      "rel_hr": 2.184,
+      "rel_bb": 1.889,
+      "rel_k": 0.81,
+      "rel_babip": 1.039,
+      "rel_gap": 1.165
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "bordimi01",
+    "card_id": "bordimi01|1999",
+    "season": 1999,
+    "team_id": "BAL",
+    "name": "Mike Bordick",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 51,
+      "GAP": 57,
+      "POW": 44,
+      "EYE": 41,
+      "AK": 56,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.748,
+      "rel_iso": 0.997,
+      "rel_xbh": 1.107,
+      "rel_hr": 0.486,
+      "rel_bb": 0.811,
+      "rel_k": 0.881,
+      "rel_babip": 1.034,
+      "rel_gap": 1.167
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "willibe02",
+    "card_id": "willibe02|1999",
+    "season": 1999,
+    "team_id": "NYA",
+    "name": "Bernie Williams",
+    "bats": "B",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 59,
+      "GAP": 48,
+      "POW": 73,
+      "EYE": 68,
+      "AK": 58,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 1.878,
+      "rel_iso": 1.549,
+      "rel_xbh": 1.262,
+      "rel_hr": 1.22,
+      "rel_bb": 1.508,
+      "rel_k": 0.824,
+      "rel_babip": 1.233,
+      "rel_gap": 0.949
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "greensh01",
+    "card_id": "greensh01|1999",
+    "season": 1999,
+    "team_id": "TOR",
+    "name": "Shawn Green",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 53,
+      "GAP": 60,
+      "POW": 93,
+      "EYE": 50,
+      "AK": 49,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 3.159,
+      "rel_iso": 2.217,
+      "rel_xbh": 1.863,
+      "rel_hr": 2.053,
+      "rel_bb": 0.997,
+      "rel_k": 1.016,
+      "rel_babip": 1.067,
+      "rel_gap": 1.257
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "giambja01",
+    "card_id": "giambja01|1999",
+    "season": 1999,
+    "team_id": "OAK",
+    "name": "Jason Giambi",
+    "bats": "L",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 54,
+      "GAP": 52,
+      "POW": 84,
+      "EYE": 70,
+      "AK": 54,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 2.486,
+      "rel_iso": 1.897,
+      "rel_xbh": 1.501,
+      "rel_hr": 1.615,
+      "rel_bb": 1.588,
+      "rel_k": 0.922,
+      "rel_babip": 1.105,
+      "rel_gap": 1.035
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "cirilje01",
+    "card_id": "cirilje01|1999",
+    "season": 1999,
+    "team_id": "MIL",
+    "name": "Jeff Cirillo",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 57,
+      "GAP": 50,
+      "POW": 55,
+      "EYE": 56,
+      "AK": 64,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 1.132,
+      "rel_iso": 1.076,
+      "rel_xbh": 1.095,
+      "rel_hr": 0.735,
+      "rel_bb": 1.136,
+      "rel_k": 0.723,
+      "rel_babip": 1.176,
+      "rel_gap": 1.009
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "gonzalu01",
+    "card_id": "gonzalu01|1999",
+    "season": 1999,
+    "team_id": "ARI",
+    "name": "Luis Gonzalez",
+    "bats": "L",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 55,
+      "GAP": 64,
+      "POW": 76,
+      "EYE": 50,
+      "AK": 76,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 1.967,
+      "rel_iso": 1.699,
+      "rel_xbh": 1.615,
+      "rel_hr": 1.278,
+      "rel_bb": 1.003,
+      "rel_k": 0.55,
+      "rel_babip": 1.126,
+      "rel_gap": 1.377
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "offerjo01",
+    "card_id": "offerjo01|1999",
+    "season": 1999,
+    "team_id": "BOS",
+    "name": "Jose Offerman",
+    "bats": "B",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 53,
+      "GAP": 63,
+      "POW": 43,
+      "EYE": 67,
+      "AK": 66,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.606,
+      "rel_iso": 1.128,
+      "rel_xbh": 1.208,
+      "rel_hr": 0.394,
+      "rel_bb": 1.46,
+      "rel_k": 0.691,
+      "rel_babip": 1.075,
+      "rel_gap": 1.351
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "anderbr01",
+    "card_id": "anderbr01|1999",
+    "season": 1999,
+    "team_id": "BAL",
+    "name": "Brady Anderson",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 51,
+      "GAP": 47,
+      "POW": 72,
+      "EYE": 67,
+      "AK": 54,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 1.818,
+      "rel_iso": 1.553,
+      "rel_xbh": 1.229,
+      "rel_hr": 1.182,
+      "rel_bb": 1.46,
+      "rel_k": 0.918,
+      "rel_babip": 1.013,
+      "rel_gap": 0.929
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "durhara01",
+    "card_id": "durhara01|1999",
+    "season": 1999,
+    "team_id": "CHA",
+    "name": "Ray Durham",
+    "bats": "B",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 55,
+      "GAP": 53,
+      "POW": 52,
+      "EYE": 55,
+      "AK": 54,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.985,
+      "rel_iso": 1.106,
+      "rel_xbh": 1.1,
+      "rel_hr": 0.64,
+      "rel_bb": 1.111,
+      "rel_k": 0.918,
+      "rel_babip": 1.123,
+      "rel_gap": 1.069
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "gracema01",
+    "card_id": "gracema01|1999",
+    "season": 1999,
+    "team_id": "CHN",
+    "name": "Mark Grace",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 51,
+      "GAP": 64,
+      "POW": 61,
+      "EYE": 60,
+      "AK": 91,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 1.218,
+      "rel_iso": 1.369,
+      "rel_xbh": 1.408,
+      "rel_hr": 0.791,
+      "rel_bb": 1.268,
+      "rel_k": 0.387,
+      "rel_babip": 1.02,
+      "rel_gap": 1.385
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "randajo01",
+    "card_id": "randajo01|1999",
+    "season": 1999,
+    "team_id": "KCA",
+    "name": "Joe Randa",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 55,
+      "GAP": 60,
+      "POW": 60,
+      "EYE": 38,
+      "AK": 65,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 1.218,
+      "rel_iso": 1.268,
+      "rel_xbh": 1.3,
+      "rel_hr": 0.791,
+      "rel_bb": 0.764,
+      "rel_k": 0.703,
+      "rel_babip": 1.113,
+      "rel_gap": 1.244
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "glanvdo01",
+    "card_id": "glanvdo01|1999",
+    "season": 1999,
+    "team_id": "PHI",
+    "name": "Doug Glanville",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 57,
+      "GAP": 60,
+      "POW": 48,
+      "EYE": 37,
+      "AK": 64,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.838,
+      "rel_iso": 1.052,
+      "rel_xbh": 1.193,
+      "rel_hr": 0.545,
+      "rel_bb": 0.734,
+      "rel_k": 0.721,
+      "rel_babip": 1.185,
+      "rel_gap": 1.246
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "bellja01",
+    "card_id": "bellja01|1999",
+    "season": 1999,
+    "team_id": "ARI",
+    "name": "Jay Bell",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 51,
+      "GAP": 53,
+      "POW": 90,
+      "EYE": 60,
+      "AK": 43,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 2.909,
+      "rel_iso": 2.136,
+      "rel_xbh": 1.656,
+      "rel_hr": 1.89,
+      "rel_bb": 1.26,
+      "rel_k": 1.166,
+      "rel_babip": 1.023,
+      "rel_gap": 1.08
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "alomaro01",
+    "card_id": "alomaro01|1999",
+    "season": 1999,
+    "team_id": "CLE",
+    "name": "Roberto Alomar",
+    "bats": "B",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 56,
+      "GAP": 59,
+      "POW": 74,
+      "EYE": 68,
+      "AK": 57,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 1.842,
+      "rel_iso": 1.669,
+      "rel_xbh": 1.464,
+      "rel_hr": 1.197,
+      "rel_bb": 1.526,
+      "rel_k": 0.851,
+      "rel_babip": 1.149,
+      "rel_gap": 1.226
+    },
+    "reliability": {
+      "CON": 0.69,
+      "GAP": 0.69,
+      "POW": 0.69,
+      "EYE": 0.69,
+      "AK": 0.69,
+      "BNT": 0.69
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "larkiba01",
+    "card_id": "larkiba01|1999",
+    "season": 1999,
+    "team_id": "CIN",
+    "name": "Barry Larkin",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 51,
+      "GAP": 49,
+      "POW": 48,
+      "EYE": 66,
+      "AK": 80,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.921,
+      "rel_iso": 1.011,
+      "rel_xbh": 1.005,
+      "rel_hr": 0.599,
+      "rel_bb": 1.433,
+      "rel_k": 0.505,
+      "rel_babip": 1.018,
+      "rel_gap": 0.969
+    },
+    "reliability": {
+      "CON": 0.69,
+      "GAP": 0.69,
+      "POW": 0.69,
+      "EYE": 0.69,
+      "AK": 0.69,
+      "BNT": 0.69
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "delgaca01",
+    "card_id": "delgaca01|1999",
+    "season": 1999,
+    "team_id": "TOR",
+    "name": "Carlos Delgado",
+    "bats": "L",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 47,
+      "GAP": 55,
+      "POW": 96,
+      "EYE": 62,
+      "AK": 40,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 3.383,
+      "rel_iso": 2.376,
+      "rel_xbh": 1.816,
+      "rel_hr": 2.198,
+      "rel_bb": 1.328,
+      "rel_k": 1.251,
+      "rel_babip": 0.94,
+      "rel_gap": 1.114
+    },
+    "reliability": {
+      "CON": 0.69,
+      "GAP": 0.69,
+      "POW": 0.69,
+      "EYE": 0.69,
+      "AK": 0.69,
+      "BNT": 0.69
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "johnsra05",
+    "card_id": "johnsra05|1999",
+    "season": 1999,
+    "team_id": "ARI",
+    "name": "Randy Johnson",
+    "bats": "R",
+    "throws": "L",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 81,
+      "CTL": 67,
+      "CMD": 52,
+      "STA": 55
+    },
+    "normalized_rates": {
+      "rel_p_k": 2.039,
+      "rel_p_bb": 0.682,
+      "rel_p_hr": 0.946,
+      "rel_sta": 1.109
+    },
+    "reliability": {
+      "STF": 0.73,
+      "CTL": 0.73,
+      "CMD": 0.73,
+      "STA": 0.73
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "limajo01",
+    "card_id": "limajo01|1999",
+    "season": 1999,
+    "team_id": "HOU",
+    "name": "Jose Lima",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 54,
+      "CTL": 85,
+      "CMD": 50,
+      "STA": 50
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.104,
+      "rel_p_bb": 0.452,
+      "rel_p_hr": 0.997,
+      "rel_sta": 1.005
+    },
+    "reliability": {
+      "STF": 0.72,
+      "CTL": 0.72,
+      "CMD": 0.72,
+      "STA": 0.72
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "glavito02",
+    "card_id": "glavito02|1999",
+    "season": 1999,
+    "team_id": "ATL",
+    "name": "Tom Glavine",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 41,
+      "CTL": 57,
+      "CMD": 72,
+      "STA": 48
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.815,
+      "rel_p_bb": 0.853,
+      "rel_p_hr": 0.599,
+      "rel_sta": 0.955
+    },
+    "reliability": {
+      "STF": 0.72,
+      "CTL": 0.72,
+      "CMD": 0.72,
+      "STA": 0.72
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "brownke01",
+    "card_id": "brownke01|1999",
+    "season": 1999,
+    "team_id": "LAN",
+    "name": "Kevin Brown",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 62,
+      "CTL": 72,
+      "CMD": 70,
+      "STA": 51
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.312,
+      "rel_p_bb": 0.609,
+      "rel_p_hr": 0.635,
+      "rel_sta": 1.03
+    },
+    "reliability": {
+      "STF": 0.72,
+      "CTL": 0.72,
+      "CMD": 0.72,
+      "STA": 0.72
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "astacpe01",
+    "card_id": "astacpe01|1999",
+    "season": 1999,
+    "team_id": "COL",
+    "name": "Pedro Astacio",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 60,
+      "CTL": 61,
+      "CMD": 39,
+      "STA": 49
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.259,
+      "rel_p_bb": 0.782,
+      "rel_p_hr": 1.283,
+      "rel_sta": 0.975
+    },
+    "reliability": {
+      "STF": 0.72,
+      "CTL": 0.72,
+      "CMD": 0.72,
+      "STA": 0.72
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "ericksc01",
+    "card_id": "ericksc01|1999",
+    "season": 1999,
+    "team_id": "BAL",
+    "name": "Scott Erickson",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 31,
+      "CTL": 48,
+      "CMD": 53,
+      "STA": 49
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.644,
+      "rel_p_bb": 1.046,
+      "rel_p_hr": 0.923,
+      "rel_sta": 0.968
+    },
+    "reliability": {
+      "STF": 0.71,
+      "CTL": 0.71,
+      "CMD": 0.71,
+      "STA": 0.71
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "wellsda01",
+    "card_id": "wellsda01|1999",
+    "season": 1999,
+    "team_id": "TOR",
+    "name": "David Wells",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 51,
+      "CTL": 68,
+      "CMD": 46,
+      "STA": 49
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.035,
+      "rel_p_bb": 0.66,
+      "rel_p_hr": 1.103,
+      "rel_sta": 0.973
+    },
+    "reliability": {
+      "STF": 0.71,
+      "CTL": 0.71,
+      "CMD": 0.71,
+      "STA": 0.71
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "hamptmi01",
+    "card_id": "hamptmi01|1999",
+    "season": 1999,
+    "team_id": "HOU",
+    "name": "Mike Hampton",
+    "bats": "R",
+    "throws": "L",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 54,
+      "CTL": 46,
+      "CMD": 88,
+      "STA": 50
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.093,
+      "rel_p_bb": 1.084,
+      "rel_p_hr": 0.417,
+      "rel_sta": 1.004
+    },
+    "reliability": {
+      "STF": 0.71,
+      "CTL": 0.71,
+      "CMD": 0.71,
+      "STA": 0.71
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "reynosh01",
+    "card_id": "reynosh01|1999",
+    "season": 1999,
+    "team_id": "HOU",
+    "name": "Shane Reynolds",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 59,
+      "CTL": 90,
+      "CMD": 59,
+      "STA": 48
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.236,
+      "rel_p_bb": 0.404,
+      "rel_p_hr": 0.813,
+      "rel_sta": 0.946
+    },
+    "reliability": {
+      "STF": 0.71,
+      "CTL": 0.71,
+      "CMD": 0.71,
+      "STA": 0.71
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "moyerja01",
+    "card_id": "moyerja01|1999",
+    "season": 1999,
+    "team_id": "SEA",
+    "name": "Jamie Moyer",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 44,
+      "CTL": 77,
+      "CMD": 58,
+      "STA": 51
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.876,
+      "rel_p_bb": 0.534,
+      "rel_p_hr": 0.828,
+      "rel_sta": 1.018
+    },
+    "reliability": {
+      "STF": 0.7,
+      "CTL": 0.7,
+      "CMD": 0.7,
+      "STA": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "helliri01",
+    "card_id": "helliri01|1999",
+    "season": 1999,
+    "team_id": "TEX",
+    "name": "Rick Helling",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 42,
+      "CTL": 52,
+      "CMD": 33,
+      "STA": 45
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.84,
+      "rel_p_bb": 0.948,
+      "rel_p_hr": 1.479,
+      "rel_sta": 0.895
+    },
+    "reliability": {
+      "STF": 0.7,
+      "CTL": 0.7,
+      "CMD": 0.7,
+      "STA": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "maddugr01",
+    "card_id": "maddugr01|1999",
+    "season": 1999,
+    "team_id": "ATL",
+    "name": "Greg Maddux",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 44,
+      "CTL": 89,
+      "CMD": 74,
+      "STA": 48
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.874,
+      "rel_p_bb": 0.414,
+      "rel_p_hr": 0.579,
+      "rel_sta": 0.949
+    },
+    "reliability": {
+      "STF": 0.7,
+      "CTL": 0.7,
+      "CMD": 0.7,
+      "STA": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "burbada01",
+    "card_id": "burbada01|1999",
+    "season": 1999,
+    "team_id": "CLE",
+    "name": "Dave Burba",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 55,
+      "CTL": 47,
+      "CMD": 46,
+      "STA": 47
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.119,
+      "rel_p_bb": 1.074,
+      "rel_p_hr": 1.086,
+      "rel_sta": 0.924
+    },
+    "reliability": {
+      "STF": 0.7,
+      "CTL": 0.7,
+      "CMD": 0.7,
+      "STA": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "schmija01",
+    "card_id": "schmija01|1999",
+    "season": 1999,
+    "team_id": "PIT",
+    "name": "Jason Schmidt",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 48,
+      "CTL": 52,
+      "CMD": 56,
+      "STA": 46
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.955,
+      "rel_p_bb": 0.954,
+      "rel_p_hr": 0.871,
+      "rel_sta": 0.921
+    },
+    "reliability": {
+      "STF": 0.7,
+      "CTL": 0.7,
+      "CMD": 0.7,
+      "STA": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "hermadu01",
+    "card_id": "hermadu01|1999",
+    "season": 1999,
+    "team_id": "MON",
+    "name": "Dustin Hermanson",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 47,
+      "CTL": 61,
+      "CMD": 64,
+      "STA": 46
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.944,
+      "rel_p_bb": 0.782,
+      "rel_p_hr": 0.733,
+      "rel_sta": 0.909
+    },
+    "reliability": {
+      "STF": 0.7,
+      "CTL": 0.7,
+      "CMD": 0.7,
+      "STA": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "appieke01",
+    "card_id": "appieke01|1999",
+    "season": 1999,
+    "team_id": "KCA",
+    "name": "Kevin Appier",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 43,
+      "CTL": 52,
+      "CMD": 50,
+      "STA": 44
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.855,
+      "rel_p_bb": 0.954,
+      "rel_p_hr": 0.992,
+      "rel_sta": 0.878
+    },
+    "reliability": {
+      "STF": 0.7,
+      "CTL": 0.7,
+      "CMD": 0.7,
+      "STA": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "leiteal01",
+    "card_id": "leiteal01|1999",
+    "season": 1999,
+    "team_id": "NYN",
+    "name": "Al Leiter",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 53,
+      "CTL": 47,
+      "CMD": 66,
+      "STA": 48
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.061,
+      "rel_p_bb": 1.059,
+      "rel_p_hr": 0.7,
+      "rel_sta": 0.951
+    },
+    "reliability": {
+      "STF": 0.7,
+      "CTL": 0.7,
+      "CMD": 0.7,
+      "STA": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "ortizru01",
+    "card_id": "ortizru01|1999",
+    "season": 1999,
+    "team_id": "SFN",
+    "name": "Russ Ortiz",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 53,
+      "CTL": 35,
+      "CMD": 55,
+      "STA": 45
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.075,
+      "rel_p_bb": 1.425,
+      "rel_p_hr": 0.886,
+      "rel_sta": 0.899
+    },
+    "reliability": {
+      "STF": 0.7,
+      "CTL": 0.7,
+      "CMD": 0.7,
+      "STA": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "seleaa01",
+    "card_id": "seleaa01|1999",
+    "season": 1999,
+    "team_id": "TEX",
+    "name": "Aaron Sele",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 59,
+      "CTL": 60,
+      "CMD": 61,
+      "STA": 45
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.222,
+      "rel_p_bb": 0.8,
+      "rel_p_hr": 0.777,
+      "rel_sta": 0.887
+    },
+    "reliability": {
+      "STF": 0.7,
+      "CTL": 0.7,
+      "CMD": 0.7,
+      "STA": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  },
+  {
+    "player_id": "estessh01",
+    "card_id": "estessh01|1999",
+    "season": 1999,
+    "team_id": "SFN",
+    "name": "Shawn Estes",
+    "bats": "R",
+    "throws": "L",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 52,
+      "CTL": 39,
+      "CMD": 61,
+      "STA": 46
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.051,
+      "rel_p_bb": 1.288,
+      "rel_p_hr": 0.782,
+      "rel_sta": 0.906
+    },
+    "reliability": {
+      "STF": 0.7,
+      "CTL": 0.7,
+      "CMD": 0.7,
+      "STA": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1999,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.486099Z"
+  }
+]

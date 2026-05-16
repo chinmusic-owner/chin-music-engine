@@ -24,6 +24,15 @@ SOURCE_VERSION = "lahman_1871-2025"
 # Will be computed dynamically per year in a future version.
 _AVG_IP_PER_START = 7.0
 
+# Cross-era baselines for POW calibration (computed from 41,293 qualifying
+# player-seasons with PA≥100 spanning 1900–2025).
+# POW is driven by ISO and XBH% vs these fixed historical pool averages,
+# NOT vs the current era's league average.  This prevents deadball hitters
+# from receiving inflated POW simply because the 1906 HR floor was ~0.3%.
+HIST_AVG_HR_RATE  = 0.0191   # mean HR/PA across pool (absolute, not era-relative)
+HIST_AVG_ISO      = 0.1256   # mean (2B + 2×3B + 3×HR) / AB across pool
+HIST_AVG_XBH_PCT  = 0.0671   # mean (2B + 3B + HR) / PA across pool
+
 
 # ─── Core mapping function ────────────────────────────────────────────────────
 
@@ -138,7 +147,9 @@ def build_hitter_card(row, name: str, bats: str, throws: str, team_id: str = "")
     """
     Builds a hitter PlayerCard from a normalized stats row.
     Trait drivers (PRD 02 §7):
-      POW ← rel_hr      EYE ← rel_bb      AK ← 1/rel_k
+      POW ← ISO×0.65 + XBH%×0.35  vs fixed historical pool baselines
+            (era-relative HR rate intentionally NOT used — see HIST_AVG_ISO)
+      EYE ← rel_bb      AK ← 1/rel_k
       CON ← rel_babip   GAP ← rel_gap
     """
     rel_k   = row.get("rel_k",   float("nan"))
@@ -146,6 +157,20 @@ def build_hitter_card(row, name: str, bats: str, throws: str, team_id: str = "")
 
     ak_score  = (1.0 / rel_k)  if (rel_k  == rel_k  and rel_k  > 0) else 1.0
     gap_score = rel_gap         if (rel_gap == rel_gap and rel_gap > 0) else 1.0
+
+    # POW: weighted blend of three cross-era signals, all vs fixed historical baselines.
+    #   rel_hr_hist (55%) — absolute HR/PA vs all-time pool; dominant signal.
+    #                       NOT divided by era avg, so a 1906 player with 2 HRs
+    #                       gets the same credit as a 2005 player with 2 HRs.
+    #   rel_iso     (30%) — ISO captures extra-base authority (2B, 3B, HR weighted).
+    #   rel_xbh     (15%) — XBH/PA stabilises gap hitters at low HR counts.
+    rel_hr_hist = row.get("rel_hr_hist", float("nan"))
+    rel_iso     = row.get("rel_iso",     float("nan"))
+    rel_xbh     = row.get("rel_xbh",     float("nan"))
+    rel_hr_hist = rel_hr_hist if (rel_hr_hist == rel_hr_hist and rel_hr_hist > 0) else 0.01
+    rel_iso     = rel_iso     if (rel_iso     == rel_iso     and rel_iso     > 0) else 1.0
+    rel_xbh     = rel_xbh     if (rel_xbh     == rel_xbh     and rel_xbh     > 0) else 1.0
+    pow_score = rel_hr_hist * 0.55 + rel_iso * 0.30 + rel_xbh * 0.15
 
     pa = int(row.get("PA", 0))
     rel = _reliability(pa)
@@ -161,12 +186,15 @@ def build_hitter_card(row, name: str, bats: str, throws: str, team_id: str = "")
         primary_role = "Hitter",
         CON = map_to_trait(row.get("rel_babip"), "CON"),
         GAP = map_to_trait(gap_score,            "GAP"),
-        POW = map_to_trait(row.get("rel_hr"),    "POW"),
+        POW = map_to_trait(pow_score,            "POW"),
         EYE = map_to_trait(row.get("rel_bb"),    "EYE"),
         AK  = map_to_trait(ak_score,             "AK"),
         normalized_rates = {
-            "rel_hr":    round(float(row.get("rel_hr",    float("nan"))), 3),
-            "rel_bb":    round(float(row.get("rel_bb",    float("nan"))), 3),
+            "rel_hr_hist": round(float(rel_hr_hist), 3),
+            "rel_iso":     round(float(rel_iso), 3),
+            "rel_xbh":     round(float(rel_xbh), 3),
+            "rel_hr":      round(float(row.get("rel_hr", float("nan"))), 3),  # era-relative, audit only
+            "rel_bb":    round(float(row.get("rel_bb", float("nan"))), 3),
             "rel_k":     round(float(rel_k), 3),
             "rel_babip": round(float(row.get("rel_babip", float("nan"))), 3),
             "rel_gap":   round(float(gap_score), 3),

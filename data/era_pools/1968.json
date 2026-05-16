@@ -1,0 +1,2442 @@
+[
+  {
+    "player_id": "aloufe01",
+    "card_id": "aloufe01|1968",
+    "season": 1968,
+    "team_id": "ATL",
+    "name": "Felipe Alou",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 59,
+      "GAP": 68,
+      "POW": 45,
+      "EYE": 43,
+      "AK": 82,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.802,
+      "rel_iso": 0.962,
+      "rel_xbh": 1.1,
+      "rel_hr": 0.904,
+      "rel_bb": 0.86,
+      "rel_k": 0.48,
+      "rel_babip": 1.226,
+      "rel_gap": 1.509
+    },
+    "reliability": {
+      "CON": 0.71,
+      "GAP": 0.71,
+      "POW": 0.71,
+      "EYE": 0.71,
+      "AK": 0.71,
+      "BNT": 0.71
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "brocklo01",
+    "card_id": "brocklo01|1968",
+    "season": 1968,
+    "team_id": "SLN",
+    "name": "Lou Brock",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 59,
+      "GAP": 84,
+      "POW": 39,
+      "EYE": 42,
+      "AK": 47,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.442,
+      "rel_iso": 1.11,
+      "rel_xbh": 1.383,
+      "rel_hr": 0.498,
+      "rel_bb": 0.832,
+      "rel_k": 1.073,
+      "rel_babip": 1.234,
+      "rel_gap": 2.177
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "willibi01",
+    "card_id": "willibi01|1968",
+    "season": 1968,
+    "team_id": "CHN",
+    "name": "Billy Williams",
+    "bats": "L",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 50,
+      "GAP": 65,
+      "POW": 79,
+      "EYE": 45,
+      "AK": 83,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 2.247,
+      "rel_iso": 1.687,
+      "rel_xbh": 1.45,
+      "rel_hr": 2.534,
+      "rel_bb": 0.883,
+      "rel_k": 0.467,
+      "rel_babip": 1.01,
+      "rel_gap": 1.402
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "campabe01",
+    "card_id": "campabe01|1968",
+    "season": 1968,
+    "team_id": "OAK",
+    "name": "Bert Campaneris",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 55,
+      "GAP": 60,
+      "POW": 19,
+      "EYE": 46,
+      "AK": 72,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.3,
+      "rel_iso": 0.682,
+      "rel_xbh": 0.81,
+      "rel_hr": 0.338,
+      "rel_bb": 0.92,
+      "rel_k": 0.607,
+      "rel_babip": 1.116,
+      "rel_gap": 1.255
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "kessido01",
+    "card_id": "kessido01|1968",
+    "season": 1968,
+    "team_id": "CHN",
+    "name": "Don Kessinger",
+    "bats": "B",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 50,
+      "GAP": 39,
+      "POW": 1,
+      "EYE": 35,
+      "AK": 62,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.075,
+      "rel_iso": 0.377,
+      "rel_xbh": 0.471,
+      "rel_hr": 0.085,
+      "rel_bb": 0.702,
+      "rel_k": 0.76,
+      "rel_babip": 1.011,
+      "rel_gap": 0.778
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "rosepe01",
+    "card_id": "rosepe01|1968",
+    "season": 1968,
+    "team_id": "CIN",
+    "name": "Pete Rose",
+    "bats": "B",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 63,
+      "GAP": 76,
+      "POW": 47,
+      "EYE": 52,
+      "AK": 67,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.759,
+      "rel_iso": 1.068,
+      "rel_xbh": 1.253,
+      "rel_hr": 0.856,
+      "rel_bb": 1.044,
+      "rel_k": 0.678,
+      "rel_babip": 1.356,
+      "rel_gap": 1.794
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "perezto01",
+    "card_id": "perezto01|1968",
+    "season": 1968,
+    "team_id": "CIN",
+    "name": "Tony Perez",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 55,
+      "GAP": 58,
+      "POW": 60,
+      "EYE": 48,
+      "AK": 59,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 1.368,
+      "rel_iso": 1.185,
+      "rel_xbh": 1.082,
+      "rel_hr": 1.542,
+      "rel_bb": 0.952,
+      "rel_k": 0.822,
+      "rel_babip": 1.117,
+      "rel_gap": 1.198
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "unserde01",
+    "card_id": "unserde01|1968",
+    "season": 1968,
+    "team_id": "WS2",
+    "name": "Del Unser",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 47,
+      "GAP": 37,
+      "POW": 1,
+      "EYE": 43,
+      "AK": 73,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.076,
+      "rel_iso": 0.376,
+      "rel_xbh": 0.456,
+      "rel_hr": 0.086,
+      "rel_bb": 0.861,
+      "rel_k": 0.591,
+      "rel_babip": 0.935,
+      "rel_gap": 0.751
+    },
+    "reliability": {
+      "CON": 0.7,
+      "GAP": 0.7,
+      "POW": 0.7,
+      "EYE": 0.7,
+      "AK": 0.7,
+      "BNT": 0.7
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "fregoji01",
+    "card_id": "fregoji01|1968",
+    "season": 1968,
+    "team_id": "CAL",
+    "name": "Jim Fregosi",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 51,
+      "GAP": 61,
+      "POW": 41,
+      "EYE": 55,
+      "AK": 54,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.69,
+      "rel_iso": 0.96,
+      "rel_xbh": 0.938,
+      "rel_hr": 0.778,
+      "rel_bb": 1.13,
+      "rel_k": 0.91,
+      "rel_babip": 1.024,
+      "rel_gap": 1.284
+    },
+    "reliability": {
+      "CON": 0.69,
+      "GAP": 0.69,
+      "POW": 0.69,
+      "EYE": 0.69,
+      "AK": 0.69,
+      "BNT": 0.69
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "santoro01",
+    "card_id": "santoro01|1968",
+    "season": 1968,
+    "team_id": "CHN",
+    "name": "Ron Santo",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 48,
+      "GAP": 38,
+      "POW": 72,
+      "EYE": 76,
+      "AK": 52,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 1.999,
+      "rel_iso": 1.394,
+      "rel_xbh": 1.007,
+      "rel_hr": 2.254,
+      "rel_bb": 1.813,
+      "rel_k": 0.958,
+      "rel_babip": 0.951,
+      "rel_gap": 0.758
+    },
+    "reliability": {
+      "CON": 0.69,
+      "GAP": 0.69,
+      "POW": 0.69,
+      "EYE": 0.69,
+      "AK": 0.69,
+      "BNT": 0.69
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "beckegl01",
+    "card_id": "beckegl01|1968",
+    "season": 1968,
+    "team_id": "CHN",
+    "name": "Glenn Beckert",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 54,
+      "GAP": 58,
+      "POW": 17,
+      "EYE": 27,
+      "AK": 99,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.308,
+      "rel_iso": 0.594,
+      "rel_xbh": 0.789,
+      "rel_hr": 0.347,
+      "rel_bb": 0.586,
+      "rel_k": 0.181,
+      "rel_babip": 1.095,
+      "rel_gap": 1.214
+    },
+    "reliability": {
+      "CON": 0.69,
+      "GAP": 0.69,
+      "POW": 0.69,
+      "EYE": 0.69,
+      "AK": 0.69,
+      "BNT": 0.69
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "daviswi02",
+    "card_id": "daviswi02|1968",
+    "season": 1968,
+    "team_id": "LAN",
+    "name": "Willie Davis",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 51,
+      "GAP": 61,
+      "POW": 33,
+      "EYE": 27,
+      "AK": 60,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.54,
+      "rel_iso": 0.805,
+      "rel_xbh": 0.9,
+      "rel_hr": 0.609,
+      "rel_bb": 0.587,
+      "rel_k": 0.797,
+      "rel_babip": 1.029,
+      "rel_gap": 1.292
+    },
+    "reliability": {
+      "CON": 0.69,
+      "GAP": 0.69,
+      "POW": 0.69,
+      "EYE": 0.69,
+      "AK": 0.69,
+      "BNT": 0.69
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "aaronha01",
+    "card_id": "aaronha01|1968",
+    "season": 1968,
+    "team_id": "ATL",
+    "name": "Hank Aaron",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 51,
+      "GAP": 65,
+      "POW": 79,
+      "EYE": 59,
+      "AK": 75,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 2.246,
+      "rel_iso": 1.682,
+      "rel_xbh": 1.455,
+      "rel_hr": 2.533,
+      "rel_bb": 1.218,
+      "rel_k": 0.564,
+      "rel_babip": 1.029,
+      "rel_gap": 1.412
+    },
+    "reliability": {
+      "CON": 0.69,
+      "GAP": 0.69,
+      "POW": 0.69,
+      "EYE": 0.69,
+      "AK": 0.69,
+      "BNT": 0.69
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "staubru01",
+    "card_id": "staubru01|1968",
+    "season": 1968,
+    "team_id": "HOU",
+    "name": "Rusty Staub",
+    "bats": "L",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 56,
+      "GAP": 66,
+      "POW": 30,
+      "EYE": 64,
+      "AK": 79,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.465,
+      "rel_iso": 0.768,
+      "rel_xbh": 0.971,
+      "rel_hr": 0.525,
+      "rel_bb": 1.391,
+      "rel_k": 0.52,
+      "rel_babip": 1.151,
+      "rel_gap": 1.452
+    },
+    "reliability": {
+      "CON": 0.69,
+      "GAP": 0.69,
+      "POW": 0.69,
+      "EYE": 0.69,
+      "AK": 0.69,
+      "BNT": 0.69
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "willsma01",
+    "card_id": "willsma01|1968",
+    "season": 1968,
+    "team_id": "PIT",
+    "name": "Maury Wills",
+    "bats": "B",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 55,
+      "GAP": 34,
+      "POW": 1,
+      "EYE": 43,
+      "AK": 79,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.01,
+      "rel_iso": 0.305,
+      "rel_xbh": 0.398,
+      "rel_hr": 0.0,
+      "rel_bb": 0.859,
+      "rel_k": 0.52,
+      "rel_babip": 1.124,
+      "rel_gap": 0.689
+    },
+    "reliability": {
+      "CON": 0.69,
+      "GAP": 0.69,
+      "POW": 0.69,
+      "EYE": 0.69,
+      "AK": 0.69,
+      "BNT": 0.69
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "bandosa01",
+    "card_id": "bandosa01|1968",
+    "season": 1968,
+    "team_id": "OAK",
+    "name": "Sal Bando",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 50,
+      "GAP": 56,
+      "POW": 38,
+      "EYE": 49,
+      "AK": 64,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.705,
+      "rel_iso": 0.816,
+      "rel_xbh": 0.87,
+      "rel_hr": 0.795,
+      "rel_bb": 0.982,
+      "rel_k": 0.718,
+      "rel_babip": 1.009,
+      "rel_gap": 1.158
+    },
+    "reliability": {
+      "CON": 0.69,
+      "GAP": 0.69,
+      "POW": 0.69,
+      "EYE": 0.69,
+      "AK": 0.69,
+      "BNT": 0.69
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "tovarce01",
+    "card_id": "tovarce01|1968",
+    "season": 1968,
+    "team_id": "MIN",
+    "name": "Cesar Tovar",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 52,
+      "GAP": 66,
+      "POW": 31,
+      "EYE": 32,
+      "AK": 93,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.47,
+      "rel_iso": 0.792,
+      "rel_xbh": 0.959,
+      "rel_hr": 0.53,
+      "rel_bb": 0.655,
+      "rel_k": 0.378,
+      "rel_babip": 1.042,
+      "rel_gap": 1.429
+    },
+    "reliability": {
+      "CON": 0.69,
+      "GAP": 0.69,
+      "POW": 0.69,
+      "EYE": 0.69,
+      "AK": 0.69,
+      "BNT": 0.69
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "robinbr01",
+    "card_id": "robinbr01|1968",
+    "season": 1968,
+    "team_id": "BAL",
+    "name": "Brooks Robinson",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 47,
+      "GAP": 71,
+      "POW": 62,
+      "EYE": 43,
+      "AK": 79,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 1.34,
+      "rel_iso": 1.296,
+      "rel_xbh": 1.324,
+      "rel_hr": 1.511,
+      "rel_bb": 0.852,
+      "rel_k": 0.51,
+      "rel_babip": 0.929,
+      "rel_gap": 1.632
+    },
+    "reliability": {
+      "CON": 0.69,
+      "GAP": 0.69,
+      "POW": 0.69,
+      "EYE": 0.69,
+      "AK": 0.69,
+      "BNT": 0.69
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "yastrca01",
+    "card_id": "yastrca01|1968",
+    "season": 1968,
+    "team_id": "BOS",
+    "name": "Carl Yastrzemski",
+    "bats": "L",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 58,
+      "GAP": 62,
+      "POW": 72,
+      "EYE": 86,
+      "AK": 58,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 1.814,
+      "rel_iso": 1.551,
+      "rel_xbh": 1.279,
+      "rel_hr": 2.045,
+      "rel_bb": 2.305,
+      "rel_k": 0.834,
+      "rel_babip": 1.192,
+      "rel_gap": 1.321
+    },
+    "reliability": {
+      "CON": 0.69,
+      "GAP": 0.69,
+      "POW": 0.69,
+      "EYE": 0.69,
+      "AK": 0.69,
+      "BNT": 0.69
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "howarfr01",
+    "card_id": "howarfr01|1968",
+    "season": 1968,
+    "team_id": "WS2",
+    "name": "Frank Howard",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 53,
+      "GAP": 58,
+      "POW": 95,
+      "EYE": 52,
+      "AK": 38,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 3.475,
+      "rel_iso": 2.21,
+      "rel_xbh": 1.686,
+      "rel_hr": 3.918,
+      "rel_bb": 1.048,
+      "rel_k": 1.308,
+      "rel_babip": 1.059,
+      "rel_gap": 1.206
+    },
+    "reliability": {
+      "CON": 0.69,
+      "GAP": 0.69,
+      "POW": 0.69,
+      "EYE": 0.69,
+      "AK": 0.69,
+      "BNT": 0.69
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "floodcu01",
+    "card_id": "floodcu01|1968",
+    "season": 1968,
+    "team_id": "SLN",
+    "name": "Curt Flood",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 58,
+      "GAP": 41,
+      "POW": 16,
+      "EYE": 31,
+      "AK": 77,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.397,
+      "rel_iso": 0.515,
+      "rel_xbh": 0.587,
+      "rel_hr": 0.447,
+      "rel_bb": 0.643,
+      "rel_k": 0.541,
+      "rel_babip": 1.194,
+      "rel_gap": 0.821
+    },
+    "reliability": {
+      "CON": 0.69,
+      "GAP": 0.69,
+      "POW": 0.69,
+      "EYE": 0.69,
+      "AK": 0.69,
+      "BNT": 0.69
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "aparilu01",
+    "card_id": "aparilu01|1968",
+    "season": 1968,
+    "team_id": "CHA",
+    "name": "Luis Aparicio",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 51,
+      "GAP": 54,
+      "POW": 15,
+      "EYE": 31,
+      "AK": 90,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.318,
+      "rel_iso": 0.563,
+      "rel_xbh": 0.724,
+      "rel_hr": 0.358,
+      "rel_bb": 0.644,
+      "rel_k": 0.401,
+      "rel_babip": 1.023,
+      "rel_gap": 1.096
+    },
+    "reliability": {
+      "CON": 0.69,
+      "GAP": 0.69,
+      "POW": 0.69,
+      "EYE": 0.69,
+      "AK": 0.69,
+      "BNT": 0.69
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "whitero01",
+    "card_id": "whitero01|1968",
+    "season": 1968,
+    "team_id": "NYA",
+    "name": "Roy White",
+    "bats": "B",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 49,
+      "GAP": 53,
+      "POW": 60,
+      "EYE": 66,
+      "AK": 83,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 1.355,
+      "rel_iso": 1.173,
+      "rel_xbh": 0.998,
+      "rel_hr": 1.528,
+      "rel_bb": 1.429,
+      "rel_k": 0.468,
+      "rel_babip": 0.983,
+      "rel_gap": 1.06
+    },
+    "reliability": {
+      "CON": 0.69,
+      "GAP": 0.69,
+      "POW": 0.69,
+      "EYE": 0.69,
+      "AK": 0.69,
+      "BNT": 0.69
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "mcauldi01",
+    "card_id": "mcauldi01|1968",
+    "season": 1968,
+    "team_id": "DET",
+    "name": "Dick McAuliffe",
+    "bats": "L",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 51,
+      "GAP": 63,
+      "POW": 60,
+      "EYE": 71,
+      "AK": 53,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 1.275,
+      "rel_iso": 1.285,
+      "rel_xbh": 1.134,
+      "rel_hr": 1.438,
+      "rel_bb": 1.605,
+      "rel_k": 0.927,
+      "rel_babip": 1.015,
+      "rel_gap": 1.335
+    },
+    "reliability": {
+      "CON": 0.69,
+      "GAP": 0.69,
+      "POW": 0.69,
+      "EYE": 0.69,
+      "AK": 0.69,
+      "BNT": 0.69
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "cepedor01",
+    "card_id": "cepedor01|1968",
+    "season": 1968,
+    "team_id": "SLN",
+    "name": "Orlando Cepeda",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 50,
+      "GAP": 54,
+      "POW": 57,
+      "EYE": 43,
+      "AK": 55,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 1.277,
+      "rel_iso": 1.035,
+      "rel_xbh": 1.0,
+      "rel_hr": 1.44,
+      "rel_bb": 0.843,
+      "rel_k": 0.9,
+      "rel_babip": 0.997,
+      "rel_gap": 1.101
+    },
+    "reliability": {
+      "CON": 0.69,
+      "GAP": 0.69,
+      "POW": 0.69,
+      "EYE": 0.69,
+      "AK": 0.69,
+      "BNT": 0.69
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "rojasco01",
+    "card_id": "rojasco01|1968",
+    "season": 1968,
+    "team_id": "PHI",
+    "name": "Cookie Rojas",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 45,
+      "GAP": 38,
+      "POW": 33,
+      "EYE": 1,
+      "AK": 78,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.732,
+      "rel_iso": 0.59,
+      "rel_xbh": 0.648,
+      "rel_hr": 0.825,
+      "rel_bb": 0.32,
+      "rel_k": 0.525,
+      "rel_babip": 0.883,
+      "rel_gap": 0.761
+    },
+    "reliability": {
+      "CON": 0.68,
+      "GAP": 0.68,
+      "POW": 0.68,
+      "EYE": 0.68,
+      "AK": 0.68,
+      "BNT": 0.68
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "wynnji01",
+    "card_id": "wynnji01|1968",
+    "season": 1968,
+    "team_id": "HOU",
+    "name": "Jim Wynn",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 56,
+      "GAP": 55,
+      "POW": 77,
+      "EYE": 76,
+      "AK": 40,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 2.124,
+      "rel_iso": 1.631,
+      "rel_xbh": 1.255,
+      "rel_hr": 2.395,
+      "rel_bb": 1.806,
+      "rel_k": 1.257,
+      "rel_babip": 1.138,
+      "rel_gap": 1.127
+    },
+    "reliability": {
+      "CON": 0.68,
+      "GAP": 0.68,
+      "POW": 0.68,
+      "EYE": 0.68,
+      "AK": 0.68,
+      "BNT": 0.68
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "clenddo01",
+    "card_id": "clenddo01|1968",
+    "season": 1968,
+    "team_id": "PIT",
+    "name": "Donn Clendenon",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 58,
+      "GAP": 52,
+      "POW": 60,
+      "EYE": 48,
+      "AK": 30,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 1.391,
+      "rel_iso": 1.132,
+      "rel_xbh": 1.001,
+      "rel_hr": 1.568,
+      "rel_bb": 0.945,
+      "rel_k": 1.567,
+      "rel_babip": 1.191,
+      "rel_gap": 1.048
+    },
+    "reliability": {
+      "CON": 0.68,
+      "GAP": 0.68,
+      "POW": 0.68,
+      "EYE": 0.68,
+      "AK": 0.68,
+      "BNT": 0.68
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "northji01",
+    "card_id": "northji01|1968",
+    "season": 1968,
+    "team_id": "DET",
+    "name": "Jim Northrup",
+    "bats": "L",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 51,
+      "GAP": 66,
+      "POW": 70,
+      "EYE": 50,
+      "AK": 58,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 1.721,
+      "rel_iso": 1.455,
+      "rel_xbh": 1.329,
+      "rel_hr": 1.94,
+      "rel_bb": 1.007,
+      "rel_k": 0.838,
+      "rel_babip": 1.021,
+      "rel_gap": 1.453
+    },
+    "reliability": {
+      "CON": 0.68,
+      "GAP": 0.68,
+      "POW": 0.68,
+      "EYE": 0.68,
+      "AK": 0.68,
+      "BNT": 0.68
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "huntro01",
+    "card_id": "huntro01|1968",
+    "season": 1968,
+    "team_id": "SFN",
+    "name": "Ron Hunt",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Hitter",
+    "pitcher_role": null,
+    "traits": {
+      "CON": 49,
+      "GAP": 39,
+      "POW": 1,
+      "EYE": 70,
+      "AK": 90,
+      "BNT": 50
+    },
+    "normalized_rates": {
+      "rel_hr_hist": 0.165,
+      "rel_iso": 0.376,
+      "rel_xbh": 0.494,
+      "rel_hr": 0.186,
+      "rel_bb": 1.583,
+      "rel_k": 0.398,
+      "rel_babip": 0.983,
+      "rel_gap": 0.773
+    },
+    "reliability": {
+      "CON": 0.68,
+      "GAP": 0.68,
+      "POW": 0.68,
+      "EYE": 0.68,
+      "AK": 0.68,
+      "BNT": 0.68
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "maricju01",
+    "card_id": "maricju01|1968",
+    "season": 1968,
+    "team_id": "SFN",
+    "name": "Juan Marichal",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 51,
+      "CTL": 85,
+      "CMD": 52,
+      "STA": 59
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.026,
+      "rel_p_bb": 0.453,
+      "rel_p_hr": 0.949,
+      "rel_sta": 1.226
+    },
+    "reliability": {
+      "STF": 0.77,
+      "CTL": 0.77,
+      "CMD": 0.77,
+      "STA": 0.77
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "mclaide01",
+    "card_id": "mclaide01|1968",
+    "season": 1968,
+    "team_id": "DET",
+    "name": "Denny McLain",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 63,
+      "CTL": 70,
+      "CMD": 35,
+      "STA": 57
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.338,
+      "rel_p_bb": 0.629,
+      "rel_p_hr": 1.421,
+      "rel_sta": 1.171
+    },
+    "reliability": {
+      "STF": 0.76,
+      "CTL": 0.76,
+      "CMD": 0.76,
+      "STA": 0.76
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "jenkife01",
+    "card_id": "jenkife01|1968",
+    "season": 1968,
+    "team_id": "CHN",
+    "name": "Fergie Jenkins",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 61,
+      "CTL": 67,
+      "CMD": 40,
+      "STA": 54
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.299,
+      "rel_p_bb": 0.679,
+      "rel_p_hr": 1.247,
+      "rel_sta": 1.1
+    },
+    "reliability": {
+      "STF": 0.75,
+      "CTL": 0.75,
+      "CMD": 0.75,
+      "STA": 0.75
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "gibsobo01",
+    "card_id": "gibsobo01|1968",
+    "season": 1968,
+    "team_id": "SLN",
+    "name": "Bob Gibson",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 65,
+      "CTL": 66,
+      "CMD": 75,
+      "STA": 61
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.42,
+      "rel_p_bb": 0.687,
+      "rel_p_hr": 0.559,
+      "rel_sta": 1.28
+    },
+    "reliability": {
+      "STF": 0.74,
+      "CTL": 0.74,
+      "CMD": 0.74,
+      "STA": 0.74
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "chancde01",
+    "card_id": "chancde01|1968",
+    "season": 1968,
+    "team_id": "MIN",
+    "name": "Dean Chance",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 59,
+      "CTL": 66,
+      "CMD": 62,
+      "STA": 53
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.24,
+      "rel_p_bb": 0.698,
+      "rel_p_hr": 0.763,
+      "rel_sta": 1.07
+    },
+    "reliability": {
+      "STF": 0.74,
+      "CTL": 0.74,
+      "CMD": 0.74,
+      "STA": 0.74
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "perryga01",
+    "card_id": "perryga01|1968",
+    "season": 1968,
+    "team_id": "SFN",
+    "name": "Gaylord Perry",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 46,
+      "CTL": 68,
+      "CMD": 79,
+      "STA": 54
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.918,
+      "rel_p_bb": 0.655,
+      "rel_p_hr": 0.509,
+      "rel_sta": 1.094
+    },
+    "reliability": {
+      "STF": 0.74,
+      "CTL": 0.74,
+      "CMD": 0.74,
+      "STA": 0.74
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "stottme01",
+    "card_id": "stottme01|1968",
+    "season": 1968,
+    "team_id": "NYA",
+    "name": "Mel Stottlemyre",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 38,
+      "CTL": 63,
+      "CMD": 46,
+      "STA": 54
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.767,
+      "rel_p_bb": 0.745,
+      "rel_p_hr": 1.104,
+      "rel_sta": 1.106
+    },
+    "reliability": {
+      "STF": 0.74,
+      "CTL": 0.74,
+      "CMD": 0.74,
+      "STA": 0.74
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "shortch02",
+    "card_id": "shortch02|1968",
+    "season": 1968,
+    "team_id": "PHI",
+    "name": "Chris Short",
+    "bats": "R",
+    "throws": "L",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 55,
+      "CTL": 52,
+      "CMD": 37,
+      "STA": 53
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.127,
+      "rel_p_bb": 0.945,
+      "rel_p_hr": 1.338,
+      "rel_sta": 1.07
+    },
+    "reliability": {
+      "STF": 0.73,
+      "CTL": 0.73,
+      "CMD": 0.73,
+      "STA": 0.73
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "mcdowsa01",
+    "card_id": "mcdowsa01|1968",
+    "season": 1968,
+    "team_id": "CLE",
+    "name": "Sam McDowell",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 70,
+      "CTL": 39,
+      "CMD": 66,
+      "STA": 52
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.586,
+      "rel_p_bb": 1.289,
+      "rel_p_hr": 0.699,
+      "rel_sta": 1.039
+    },
+    "reliability": {
+      "STF": 0.73,
+      "CTL": 0.73,
+      "CMD": 0.73,
+      "STA": 0.73
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "seaveto01",
+    "card_id": "seaveto01|1968",
+    "season": 1968,
+    "team_id": "NYN",
+    "name": "Tom Seaver",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 56,
+      "CTL": 75,
+      "CMD": 59,
+      "STA": 55
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.159,
+      "rel_p_bb": 0.568,
+      "rel_p_hr": 0.814,
+      "rel_sta": 1.133
+    },
+    "reliability": {
+      "STF": 0.73,
+      "CTL": 0.73,
+      "CMD": 0.73,
+      "STA": 0.73
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "bahnsst01",
+    "card_id": "bahnsst01|1968",
+    "season": 1968,
+    "team_id": "NYA",
+    "name": "Stan Bahnsen",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 47,
+      "CTL": 59,
+      "CMD": 61,
+      "STA": 55
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.932,
+      "rel_p_bb": 0.817,
+      "rel_p_hr": 0.772,
+      "rel_sta": 1.123
+    },
+    "reliability": {
+      "STF": 0.73,
+      "CTL": 0.73,
+      "CMD": 0.73,
+      "STA": 0.73
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "singebi01",
+    "card_id": "singebi01|1968",
+    "season": 1968,
+    "team_id": "LAN",
+    "name": "Bill Singer",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 62,
+      "CTL": 52,
+      "CMD": 61,
+      "STA": 51
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.316,
+      "rel_p_bb": 0.946,
+      "rel_p_hr": 0.779,
+      "rel_sta": 1.017
+    },
+    "reliability": {
+      "STF": 0.73,
+      "CTL": 0.73,
+      "CMD": 0.73,
+      "STA": 0.73
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "koosmje01",
+    "card_id": "koosmje01|1968",
+    "season": 1968,
+    "team_id": "NYN",
+    "name": "Jerry Koosman",
+    "bats": "R",
+    "throws": "L",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 52,
+      "CTL": 58,
+      "CMD": 55,
+      "STA": 54
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.035,
+      "rel_p_bb": 0.839,
+      "rel_p_hr": 0.893,
+      "rel_sta": 1.108
+    },
+    "reliability": {
+      "STF": 0.73,
+      "CTL": 0.73,
+      "CMD": 0.73,
+      "STA": 0.73
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "osteecl01",
+    "card_id": "osteecl01|1968",
+    "season": 1968,
+    "team_id": "LAN",
+    "name": "Claude Osteen",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 34,
+      "CTL": 68,
+      "CMD": 61,
+      "STA": 50
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.695,
+      "rel_p_bb": 0.66,
+      "rel_p_hr": 0.785,
+      "rel_sta": 1.007
+    },
+    "reliability": {
+      "STF": 0.72,
+      "CTL": 0.72,
+      "CMD": 0.72,
+      "STA": 0.72
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "sadecra01",
+    "card_id": "sadecra01|1968",
+    "season": 1968,
+    "team_id": "SFN",
+    "name": "Ray Sadecki",
+    "bats": "L",
+    "throws": "L",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 59,
+      "CTL": 56,
+      "CMD": 60,
+      "STA": 50
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.219,
+      "rel_p_bb": 0.866,
+      "rel_p_hr": 0.795,
+      "rel_sta": 1.008
+    },
+    "reliability": {
+      "STF": 0.72,
+      "CTL": 0.72,
+      "CMD": 0.72,
+      "STA": 0.72
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "mcnalda01",
+    "card_id": "mcnalda01|1968",
+    "season": 1968,
+    "team_id": "BAL",
+    "name": "Dave McNally",
+    "bats": "R",
+    "throws": "L",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 58,
+      "CTL": 67,
+      "CMD": 36,
+      "STA": 55
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.197,
+      "rel_p_bb": 0.682,
+      "rel_p_hr": 1.365,
+      "rel_sta": 1.114
+    },
+    "reliability": {
+      "STF": 0.72,
+      "CTL": 0.72,
+      "CMD": 0.72,
+      "STA": 0.72
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "giustda01",
+    "card_id": "giustda01|1968",
+    "season": 1968,
+    "team_id": "HOU",
+    "name": "Dave Giusti",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 55,
+      "CTL": 58,
+      "CMD": 57,
+      "STA": 52
+    },
+    "normalized_rates": {
+      "rel_p_k": 1.11,
+      "rel_p_bb": 0.836,
+      "rel_p_hr": 0.859,
+      "rel_sta": 1.055
+    },
+    "reliability": {
+      "STF": 0.72,
+      "CTL": 0.72,
+      "CMD": 0.72,
+      "STA": 0.72
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "brilene01",
+    "card_id": "brilene01|1968",
+    "season": 1968,
+    "team_id": "SLN",
+    "name": "Nelson Briles",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 43,
+      "CTL": 66,
+      "CMD": 48,
+      "STA": 52
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.847,
+      "rel_p_bb": 0.691,
+      "rel_p_hr": 1.038,
+      "rel_sta": 1.055
+    },
+    "reliability": {
+      "STF": 0.72,
+      "CTL": 0.72,
+      "CMD": 0.72,
+      "STA": 0.72
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "niekrph01",
+    "card_id": "niekrph01|1968",
+    "season": 1968,
+    "team_id": "ATL",
+    "name": "Phil Niekro",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 43,
+      "CTL": 75,
+      "CMD": 53,
+      "STA": 53
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.845,
+      "rel_p_bb": 0.568,
+      "rel_p_hr": 0.927,
+      "rel_sta": 1.08
+    },
+    "reliability": {
+      "STF": 0.72,
+      "CTL": 0.72,
+      "CMD": 0.72,
+      "STA": 0.72
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  },
+  {
+    "player_id": "jarvipa01",
+    "card_id": "jarvipa01|1968",
+    "season": 1968,
+    "team_id": "ATL",
+    "name": "Pat Jarvis",
+    "bats": "R",
+    "throws": "R",
+    "primary_role": "Pitcher",
+    "pitcher_role": "SP",
+    "traits": {
+      "STF": 48,
+      "CTL": 70,
+      "CMD": 56,
+      "STA": 53
+    },
+    "normalized_rates": {
+      "rel_p_k": 0.949,
+      "rel_p_bb": 0.632,
+      "rel_p_hr": 0.87,
+      "rel_sta": 1.076
+    },
+    "reliability": {
+      "STF": 0.72,
+      "CTL": 0.72,
+      "CMD": 0.72,
+      "STA": 0.72
+    },
+    "trait_provenance": {
+      "mode": "historical",
+      "build_version": "2026.01",
+      "source_version": "lahman_1871-2025",
+      "components": [
+        {
+          "name": "season",
+          "season": 1968,
+          "weight": 1.0
+        }
+      ]
+    },
+    "build_version": "2026.01",
+    "source_version": "lahman_1871-2025",
+    "build_timestamp": "2026-05-16T17:56:48.246933Z"
+  }
+]

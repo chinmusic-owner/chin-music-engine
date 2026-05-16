@@ -101,31 +101,54 @@ def normalize_pitcher_stats(pitcher_df: pd.DataFrame, league_context: dict) -> p
 
 def normalize_player_stats(player_df: pd.DataFrame, league_context: dict) -> pd.DataFrame:
     """
-    Computes per-player rate stats and divides each by the league average
-    to produce a Relative Score (1.0 = league average, 2.0 = twice average, etc.).
+    Computes per-player rate stats and relative scores for use by build_hitter_card.
     PA = AB + BB + HBP + SF (SF filled to 0 if missing).
+
+    POW is driven by rel_iso and rel_xbh (fixed cross-era baselines from ratings.py),
+    NOT by rel_hr vs the current era average.  This prevents deadball hitters from
+    receiving inflated POW because their era's league HR floor was near zero.
+    rel_hr is still computed and stored in normalized_rates for audit purposes only.
     """
+    # Lazy import avoids circular dependency (ratings imports ingestion in __main__)
+    from ratings import HIST_AVG_HR_RATE, HIST_AVG_ISO, HIST_AVG_XBH_PCT
+
     df = player_df.copy()
     df["SF"] = df["SF"].fillna(0)
     df["HBP"] = df["HBP"].fillna(0)
 
-    df["PA"] = df["AB"] + df["BB"] + df["HBP"] + df["SF"]
+    df["PA"]  = df["AB"] + df["BB"] + df["HBP"] + df["SF"]
     df["BIP"] = df["AB"] - df["SO"] - df["HR"] + df["SF"]   # balls in play
 
-    # Raw player rates (guard against divide-by-zero for zero-PA rows)
-    df["k_rate"]  = df["SO"]  / df["PA"].replace(0, float("nan"))
-    df["bb_rate"] = df["BB"]  / df["PA"].replace(0, float("nan"))
-    df["hr_rate"] = df["HR"]  / df["PA"].replace(0, float("nan"))
-    df["babip"]   = (df["H"] - df["HR"]) / df["BIP"].replace(0, float("nan"))
+    safe_pa = df["PA"].replace(0, float("nan"))
+    safe_ab = df["AB"].replace(0, float("nan"))
+    safe_bip = df["BIP"].replace(0, float("nan"))
 
-    # Relative scores vs league average (1.0 = league avg)
-    df["xbh_rate"] = (df["2B"] + df["3B"]) / df["PA"].replace(0, float("nan"))
+    # Raw player rates
+    df["k_rate"]  = df["SO"] / safe_pa
+    df["bb_rate"] = df["BB"] / safe_pa
+    df["hr_rate"] = df["HR"] / safe_pa
+    df["babip"]   = (df["H"] - df["HR"]) / safe_bip
 
-    df["rel_k"]    = df["k_rate"]   / league_context["lg_avg_k_rate"]
-    df["rel_bb"]   = df["bb_rate"]  / league_context["lg_avg_bb_rate"]
-    df["rel_hr"]   = df["hr_rate"]  / league_context["lg_avg_hr_rate"]
-    df["rel_babip"]= df["babip"]    / league_context["lg_avg_babip"]
-    df["rel_gap"]  = df["xbh_rate"] / league_context["lg_avg_xbh_rate"]
+    # Era-relative scores (used by all traits except POW)
+    df["xbh_rate"] = (df["2B"] + df["3B"]) / safe_pa
+
+    df["rel_k"]    = df["k_rate"]  / league_context["lg_avg_k_rate"]
+    df["rel_bb"]   = df["bb_rate"] / league_context["lg_avg_bb_rate"]
+    df["rel_hr"]   = df["hr_rate"] / league_context["lg_avg_hr_rate"]   # audit only
+    df["rel_babip"]= df["babip"]   / league_context["lg_avg_babip"]
+    df["rel_gap"]  = df["xbh_rate"]/ league_context["lg_avg_xbh_rate"]
+
+    # POW inputs — all divided by FIXED cross-era historical baselines.
+    # rel_hr_hist: HR/PA vs all-time pool mean (NOT vs current era avg).
+    #   A 1906 player with 2 HR gets the same absolute credit as a 2005 player
+    #   with 2 HR, preventing era-floor inflation.
+    # rel_iso:  ISO = (2B + 2×3B + 3×HR) / AB  — extra-base authority.
+    # rel_xbh:  XBH/PA — stabiliser for gap hitters at low HR counts.
+    df["iso"]         = (df["2B"] + 2*df["3B"] + 3*df["HR"]) / safe_ab
+    df["xbh_pct"]     = (df["2B"] + df["3B"]  +   df["HR"]) / safe_pa
+    df["rel_hr_hist"] = df["hr_rate"]  / HIST_AVG_HR_RATE
+    df["rel_iso"]     = df["iso"]      / HIST_AVG_ISO
+    df["rel_xbh"]     = df["xbh_pct"] / HIST_AVG_XBH_PCT
 
     return df
 
