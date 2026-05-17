@@ -10,25 +10,12 @@ from dotenv import load_dotenv
 # Optional: if you already have database.py, you can import your client from there instead.
 from supabase import create_client
 
+from global_calibration import get_global_stats, z_score_trait, sigmoid_trait
 
-DEFAULT_CONSTANTS = {
-    # shrinkage strength: larger => more regression to league avg
-    "shrink_pa": 200.0,   # for batter rates
-    "shrink_bf": 250.0,   # for pitcher rates
-
-    # trait mapping sensitivity (bigger => more extreme traits for same relative performance)
-    "alpha_eye": 1.2,
-    "alpha_con": 1.1,
-    "alpha_pow": 1.3,
-    "alpha_spd": 1.0,
-    "alpha_stf": 1.2,
-    "alpha_ctl": 1.2,
-    "alpha_mov": 1.2,
-
-    # minimum playing time for "reliable" (still ingests below this, but traits are closer to 50)
-    "min_pa_for_full_weight": 450,
-    "min_bf_for_full_weight": 700,
-}
+# Load hybrid global calibration once at module level.
+_GLOBAL_STATS = get_global_stats()
+_GH = _GLOBAL_STATS["hitter"]   # plus stat distributions for hitters
+_GP = _GLOBAL_STATS["pitcher"]  # plus stat distributions for pitchers
 
 # ---- Helpers ----
 
@@ -37,24 +24,6 @@ def clamp(x: float, lo: float, hi: float) -> float:
 
 def safe_div(n: float, d: float) -> float:
     return float(n) / float(d) if d and d != 0 else 0.0
-
-def shrink_rate(player_rate: float, lg_rate: float, denom: float, shrink: float) -> float:
-    # Empirical-Bayes-ish shrinkage toward league average
-    w = denom / (denom + shrink) if denom > 0 else 0.0
-    return w * player_rate + (1.0 - w) * lg_rate
-
-def trait_from_relative(rel: float, alpha: float, center: float = 50.0, scale: float = 25.0) -> int:
-    """
-    Monotonic mapping:
-      rel = 1.0 => 50
-      rel > 1.0 => >50
-      rel < 1.0 => <50
-    Uses tanh(log(rel)) for diminishing returns.
-    """
-    rel = max(rel, 1e-6)
-    x = math.tanh(alpha * math.log(rel))
-    val = center + scale * x
-    return int(round(clamp(val, 0, 100)))
 
 def pick_lahman_dir(explicit: Optional[str]) -> str:
     if explicit:
@@ -79,29 +48,98 @@ class LahmanTables:
     people: pd.DataFrame
     batting: pd.DataFrame
     pitching: pd.DataFrame
+    fielding: pd.DataFrame
 
 def load_lahman(lahman_dir: str) -> LahmanTables:
-    people_path = os.path.join(lahman_dir, "People.csv")
-    batting_path = os.path.join(lahman_dir, "Batting.csv")
+    people_path   = os.path.join(lahman_dir, "People.csv")
+    batting_path  = os.path.join(lahman_dir, "Batting.csv")
     pitching_path = os.path.join(lahman_dir, "Pitching.csv")
+    fielding_path = os.path.join(lahman_dir, "Fielding.csv")
 
-    if not os.path.exists(people_path):
-        raise FileNotFoundError(f"Missing {people_path}")
-    if not os.path.exists(batting_path):
-        raise FileNotFoundError(f"Missing {batting_path}")
-    if not os.path.exists(pitching_path):
-        raise FileNotFoundError(f"Missing {pitching_path}")
+    for path in [people_path, batting_path, pitching_path, fielding_path]:
+        if not os.path.exists(path):
+            raise FileNotFoundError(f"Missing {path}")
 
-    people = pd.read_csv(people_path)
-    batting = pd.read_csv(batting_path)
+    people   = pd.read_csv(people_path)
+    batting  = pd.read_csv(batting_path)
     pitching = pd.read_csv(pitching_path)
+    fielding = pd.read_csv(fielding_path)
 
     # Validate expected Lahman columns (standard Lahman)
-    require_cols(people, ["playerID", "nameFirst", "nameLast"], "People.csv")
-    require_cols(batting, ["playerID", "yearID", "AB", "H", "2B", "3B", "HR", "BB", "SO"], "Batting.csv")
+    require_cols(people,   ["playerID", "nameFirst", "nameLast"], "People.csv")
+    require_cols(batting,  ["playerID", "yearID", "AB", "H", "2B", "3B", "HR", "BB", "SO"], "Batting.csv")
     require_cols(pitching, ["playerID", "yearID", "G", "GS", "H", "HR", "BB", "SO"], "Pitching.csv")
+    require_cols(fielding, ["playerID", "yearID", "POS", "G"], "Fielding.csv")
 
-    return LahmanTables(people=people, batting=batting, pitching=pitching)
+    return LahmanTables(people=people, batting=batting, pitching=pitching, fielding=fielding)
+
+
+# ---- Position / role derivation ----
+
+# Lahman raw position → Chin Music scarcity group.
+# Lahman uses 'OF' for all outfield (not split LF/CF/RF); LF/CF/RF included
+# as a forward-compat guard for any Lahman versions that do split them.
+_LAHMAN_TO_CM_POS: dict[str, str] = {
+    "C":  "C",
+    "1B": "1B",
+    "2B": "IF",
+    "3B": "IF",
+    "SS": "IF",
+    "OF": "OF",
+    "LF": "OF",
+    "CF": "OF",
+    "RF": "OF",
+    "DH": "UTIL",
+}
+# Positions that are events, not defensive slots — excluded from primary_position logic.
+_NON_DEFENSIVE_POS = {"P", "PH", "PR"}
+
+
+def compute_pitcher_roles(pitching: pd.DataFrame) -> dict[tuple, str]:
+    """
+    Returns {(playerID, yearID): 'SP' | 'RP'} for every pitcher-season.
+
+    Logic: aggregate G and GS across stints, then SP if GS/G >= 0.5.
+    A pitcher who never started (GS=0) is always RP.
+    """
+    sum_cols = [c for c in ["G", "GS"] if c in pitching.columns]
+    agg = pitching.groupby(["playerID", "yearID"], as_index=False)[sum_cols].sum()
+    agg["GS"] = agg["GS"].fillna(0)
+
+    result: dict[tuple, str] = {}
+    for _, row in agg.iterrows():
+        g  = float(row["G"])
+        gs = float(row["GS"])
+        role = "SP" if (g > 0 and gs / g >= 0.5) else "RP"
+        result[(row["playerID"], int(row["yearID"]))] = role
+    return result
+
+
+def compute_primary_positions(fielding: pd.DataFrame) -> dict[tuple, str]:
+    """
+    Returns {(playerID, yearID): CM_position_group} for every hitter-season.
+
+    Logic:
+      1. Exclude non-defensive appearances (P, PH, PR).
+      2. Aggregate games by (playerID, yearID, POS) across stints.
+      3. Pick the position with the most games for each player-season.
+      4. Map the winning Lahman POS to a Chin Music scarcity group.
+      5. Anything not in the map → 'UTIL'.
+    """
+    df = fielding[~fielding["POS"].isin(_NON_DEFENSIVE_POS)].copy()
+    if df.empty:
+        return {}
+
+    agg = df.groupby(["playerID", "yearID", "POS"], as_index=False)["G"].sum()
+    # argmax of G per player-season → dominant position
+    idx  = agg.groupby(["playerID", "yearID"])["G"].idxmax()
+    best = agg.loc[idx]
+
+    result: dict[tuple, str] = {}
+    for _, row in best.iterrows():
+        cm_pos = _LAHMAN_TO_CM_POS.get(row["POS"], "UTIL")
+        result[(row["playerID"], int(row["yearID"]))] = cm_pos
+    return result
 
 def compute_pa(bat: pd.DataFrame) -> pd.Series:
     # Lahman often has HBP, SF, SH; fall back gracefully
@@ -205,59 +243,104 @@ def global_baseline(ctx_by_year: pd.DataFrame) -> Dict[str, float]:
     }
 
 def build_hitter_traits(row, lg_row, base, C) -> Dict[str, int]:
-    pa = float(row["PA"])
-    # raw rates
-    k = safe_div(row["SO"], pa)
-    bb = safe_div(row["BB"], pa)
-    hr = safe_div(row["HR"], pa)
-    babip = safe_div((row["H"] - row["HR"]), max(row["BIP"], 0.0))
+    """
+    Builds hitter traits using the hybrid era-adjusted + global z-score system.
 
-    # speed index
+    Drivers (era-adjusted plus stats, globally z-scored):
+      contact ← BABIP_plus  = player_BABIP / league_BABIP
+      power   ← ISO_plus    = player_ISO   / league_ISO
+      eye     ← BB_plus     = player_BB%   / league_BB%
+      speed   ← SB index (era-relative, contextual)
+    """
+    _FLOOR = 1e-6
+    pa  = float(row["PA"])
+    bip = float(max(row["BIP"], 0.0))
+
+    bb_rate = safe_div(row["BB"], pa)
+    babip   = safe_div(row["H"] - row["HR"], bip) if bip > 0 else 0.0
+    ab = float(row.get("AB", pa - row.get("BB", 0)))
+    iso = safe_div(
+        float(row.get("2B", 0)) + 2.0 * float(row.get("3B", 0)) + 3.0 * float(row.get("HR", 0)),
+        ab,
+    )
+
+    # Era-adjust via league context
+    lg_bb   = max(float(lg_row.get("bb_rate", 0.085)),  _FLOOR)
+    lg_babip= max(float(lg_row.get("babip",   0.300)),  _FLOOR)
+    lg_iso  = max(float(lg_row.get("lg_avg_iso", 0.130)), _FLOOR)
+
+    bb_plus   = bb_rate  / lg_bb
+    babip_plus= babip    / lg_babip
+    iso_plus  = iso      / lg_iso
+
+    # Speed: SB-based index, era-relative (contextual)
     sb = float(row["SB"]) if "SB" in row and not pd.isna(row["SB"]) else 0.0
     cs = float(row["CS"]) if "CS" in row and not pd.isna(row["CS"]) else 0.0
     att = sb + cs
-    success = safe_div(sb, att) if att > 0 else 0.0
+    success  = safe_div(sb, att) if att > 0 else 0.0
     sb_index = safe_div(sb, pa) * (0.5 + 0.5 * (success if att > 0 else 0.7))
-
-    # shrink toward league-year
-    k_adj = shrink_rate(k, lg_row["k_rate"], pa, C["shrink_pa"])
-    bb_adj = shrink_rate(bb, lg_row["bb_rate"], pa, C["shrink_pa"])
-    hr_adj = shrink_rate(hr, lg_row["hr_rate"], pa, C["shrink_pa"])
-    babip_adj = shrink_rate(babip, lg_row["babip"], max(row["BIP"], 0.0), C["shrink_pa"])
-    spd_adj = shrink_rate(sb_index, lg_row["sb_index"], pa, C["shrink_pa"])
-
-    # normalize to global baseline (relative performance)
-    rel_bb = safe_div(bb_adj, lg_row["bb_rate"]) if lg_row["bb_rate"] > 0 else 1.0
-    rel_hr = safe_div(hr_adj, lg_row["hr_rate"]) if lg_row["hr_rate"] > 0 else 1.0
-    rel_babip = safe_div(babip_adj, lg_row["babip"]) if lg_row["babip"] > 0 else 1.0
-    rel_spd = safe_div(spd_adj, lg_row["sb_index"]) if lg_row["sb_index"] > 0 else 1.0
+    spd_adj  = (sb_index / lg_row["sb_index"]) if lg_row.get("sb_index", 0) > 0 else 1.0
+    spd_trait = int(round(clamp(50.0 + 25.0 * math.tanh(math.log(max(spd_adj, 1e-6))), 20, 99)))
 
     return {
-        "contact": trait_from_relative(rel_babip, C["alpha_con"]),
-        "power": trait_from_relative(rel_hr, C["alpha_pow"]),
-        "eye": trait_from_relative(rel_bb, C["alpha_eye"]),
-        "speed": trait_from_relative(rel_spd, C["alpha_spd"]),
+        "contact": z_score_trait(babip_plus, _GH["babip_plus"]["mean"], _GH["babip_plus"]["std"]),
+        "power":   z_score_trait(iso_plus,   _GH["iso_plus"]["mean"],   _GH["iso_plus"]["std"]),
+        "eye":     z_score_trait(bb_plus,    _GH["bb_plus"]["mean"],    _GH["bb_plus"]["std"]),
+        "speed":   spd_trait,
     }
 
+
 def build_pitcher_traits(row, pit_lg, C) -> Dict[str, int]:
+    """
+    Builds pitcher traits using the hybrid era-adjusted + global z-score system.
+
+    Drivers (era-adjusted plus stats, globally z-scored):
+      stuff    ← K_plus       = pitcher_K%  / league_K%
+      control  ← BB_plus_inv  = league_BB%  / pitcher_BB%  (inverted)
+      movement ← CMD composite = 0.50*era_ratio + 0.30*hr_plus_inv + 0.20*babip_plus_inv
+    """
+    _FLOOR = 1e-6
     bf = float(row["BF"])
-    k = safe_div(row["SO"], bf)
-    bb = safe_div(row["BB"], bf)
-    hr = safe_div(row["HR"], bf)
 
-    # shrink to league-year
-    k_adj = shrink_rate(k, pit_lg["k_rate"], bf, C["shrink_bf"])
-    bb_adj = shrink_rate(bb, pit_lg["bb_rate"], bf, C["shrink_bf"])
-    hr_adj = shrink_rate(hr, pit_lg["hr_rate"], bf, C["shrink_bf"])
+    k_rate  = safe_div(row["SO"], bf)
+    bb_rate = safe_div(row["BB"], bf)
+    hr_rate = safe_div(row["HR"], bf)
 
-    rel_k = safe_div(k_adj, pit_lg["k_rate"]) if pit_lg["k_rate"] > 0 else 1.0            # higher better
-    rel_bb_supp = safe_div(pit_lg["bb_rate"], bb_adj) if bb_adj > 0 else 1.0              # lower better
-    rel_hr_supp = safe_div(pit_lg["hr_rate"], hr_adj) if hr_adj > 0 else 1.0              # lower better
+    # Era-adjust (pit_lg comes from league_context_from_batting which has k_rate/bb_rate)
+    lg_k  = max(float(pit_lg.get("k_rate",  0.14)),  _FLOOR)
+    lg_bb = max(float(pit_lg.get("bb_rate", 0.083)), _FLOOR)
+    lg_hr = max(float(pit_lg.get("hr_rate", 0.019)), _FLOOR)
+    lg_era  = max(float(pit_lg.get("lg_era",     4.00)), _FLOOR)
+    lg_babip= max(float(pit_lg.get("babip",      0.300)), _FLOOR)
+
+    k_plus     = k_rate  / lg_k
+    bb_plus_inv= lg_bb   / max(bb_rate, _FLOOR)
+
+    # Pitcher ERA (need ER and IPouts)
+    outs = float(row.get("IPouts", 0)) if "IPouts" in row else 0.0
+    er   = float(row.get("ER",     0)) if "ER"    in row else 0.0
+    pit_era = (er * 27.0 / outs) if outs > 0 else lg_era
+    era_ratio = lg_era / max(pit_era, _FLOOR)
+    era_ratio = min(era_ratio, 6.0)  # cap extreme outliers
+
+    hr_plus_inv  = lg_hr   / max(hr_rate, _FLOOR)
+    hr_plus_inv  = min(hr_plus_inv, 6.0)
+
+    # Pitcher BABIP: (H-HR) / (BF-SO-BB-HBP-HR)
+    hbp = float(row.get("HBP", 0)) if "HBP" in row else 0.0
+    bip_den = bf - float(row["SO"]) - float(row["BB"]) - hbp - float(row["HR"])
+    if bip_den > 0:
+        pit_babip = (float(row["H"]) - float(row["HR"])) / bip_den
+        babip_inv = min(lg_babip / max(pit_babip, _FLOOR), 3.0)
+    else:
+        babip_inv = 1.0
+
+    cmd_composite = 0.50 * era_ratio + 0.30 * hr_plus_inv + 0.20 * babip_inv
 
     return {
-        "stuff": trait_from_relative(rel_k, C["alpha_stf"]),
-        "control": trait_from_relative(rel_bb_supp, C["alpha_ctl"]),
-        "movement": trait_from_relative(rel_hr_supp, C["alpha_mov"]),
+        "stuff":    sigmoid_trait(k_plus,        _GP["k_plus"]["mean"],        _GP["k_plus"]["std"]),
+        "control":  sigmoid_trait(bb_plus_inv,   _GP["bb_plus_inv"]["mean"],   _GP["bb_plus_inv"]["std"]),
+        "movement": sigmoid_trait(cmd_composite, _GP["cmd_composite"]["mean"], _GP["cmd_composite"]["std"]),
     }
 
 # ---- Supabase push ----
@@ -293,11 +376,16 @@ def main():
     lahman_dir = pick_lahman_dir(args.lahman_dir)
     tables = load_lahman(lahman_dir)
 
-    ppl = build_people_lookup(tables.people)
+    ppl    = build_people_lookup(tables.people)
     bat_ps = agg_batting_player_season(tables.batting)
     pit_ps = agg_pitching_player_season(tables.pitching)
 
-    # League context from batting; v1 uses same ctx for pitching (good enough to start)
+    # Build position / role lookup tables (full-history, season-keyed)
+    pitcher_role_lookup    = compute_pitcher_roles(tables.pitching)
+    primary_position_lookup = compute_primary_positions(tables.fielding)
+
+    # League context still used for speed trait (SB era-relative) but no longer drives
+    # the four primary traits — those now use global z-scores from _GLOBAL_STATS.
     ctx = league_context_from_batting(bat_ps)
     base = global_baseline(ctx)
 
@@ -313,23 +401,32 @@ def main():
     bat_s = bat_s.merge(ppl, on="playerID", how="left")
     pit_s = pit_s.merge(ppl, on="playerID", how="left")
 
+    print(f"  [calibration] Using global z-score baselines "
+          f"(n_h={_GLOBAL_STATS['n_hitter_seasons']:,} / "
+          f"n_p={_GLOBAL_STATS['n_pitcher_seasons']:,} qualifying seasons)")
+
     # Build hitter cards
     hitter_rows = []
     for _, r in bat_s.iterrows():
         if r["PA"] < args.min_pa:
             continue
-        traits = build_hitter_traits(r, lg_row, base, C)
+        # C and base still passed for speed/legacy; primary traits use global z-scores
+        traits  = build_hitter_traits(r, lg_row, base, C)
+        key     = (r["playerID"], int(r["yearID"]))
         hitter_rows.append({
-            "player_id": r["playerID"],
-            "player_name": r["player_name"],
-            "season_year": int(r["yearID"]),
-            "team": None,
-            "position": None,
+            "player_id":        r["playerID"],
+            "player_name":      r["player_name"],
+            "season_year":      int(r["yearID"]),
+            "team":             None,
+            "position":         None,
             **traits,
             # pitcher traits left null
-            "stuff": None,
-            "control": None,
-            "movement": None,
+            "stuff":            None,
+            "control":          None,
+            "movement":         None,
+            # new fields
+            "pitcher_role":     None,
+            "primary_position": primary_position_lookup.get(key),
         })
 
     # Build pitcher cards
@@ -337,19 +434,23 @@ def main():
     for _, r in pit_s.iterrows():
         if r["BF"] < args.min_bf:
             continue
-        traits = build_pitcher_traits(r, lg_row, C)
+        traits  = build_pitcher_traits(r, lg_row, C)
+        key     = (r["playerID"], int(r["yearID"]))
         pitcher_rows.append({
-            "player_id": r["playerID"],
-            "player_name": r["player_name"],
-            "season_year": int(r["yearID"]),
-            "team": None,
-            "position": None,
+            "player_id":        r["playerID"],
+            "player_name":      r["player_name"],
+            "season_year":      int(r["yearID"]),
+            "team":             None,
+            "position":         None,
             # hitter traits left null
-            "contact": None,
-            "power": None,
-            "eye": None,
-            "speed": None,
+            "contact":          None,
+            "power":            None,
+            "eye":              None,
+            "speed":            None,
             **traits,
+            # new fields
+            "pitcher_role":     pitcher_role_lookup.get(key),
+            "primary_position": None,
         })
 
     # Merge hitter+pitcher rows by (player_id, season_year) so two-way ends up in one row
@@ -362,11 +463,18 @@ def main():
             merged[key].update({k: v for k, v in row.items() if v is not None})
 
     out_rows = list(merged.values())
-    print(f"Season {args.season}: built {len(out_rows)} player-season rows")
+
+    n_with_role = sum(1 for r in out_rows if r.get("pitcher_role"))
+    n_with_pos  = sum(1 for r in out_rows if r.get("primary_position"))
+    print(f"Season {args.season}: built {len(out_rows)} player-season rows "
+          f"({n_with_role} with pitcher_role, {n_with_pos} with primary_position)")
 
     if not args.push:
         print("Dry run only (no push). Add --push to write to Supabase.")
-        print("Sample row:", out_rows[0] if out_rows else None)
+        sample = out_rows[0] if out_rows else None
+        if sample:
+            print(f"  Sample hitter: pitcher_role={sample.get('pitcher_role')!r}  "
+                  f"primary_position={sample.get('primary_position')!r}")
         return
 
     sb = get_supabase_client()

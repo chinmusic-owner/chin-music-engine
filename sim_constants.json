@@ -1,20 +1,20 @@
 {
   "constants_version": "2026.01",
   "replacement_level_skillscore": 50,
-  "league_avg_k_pct": 0.215,
+  "league_avg_k_pct": 0.13,
   "league_avg_bb_pct": 0.085,
   "league_avg_hr_per_fb": 0.12,
-  "league_avg_babip": 0.300,
+  "league_avg_babip": 0.3,
   "league_avg_runs_per_game": 4.5,
   "duel_weights": {
     "w1_con_stf": 0.55,
     "w2_eye_ctl": 0.45
   },
   "contact_quality_weights": {
-    "a_pow": 0.40,
+    "a_pow": 0.4,
     "b_con": 0.35,
     "d_gap": 0.25,
-    "c_stf": 0.20
+    "c_stf": 0.2
   },
   "ace_tax_threshold": 150,
   "ace_tax_alpha": 0.3,

@@ -1,55 +1,57 @@
 """
-ratings.py — Stage 3: Trait Conversion (PRD 02)
-Converts era-normalized relative scores into 0–100 traits for use by the PA Engine.
+ratings.py — Stage 3: Trait Conversion (PRD 02 — Global Z-Score Calibration)
+
+Converts player rate stats into 20–99 traits using global z-score normalization
+anchored to the full Lahman database (1871–2025).  This replaces the previous
+era-relative sigmoid/log approach, which compressed historic outliers by
+dividing against each era's own league average.
+
+The z-score formula preserves the true magnitude of cross-era dominance:
+  z     = (player_stat − global_mean) / global_std
+  trait = clamp(50 + z × 16, 20, 99)
+
+  16 pts/σ: a +3σ outlier hits trait 98 (near ceiling).
+  Negative stats (hitter K%, pitcher BB%, pitcher HR%) invert z so that
+  better performance always equals a higher trait number.
+
+Trait → driver mapping:
+  Hitters:  CON ← BABIP    POW ← ISO    EYE ← BB%    AK ← K% (inverted)
+            GAP ← XBH relative (era-relative, unchanged — not a PRD core driver)
+  Pitchers: STF ← K%       CTL ← BB% (inverted)     CMD ← HR% (inverted)
+            STA ← IP/start (era-relative, unchanged — usage pattern, not rate)
 """
 import json
 import math
 import datetime
 from dataclasses import dataclass, field
 
+from global_calibration import get_global_stats, z_score_trait, sigmoid_trait
 
-# ─── Calibration ─────────────────────────────────────────────────────────────
-# Logarithmic scale anchored to three constraints:
-#   1.0x league average → trait 50  (ln(1) = 0, always true)
-#   2.5x league average → trait ~90
-#   5.0x+ league average → 99 (clamped)
-#
-# Derivation: 50 + K * ln(2.5) = 90  →  K = 40 / ln(2.5) ≈ 43.65
-_K = 40.0 / math.log(2.5)
 
-BUILD_VERSION  = "2026.01"
+BUILD_VERSION  = "2026.02"
 SOURCE_VERSION = "lahman_1871-2025"
 
-# Era baseline for STA (average IP per start in the dead-ball / early live-ball era).
-# Will be computed dynamically per year in a future version.
+# Era baseline for STA (average IP per start).
+# Dynamic per-year computation planned for a future version.
 _AVG_IP_PER_START = 7.0
 
-# Cross-era baselines for POW calibration (computed from 41,293 qualifying
-# player-seasons with PA≥100 spanning 1900–2025).
-# POW is driven by ISO and XBH% vs these fixed historical pool averages,
-# NOT vs the current era's league average.  This prevents deadball hitters
-# from receiving inflated POW simply because the 1906 HR floor was ~0.3%.
-HIST_AVG_HR_RATE  = 0.0191   # mean HR/PA across pool (absolute, not era-relative)
-HIST_AVG_ISO      = 0.1256   # mean (2B + 2×3B + 3×HR) / AB across pool
-HIST_AVG_XBH_PCT  = 0.0671   # mean (2B + 3B + HR) / PA across pool
+
+# ─── Legacy mapping (kept for audit comparison) ───────────────────────────────
+# Logarithmic scale: 1.0x lg avg → 50, 2.5x → 90, 5.0x → 99 (clamped).
+# Used only by trait_audit.py to show old vs new side-by-side.
+_K_LEGACY = 40.0 / math.log(2.5)
+
+# Cross-era POW baselines (legacy pipeline only).
+HIST_AVG_HR_RATE = 0.0191
+HIST_AVG_ISO     = 0.1256
+HIST_AVG_XBH_PCT = 0.0671
 
 
-# ─── Core mapping function ────────────────────────────────────────────────────
-
-def map_to_trait(relative_score: float, trait_type: str = None) -> int:
+def _map_to_trait_legacy(relative_score: float, trait_type: str = None) -> int:
     """
-    Maps a relative performance score (player_rate / lg_avg_rate) to a 0–100 trait.
-
-    Scale anchors:
-      5.0x+ → 99  (all-time elite; clamped)
-      2.5x  → 90  (dominant)
-      1.5x  → 67  (above average)
-      1.0x  → 50  (league average)
-      0.7x  → 35  (below average)
-      0.4x  → 17  (poor)
-      0.0x  →  1  (floor)
-
-    trait_type reserved for future per-trait calibration constants.
+    Legacy era-relative mapping (PRD 02 v1).
+    Kept for audit comparison only — NOT used by current card builders.
+    Maps player_rate / lg_avg_rate to a 1–99 trait via log scale.
     """
     try:
         if relative_score is None or math.isnan(relative_score) or math.isinf(relative_score):
@@ -58,13 +60,26 @@ def map_to_trait(relative_score: float, trait_type: str = None) -> int:
         return 50
     if relative_score <= 0:
         return 1
-    raw = 50.0 + _K * math.log(relative_score)
+    raw = 50.0 + _K_LEGACY * math.log(relative_score)
     return int(round(max(1.0, min(99.0, raw))))
+
+
+# Keep public alias so existing callers don't break immediately.
+map_to_trait = _map_to_trait_legacy
 
 
 def _reliability(denominator: int, shrinkage: int = 300) -> float:
     """Empirical Bayes style reliability weight: 0.0–0.99 based on sample size."""
     return round(min(0.99, denominator / (denominator + shrinkage)), 2)
+
+
+def _safe(val, fallback: float = float("nan")) -> float:
+    """Returns val if it is a finite float, else fallback."""
+    try:
+        f = float(val)
+        return f if math.isfinite(f) else fallback
+    except (TypeError, ValueError):
+        return fallback
 
 
 # ─── Player Card ─────────────────────────────────────────────────────────────
@@ -145,34 +160,45 @@ class PlayerCard:
 
 def build_hitter_card(row, name: str, bats: str, throws: str, team_id: str = "") -> PlayerCard:
     """
-    Builds a hitter PlayerCard from a normalized stats row.
-    Trait drivers (PRD 02 §7):
-      POW ← ISO×0.65 + XBH%×0.35  vs fixed historical pool baselines
-            (era-relative HR rate intentionally NOT used — see HIST_AVG_ISO)
-      EYE ← rel_bb      AK ← 1/rel_k
-      CON ← rel_babip   GAP ← rel_gap
+    Builds a hitter PlayerCard using the hybrid era-adjusted + global z-score system.
+
+    Trait drivers (PRD 02 Hybrid Calibration):
+      POW ← iso_plus   = player_ISO / league_ISO    (era-adjusted power)
+      EYE ← bb_plus    = player_BB% / league_BB%    (era-adjusted discipline)
+      AK  ← k_plus_inv = league_K% / player_K%      (era-adjusted contact avoidance)
+      CON ← babip_plus = player_BABIP / league_BABIP (era-adjusted contact quality)
+      GAP ← xbh_plus   = player_XBH% / league_XBH%  (era-adjusted gap power)
+
+    Plus-stat columns expected in row (from ingestion.py::normalize_player_stats):
+      rel_bb (BB_plus), rel_k (K_plus), rel_babip (BABIP_plus),
+      iso_plus, xbh_plus
     """
-    rel_k   = row.get("rel_k",   float("nan"))
-    rel_gap = row.get("rel_gap", float("nan"))
+    gs = get_global_stats()
+    gh = gs["hitter"]
 
-    ak_score  = (1.0 / rel_k)  if (rel_k  == rel_k  and rel_k  > 0) else 1.0
-    gap_score = rel_gap         if (rel_gap == rel_gap and rel_gap > 0) else 1.0
+    # Era-adjusted plus stats (player_rate / league_rate for this season)
+    # rel_bb = BB% / lg_BB% = BB_plus (higher → better plate discipline)
+    # rel_k  = K%  / lg_K%  = K_plus  (higher → worse contact avoidance → invert below)
+    bb_plus    = _safe(row.get("rel_bb"),    1.0)   # BB_plus  (higher = better EYE)
+    k_plus     = _safe(row.get("rel_k"),     1.0)   # K_plus   (higher = worse AK)
+    babip_plus = _safe(row.get("rel_babip"), 1.0)   # BABIP_plus
+    iso_plus   = _safe(row.get("iso_plus"),  1.0)   # ISO_plus
+    xbh_plus   = _safe(row.get("xbh_plus"),  1.0)  # XBH_plus
 
-    # POW: weighted blend of three cross-era signals, all vs fixed historical baselines.
-    #   rel_hr_hist (55%) — absolute HR/PA vs all-time pool; dominant signal.
-    #                       NOT divided by era avg, so a 1906 player with 2 HRs
-    #                       gets the same credit as a 2005 player with 2 HRs.
-    #   rel_iso     (30%) — ISO captures extra-base authority (2B, 3B, HR weighted).
-    #   rel_xbh     (15%) — XBH/PA stabilises gap hitters at low HR counts.
-    rel_hr_hist = row.get("rel_hr_hist", float("nan"))
-    rel_iso     = row.get("rel_iso",     float("nan"))
-    rel_xbh     = row.get("rel_xbh",     float("nan"))
-    rel_hr_hist = rel_hr_hist if (rel_hr_hist == rel_hr_hist and rel_hr_hist > 0) else 0.01
-    rel_iso     = rel_iso     if (rel_iso     == rel_iso     and rel_iso     > 0) else 1.0
-    rel_xbh     = rel_xbh     if (rel_xbh     == rel_xbh     and rel_xbh     > 0) else 1.0
-    pow_score = rel_hr_hist * 0.55 + rel_iso * 0.30 + rel_xbh * 0.15
+    def _ok(v: float) -> float:
+        return v if (math.isfinite(v) and v > 0) else 1.0
 
-    pa = int(row.get("PA", 0))
+    bb_plus    = _ok(bb_plus)
+    k_plus     = _ok(k_plus)
+    babip_plus = _ok(babip_plus)
+    iso_plus   = _ok(iso_plus)
+    xbh_plus   = _ok(xbh_plus)
+
+    # For AK: global distribution stores k_plus_inv = lg_K% / player_K% (higher=better).
+    # rel_k gives K_plus = player_K% / lg_K% — invert it to match the stored distribution.
+    k_plus_inv = 1.0 / k_plus  # now: higher value = lower K rate = better AK
+
+    pa  = int(row.get("PA", 0))
     rel = _reliability(pa)
     hitter_traits = ["CON", "GAP", "POW", "EYE", "AK", "BNT"]
 
@@ -184,20 +210,22 @@ def build_hitter_card(row, name: str, bats: str, throws: str, team_id: str = "")
         throws       = str(throws),
         team_id      = team_id,
         primary_role = "Hitter",
-        CON = map_to_trait(row.get("rel_babip"), "CON"),
-        GAP = map_to_trait(gap_score,            "GAP"),
-        POW = map_to_trait(pow_score,            "POW"),
-        EYE = map_to_trait(row.get("rel_bb"),    "EYE"),
-        AK  = map_to_trait(ak_score,             "AK"),
+        POW = z_score_trait(iso_plus,   gh["iso_plus"]["mean"],   gh["iso_plus"]["std"]),
+        EYE = z_score_trait(bb_plus,    gh["bb_plus"]["mean"],    gh["bb_plus"]["std"]),
+        AK  = z_score_trait(k_plus_inv, gh["k_plus_inv"]["mean"], gh["k_plus_inv"]["std"]),
+        CON = z_score_trait(babip_plus, gh["babip_plus"]["mean"], gh["babip_plus"]["std"]),
+        GAP = z_score_trait(xbh_plus,   gh["xbh_plus"]["mean"],  gh["xbh_plus"]["std"]),
         normalized_rates = {
-            "rel_hr_hist": round(float(rel_hr_hist), 3),
-            "rel_iso":     round(float(rel_iso), 3),
-            "rel_xbh":     round(float(rel_xbh), 3),
-            "rel_hr":      round(float(row.get("rel_hr", float("nan"))), 3),  # era-relative, audit only
-            "rel_bb":    round(float(row.get("rel_bb", float("nan"))), 3),
-            "rel_k":     round(float(rel_k), 3),
-            "rel_babip": round(float(row.get("rel_babip", float("nan"))), 3),
-            "rel_gap":   round(float(gap_score), 3),
+            "k_plus":     round(k_plus,     4),  # K_plus (player/league); lower = better AK
+            "k_plus_inv": round(k_plus_inv, 4),  # lg/player; used for AK trait
+            "bb_plus":    round(bb_plus,    4),
+            "iso_plus":   round(iso_plus,   4),
+            "babip_plus": round(babip_plus, 4),
+            "xbh_plus":   round(xbh_plus,   4),
+            "global_h_iso_mean":   round(gh["iso_plus"]["mean"],   4),
+            "global_h_bb_mean":    round(gh["bb_plus"]["mean"],    4),
+            "global_h_k_mean":     round(gh["k_plus_inv"]["mean"], 4),
+            "global_h_babip_mean": round(gh["babip_plus"]["mean"], 4),
         },
         reliability = {t: rel for t in hitter_traits},
     )
@@ -206,24 +234,49 @@ def build_hitter_card(row, name: str, bats: str, throws: str, team_id: str = "")
 
 def build_pitcher_card(row, name: str, bats: str, throws: str, team_id: str = "") -> PlayerCard:
     """
-    Builds a pitcher PlayerCard from a normalized stats row.
-    Trait drivers (PRD 02 §7):
-      STF ← rel_p_k (pitcher K rate vs league — high is good)
-      CTL ← 1/rel_p_bb (inverse walk rate — lower BB = higher CTL)
-      CMD ← 1/rel_p_hr (inverse HR rate — lower HR = higher CMD)
-      STA ← IP/start relative to era baseline
+    Builds a pitcher PlayerCard using the hybrid era-adjusted + global z-score system.
+
+    Trait drivers (PRD 02 Hybrid Calibration):
+      STF ← k_plus      = pitcher_K% / league_K%    (era-adjusted strikeout dominance)
+      CTL ← bb_plus_inv = league_BB% / pitcher_BB%  (era-adjusted walk suppression)
+      CMD ← cmd_composite — blended:
+              0.50 × era_ratio      (league_ERA / pitcher_ERA)
+              0.30 × hr_plus_inv    (league_HR% / pitcher_HR%)
+              0.20 × babip_pit_plus_inv (league_BABIP / pitcher_BABIP)
+      STA ← IP/start vs era baseline (era-contextual, unchanged)
+
+    Plus-stat columns expected in row (from ingestion.py::normalize_pitcher_stats):
+      rel_p_k (K_plus), rel_p_bb (BB_plus),
+      cmd_composite (pre-computed blend), rel_sta
     """
-    rel_p_bb = row.get("rel_p_bb", float("nan"))
-    rel_p_hr = row.get("rel_p_hr", float("nan"))
-    rel_sta  = row.get("rel_sta",  1.0)
+    gs = get_global_stats()
+    gp = gs["pitcher"]
 
-    ctl_score = (1.0 / rel_p_bb) if (rel_p_bb == rel_p_bb and rel_p_bb > 0) else 1.0
-    cmd_score = (1.0 / rel_p_hr) if (rel_p_hr == rel_p_hr and rel_p_hr > 0) else 1.0
+    # Era-adjusted plus stats
+    # rel_p_k  = pitcher_K%  / league_K%  = K_plus  (higher → better STF)
+    # rel_p_bb = pitcher_BB% / league_BB% = BB_plus  (lower  → better CTL)
+    k_plus        = _safe(row.get("rel_p_k"),        1.0)  # K_plus (higher = better)
+    bb_plus       = _safe(row.get("rel_p_bb"),       1.0)  # BB_plus (lower = better)
+    cmd_composite = _safe(row.get("cmd_composite"),  1.0)  # blended ERA/HR/BABIP
 
-    # SP/RP classification: GS/G >= 0.5 → starter
-    g  = int(row.get("G",  1))
-    gs = int(row.get("GS", 0))
-    pitcher_role = "SP" if gs / max(g, 1) >= 0.5 else "RP"
+    rel_sta = _safe(row.get("rel_sta"), 1.0)
+    if not math.isfinite(rel_sta) or rel_sta <= 0:
+        rel_sta = 1.0
+
+    def _ok(v: float) -> float:
+        return v if (math.isfinite(v) and v > 0) else 1.0
+
+    k_plus        = _ok(k_plus)
+    bb_plus       = _ok(bb_plus)
+    cmd_composite = _ok(cmd_composite)
+
+    # For CTL: global distribution stores bb_plus_inv = lg_BB% / pitcher_BB% (higher=better).
+    # rel_p_bb gives BB_plus = pitcher_BB% / lg_BB% — invert to match stored distribution.
+    bb_plus_inv = 1.0 / bb_plus  # higher value = lower BB rate = better CTL
+
+    g      = int(row.get("G",  1))
+    gs_val = int(row.get("GS", 0))
+    pitcher_role = "SP" if gs_val / max(g, 1) >= 0.5 else "RP"
 
     bfp = int(row.get("BFP", 0))
     rel = _reliability(bfp, shrinkage=400)
@@ -238,15 +291,20 @@ def build_pitcher_card(row, name: str, bats: str, throws: str, team_id: str = ""
         team_id      = team_id,
         primary_role = "Pitcher",
         pitcher_role = pitcher_role,
-        STF = map_to_trait(row.get("rel_p_k"), "STF"),
-        CTL = map_to_trait(ctl_score,          "CTL"),
-        CMD = map_to_trait(cmd_score,           "CMD"),
-        STA = map_to_trait(rel_sta,             "STA"),
+        STF = sigmoid_trait(k_plus,        gp["k_plus"]["mean"],        gp["k_plus"]["std"]),
+        CTL = sigmoid_trait(bb_plus_inv,   gp["bb_plus_inv"]["mean"],   gp["bb_plus_inv"]["std"]),
+        CMD = sigmoid_trait(cmd_composite, gp["cmd_composite"]["mean"], gp["cmd_composite"]["std"]),
+        STA = _map_to_trait_legacy(rel_sta, "STA"),
         normalized_rates = {
-            "rel_p_k":  round(float(row.get("rel_p_k",  float("nan"))), 3),
-            "rel_p_bb": round(float(rel_p_bb), 3),
-            "rel_p_hr": round(float(rel_p_hr), 3),
-            "rel_sta":  round(float(rel_sta), 3),
+            "k_plus":        round(k_plus,        4),
+            "bb_plus":       round(bb_plus,        4),
+            "cmd_composite": round(cmd_composite,  4),
+            "rel_sta":       round(rel_sta,        3),
+            "era_ratio":     round(_safe(row.get("era_ratio"),    1.0), 3),
+            "hr_plus_inv":   round(_safe(row.get("hr_plus_inv"),  1.0), 3),
+            "global_p_k_mean":   round(gp["k_plus"]["mean"],        4),
+            "global_p_bb_mean":  round(gp["bb_plus_inv"]["mean"],   4),
+            "global_p_cmd_mean": round(gp["cmd_composite"]["mean"], 4),
         },
         reliability = {t: rel for t in pitcher_traits},
     )

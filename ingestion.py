@@ -34,62 +34,145 @@ class LahmanAdapter:
         Aggregates team-level counting stats across all teams in a given year
         to produce league-wide rate baselines used for era normalization.
         SF is filled with 0 for years where it wasn't tracked.
+
+        Extended for hybrid calibration (PRD 02 Fix v2):
+          lg_avg_iso      — league ISO (for era-adjusted POW)
+          lg_pit_k_rate   — pitcher-side K% (from Pitching.csv)
+          lg_pit_bb_rate  — pitcher-side BB%
+          lg_pit_hr_rate  — pitcher-side HR%
+          lg_era          — league ERA (for era-adjusted CMD)
+          lg_pit_babip    — league BABIP against (for era-adjusted CMD)
         """
         path = os.path.join(LAHMAN_DIR, "Teams.csv")
         df = pd.read_csv(path)
         df = df[df["yearID"] == year].copy()
-        df["SF"] = df["SF"].fillna(0)
+        df["SF"]  = df["SF"].fillna(0)
         df["HBP"] = df["HBP"].fillna(0)
+        df["2B"]  = df["2B"].fillna(0) if "2B" in df.columns else 0
+        df["3B"]  = df["3B"].fillna(0) if "3B" in df.columns else 0
 
         t = df[["AB", "H", "2B", "3B", "HR", "BB", "SO", "HBP", "SF"]].sum()
 
-        lg_pa    = t["AB"] + t["BB"] + t["HBP"] + t["SF"]
-        lg_bip   = t["AB"] - t["SO"] - t["HR"] + t["SF"]
+        lg_pa  = t["AB"] + t["BB"] + t["HBP"] + t["SF"]
+        lg_bip = t["AB"] - t["SO"] - t["HR"] + t["SF"]
 
-        return {
+        context = {
             "year":             year,
             "lg_pa":            lg_pa,
             "lg_avg_k_rate":    t["SO"]  / lg_pa,
             "lg_avg_bb_rate":   t["BB"]  / lg_pa,
             "lg_avg_hr_rate":   t["HR"]  / lg_pa,
-            "lg_avg_babip":     (t["H"] - t["HR"]) / lg_bip,
+            "lg_avg_babip":     (t["H"] - t["HR"]) / max(float(lg_bip), 1.0),
             "lg_avg_xbh_rate":  (t["2B"] + t["3B"]) / lg_pa,
+            "lg_avg_iso":       (t["2B"] + 2 * t["3B"] + 3 * t["HR"]) / max(float(t["AB"]), 1.0),
         }
+
+        # Pitcher-side league stats from Pitching.csv
+        try:
+            pit_path = os.path.join(LAHMAN_DIR, "Pitching.csv")
+            pit = pd.read_csv(pit_path)
+            pit = pit[pit["yearID"] == year].copy()
+            pit["HBP"] = pit["HBP"].fillna(0) if "HBP" in pit.columns else 0
+            pit["ER"]  = pit["ER"].fillna(0)  if "ER"  in pit.columns else 0
+
+            if "BFP" in pit.columns and pit["BFP"].notna().any():
+                pit["BF"] = pit["BFP"].fillna(0)
+            else:
+                outs = pit["IPouts"].fillna(0) if "IPouts" in pit.columns else 0
+                pit["BF"] = outs + pit["H"].fillna(0) + pit["BB"].fillna(0) + pit["HBP"]
+
+            p = pit[["SO", "BB", "HR", "H", "BF", "ER", "IPouts", "HBP"]].sum()
+            safe_bf  = max(float(p["BF"]),    1.0)
+            safe_ipo = max(float(p["IPouts"]), 1.0)
+
+            bip_den = float(p["BF"]) - float(p["SO"]) - float(p["BB"]) - float(p["HBP"]) - float(p["HR"])
+            bip_den = max(bip_den, 1.0)
+
+            context["lg_pit_k_rate"]  = float(p["SO"]) / safe_bf
+            context["lg_pit_bb_rate"] = float(p["BB"]) / safe_bf
+            context["lg_pit_hr_rate"] = float(p["HR"]) / safe_bf
+            context["lg_era"]         = float(p["ER"])  * 27.0 / safe_ipo
+            context["lg_pit_babip"]   = (float(p["H"]) - float(p["HR"])) / bip_den
+        except Exception:
+            # Fallback to batting-side proxies if Pitching.csv unavailable
+            context["lg_pit_k_rate"]  = context["lg_avg_k_rate"]
+            context["lg_pit_bb_rate"] = context["lg_avg_bb_rate"]
+            context["lg_pit_hr_rate"] = context["lg_avg_hr_rate"]
+            context["lg_era"]         = 4.00
+            context["lg_pit_babip"]   = context["lg_avg_babip"]
+
+        return context
 
 
 def normalize_pitcher_stats(pitcher_df: pd.DataFrame, league_context: dict) -> pd.DataFrame:
     """
-    Computes per-pitcher rate stats and relative scores vs the league batting baseline.
-    Since pitchers and batters face the same opponent pool, the batting-side league
-    averages serve as the correct denominator for pitcher rate comparisons.
+    Computes per-pitcher rate stats and era-adjusted plus stats for hybrid calibration.
+
+    Plus stats (all → higher = better):
+      rel_p_k   = p_k_rate  / lg_pit_k_rate   (K_plus — STF driver)
+      rel_p_bb  = p_bb_rate / lg_pit_bb_rate   (BB_plus — CTL driver, inverted in card builder)
+      rel_p_hr  = p_hr_rate / lg_pit_hr_rate   (HR_plus — CMD component, inverted)
+      era_ratio = lg_era    / p_era            (ERA-ratio — primary CMD driver)
+      babip_pit_plus_inv = lg_pit_babip / p_babip_pit   (CMD component)
+      cmd_composite = 0.50*era_ratio + 0.30*(1/rel_p_hr) + 0.20*babip_pit_plus_inv
 
     STA uses IP/start relative to a fixed era baseline (_AVG_IP_PER_START in ratings.py).
     """
     from ratings import _AVG_IP_PER_START
 
+    _FLOOR = 1e-6
+
     df = pitcher_df.copy()
-    df["BFP"]  = df["BFP"].fillna(0)
-    df["HBP"]  = df["HBP"].fillna(0)
-    df["IP"]   = df["IPouts"] / 3.0
+    df["BFP"]    = df["BFP"].fillna(0)
+    df["HBP"]    = df["HBP"].fillna(0)
+    df["ER"]     = df["ER"].fillna(0) if "ER" in df.columns else 0.0
+    df["IPouts"] = df["IPouts"].fillna(0)
+    df["IP"]     = df["IPouts"] / 3.0
 
     safe_bfp = df["BFP"].replace(0, float("nan"))
+    safe_ipo = df["IPouts"].replace(0, float("nan"))
 
     df["p_k_rate"]  = df["SO"] / safe_bfp
     df["p_bb_rate"] = df["BB"] / safe_bfp
     df["p_hr_rate"] = df["HR"] / safe_bfp
+    df["p_era"]     = df["ER"] * 27.0 / safe_ipo
 
-    # Higher pitcher K rate vs league avg = better STF
-    df["rel_p_k"]  = df["p_k_rate"]  / league_context["lg_avg_k_rate"]
-    # Higher pitcher BB rate vs league avg = worse CTL (inverted in build_pitcher_card)
-    df["rel_p_bb"] = df["p_bb_rate"] / league_context["lg_avg_bb_rate"]
-    # Higher pitcher HR rate vs league avg = worse CMD (inverted in build_pitcher_card)
-    df["rel_p_hr"] = df["p_hr_rate"] / league_context["lg_avg_hr_rate"]
+    # Pitcher BABIP against = (H - HR) / (BF - SO - BB - HBP - HR)
+    bip_den = (df["BFP"] - df["SO"] - df["BB"] - df["HBP"] - df["HR"]).replace(0, float("nan"))
+    df["p_babip_pit"] = (df["H"] - df["HR"]) / bip_den
+
+    # Pitcher-side league context (falls back to batting-side if missing)
+    lg_k  = league_context.get("lg_pit_k_rate",  league_context["lg_avg_k_rate"])
+    lg_bb = league_context.get("lg_pit_bb_rate", league_context["lg_avg_bb_rate"])
+    lg_hr = league_context.get("lg_pit_hr_rate", league_context["lg_avg_hr_rate"])
+    lg_era= league_context.get("lg_era",         4.00)
+    lg_bp = league_context.get("lg_pit_babip",   league_context["lg_avg_babip"])
+
+    df["rel_p_k"]  = df["p_k_rate"]  / max(lg_k,  _FLOOR)
+    df["rel_p_bb"] = df["p_bb_rate"] / max(lg_bb, _FLOOR)
+    df["rel_p_hr"] = df["p_hr_rate"] / max(lg_hr, _FLOOR)
+
+    # ERA ratio: higher = pitcher much better than league average
+    df["era_ratio"] = lg_era / df["p_era"].replace(0, float("nan"))
+    df["era_ratio"] = df["era_ratio"].clip(upper=6.0)  # cap extreme outliers
+
+    # HR suppression plus stat (inverted: lower pitcher HR = higher value)
+    df["hr_plus_inv"] = max(lg_hr, _FLOOR) / df["p_hr_rate"].replace(0, float("nan"))
+    df["hr_plus_inv"] = df["hr_plus_inv"].clip(upper=6.0)
+
+    # BABIP suppression (inverted: lower pitcher BABIP = higher value)
+    df["babip_pit_plus_inv"] = max(lg_bp, _FLOOR) / df["p_babip_pit"].replace(0, float("nan"))
+    df["babip_pit_plus_inv"] = df["babip_pit_plus_inv"].clip(upper=3.0)
+
+    # CMD composite: era_ratio dominates (50%), tempered by HR and BABIP suppression
+    df["cmd_composite"] = (
+        0.50 * df["era_ratio"].fillna(1.0)          +
+        0.30 * df["hr_plus_inv"].fillna(1.0)        +
+        0.20 * df["babip_pit_plus_inv"].fillna(1.0)
+    )
 
     # STA: IP per start for starters; IP per appearance for relievers
-    safe_gs = df["GS"].replace(0, float("nan"))
-    safe_g  = df["G"].replace(0, float("nan"))
     is_starter = df["GS"] / df["G"].clip(lower=1) >= 0.5
-
     df["ip_per_outing"] = df.apply(
         lambda r: r["IP"] / r["GS"] if (r["GS"] > 0 and is_starter[r.name]) else r["IP"] / r["G"],
         axis=1,
@@ -138,13 +221,21 @@ def normalize_player_stats(player_df: pd.DataFrame, league_context: dict) -> pd.
     df["rel_babip"]= df["babip"]   / league_context["lg_avg_babip"]
     df["rel_gap"]  = df["xbh_rate"]/ league_context["lg_avg_xbh_rate"]
 
-    # POW inputs — all divided by FIXED cross-era historical baselines.
-    # rel_hr_hist: HR/PA vs all-time pool mean (NOT vs current era avg).
-    #   A 1906 player with 2 HR gets the same absolute credit as a 2005 player
-    #   with 2 HR, preventing era-floor inflation.
-    # rel_iso:  ISO = (2B + 2×3B + 3×HR) / AB  — extra-base authority.
-    # rel_xbh:  XBH/PA — stabiliser for gap hitters at low HR counts.
-    df["iso"]         = (df["2B"] + 2*df["3B"] + 3*df["HR"]) / safe_ab
+    # ERA-adjusted plus stats for hybrid calibration (PRD 02 Fix v2):
+    #   iso_plus  = player_ISO / league_ISO for this year
+    #   xbh_plus  = player_XBH% / league_XBH% for this year  (GAP driver)
+    # These replace the fixed HIST_AVG_* baselines for the primary trait drivers.
+    df["iso"]      = (df["2B"] + 2*df["3B"] + 3*df["HR"]) / safe_ab
+    df["xbh_pct"]  = (df["2B"] + df["3B"]  +   df["HR"]) / safe_pa
+    df["xbh_rate"] = (df["2B"] + df["3B"]) / safe_pa      # non-HR XBHs for GAP
+
+    lg_iso     = league_context.get("lg_avg_iso",     0.130)
+    lg_xbh_bat = league_context.get("lg_avg_xbh_rate",0.065)
+
+    df["iso_plus"] = df["iso"]      / max(lg_iso,      1e-6)
+    df["xbh_plus"] = df["xbh_rate"] / max(lg_xbh_bat, 1e-6)
+
+    # Legacy fixed-baseline fields kept for backward compat and audit comparison
     df["xbh_pct"]     = (df["2B"] + df["3B"]  +   df["HR"]) / safe_pa
     df["rel_hr_hist"] = df["hr_rate"]  / HIST_AVG_HR_RATE
     df["rel_iso"]     = df["iso"]      / HIST_AVG_ISO
