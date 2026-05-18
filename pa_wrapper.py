@@ -24,6 +24,7 @@ Returns a standardized dict:
 import json
 import os
 import random
+import warnings
 
 from pa_engine import (
     resolve_duel,
@@ -34,6 +35,39 @@ from pa_engine import (
 
 _CONSTANTS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sim_constants.json")
 _DEFAULT_FIELDER = {"RNG": 50, "HND": 50, "ARM": 50}
+
+# (db_column, engine_key) pairs for fielding traits
+_FIELDER_TRAIT_MAP = (("rng", "RNG"), ("hnd", "HND"), ("arm", "ARM"))
+
+
+def fielder_from_row(row: dict) -> dict:
+    """Convert a Supabase ``players`` row to a ``{RNG, HND, ARM}`` fielder dict.
+
+    Each trait falls back to 50 (league average) if the column is absent or
+    null, and emits a ``UserWarning`` so callers know a default was applied.
+
+    Args:
+        row: A dict representing one row from the ``players`` table — typically
+             the result of a Supabase ``select("*")`` call.
+
+    Returns:
+        ``{"RNG": int, "HND": int, "ARM": int}`` ready to pass as
+        ``context["fielder"]`` in ``resolve_pa_seeded``.
+    """
+    label = row.get("player_name") or row.get("player_id") or "unknown"
+    out: dict[str, int] = {}
+    for db_key, eng_key in _FIELDER_TRAIT_MAP:
+        val = row.get(db_key)
+        if val is None:
+            warnings.warn(
+                f"fielder_from_row: '{db_key}' is null for player '{label}' "
+                f"— defaulting to 50",
+                UserWarning,
+                stacklevel=2,
+            )
+            val = 50
+        out[eng_key] = int(val)
+    return out
 
 # Load constants once at import time; callers can override via context["constants"].
 with open(_CONSTANTS_PATH) as _f:

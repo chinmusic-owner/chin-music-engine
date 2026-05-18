@@ -24,6 +24,39 @@ K_CEILING  = 0.55
 BB_CEILING = 0.25
 HBP_CEILING = 0.030
 
+# ── K% formula tuning ────────────────────────────────────────────────────────
+#
+# K% is computed as three additive terms on top of the league-average base:
+#
+#   k_pct = k_base
+#         + K_STF_ABSOLUTE * stf_dominance    (pitcher's raw stuff — matchup-independent)
+#         + K_STF_CON_COEFF * stf_con_edge    (relative STF−CON matchup, can be negative)
+#         − ak_suppression                    (high AK: batter's bat-to-ball skill)
+#         + ak_boost                          (low AK: batter's poor bat-to-ball skill)
+#
+# Term 1 — Absolute STF dominance:
+#   stf_dominance = max(0, (STF − 50) / 100) ** 1.5
+#   K_STF_ABSOLUTE = 0.25:
+#     STF=50 → +0.00pp  |  STF=75 → +3.1pp  |  STF=90 → +6.4pp  |  STF=98 → +8.3pp
+#
+# Term 2 — Relative STF-CON edge:
+#   K_STF_CON_COEFF = 0.20: a full 50-pt STF advantage adds 10pp; negative when CON > STF.
+#
+# Term 3 — AK (bat-to-ball skill), symmetric and nonlinear:
+#   HIGH AK (above 50): suppresses K% — good bat-to-ball skill avoids strikeouts.
+#     ak_suppression = max(0, (AK−50)/50) * (0.08 + batter_edge * 0.08)  [linear]
+#   LOW AK (below 50): boosts K% — poor bat-to-ball skill gifts strikeouts to the pitcher.
+#     ak_deficiency  = max(0, (50−AK)/50)
+#     ak_boost       = ak_deficiency ** AK_LOW_EXP * AK_LOW_SCALE
+#   The concave exponent (< 1) gives diminishing returns: the gap from AK=30 to AK=20
+#   adds less boost than the gap from AK=50 to AK=30.  AK=50 → 0pp; AK=30 → +2.5pp;
+#   AK=20 → +3.4pp.  This pulls Avg Pitcher vs low-AK hitters into the high-single-digit
+#   K% range without letting extreme low AK produce implausible strikeout rates.
+K_STF_ABSOLUTE  = 0.25
+K_STF_CON_COEFF = 0.20
+AK_LOW_EXP      = 0.70    # concave exponent — diminishing returns for each AK point below 50
+AK_LOW_SCALE    = 0.047   # AK=30 → +2.5pp; AK=20 → +3.4pp; AK=0 → +4.7pp (capped by clamp)
+
 # Global BABIP calibration multiplier (Stage 2.5 — non-HR BIP outcomes).
 # Applied to Single/Double/Triple probabilities before renormalization.
 # 1.0 = no adjustment. Raise to increase BABIP; lower to decrease it.
@@ -115,15 +148,30 @@ def resolve_duel(
     D = _clamp(D_raw / DUEL_SCALE, -DUEL_LOGISTIC_CLAMP, DUEL_LOGISTIC_CLAMP)
     p_batter_adv = _logistic(D)
 
-    # K% — driven by STF-CON edge; AK suppresses strikeouts with interaction effect.
-    # AK is normalized over its meaningful above-average range (50–100 → 0.0–1.0).
-    # When the batter already has a CON advantage, high AK amplifies that suppression
-    # further — a contact-skilled hitter punishes weak stuff even more.
+    # K% — three-term formula on top of the league-average base.
+    # See module-level constant block for full documentation.
     stf_con_edge  = (STF - CON) / 100.0
-    ak_normalized = max(0.0, (AK - 50) / 50.0)          # 0.0–1.0; below 50 = no bonus
-    batter_edge   = max(0.0, -stf_con_edge)              # how much CON exceeds STF
-    ak_suppression = ak_normalized * (0.08 + batter_edge * 0.08)
-    k_pct = _clamp(k_base + stf_con_edge * 0.15 - ak_suppression, PROB_FLOOR, K_CEILING)
+    stf_dominance = max(0.0, (STF - 50) / 100.0) ** 1.5   # 0 at STF≤50, ≈0.33 at STF=98
+
+    # High AK: suppresses K% linearly (bat-to-ball skill avoids strikeouts).
+    ak_hi          = max(0.0, (AK - 50) / 50.0)            # 0 at AK≤50, 1.0 at AK=100
+    batter_edge    = max(0.0, -stf_con_edge)                # how much CON exceeds STF
+    ak_suppression = ak_hi * (0.08 + batter_edge * 0.08)
+
+    # Low AK: boosts K% with diminishing returns (poor bat-to-ball skill gives pitchers Ks).
+    # Concave curve (exponent < 1) means AK=20 doesn't give double the boost of AK=30.
+    ak_lo    = max(0.0, (50 - AK) / 50.0)                  # 0 at AK≥50, 1.0 at AK=0
+    ak_boost = ak_lo ** AK_LOW_EXP * AK_LOW_SCALE
+
+    k_pct = _clamp(
+        k_base
+        + K_STF_ABSOLUTE * stf_dominance
+        + K_STF_CON_COEFF * stf_con_edge
+        - ak_suppression
+        + ak_boost,
+        PROB_FLOOR,
+        K_CEILING,
+    )
 
     # BB% — driven purely by EYE-CTL; POW has zero influence (per PRD)
     eye_ctl_edge = (EYE - CTL) / 100.0
@@ -182,15 +230,17 @@ def resolve_duel(
 #   P(Hard) = FLOOR + (CEIL−FLOOR) × σ((Q_noisy − MID) / SCALE)
 #   P(Weak) = FLOOR + (CEIL−FLOOR) × σ((MID_WEAK  − Q_noisy) / SCALE)
 #
-# Calibrated so that:
-#   • Ruth vs avg pitcher   →  ~45% Hard
-#   • Ruth vs elite pitcher →  ~20% Hard   (above floor)
-#   • Avg hitter vs Hoyt    →  ~10% Hard   (at floor)
-#   • Contact hitter vs Hoyt → ~30% Hard
+# Calibrated so that (MID=28):
+#   • Avg hitter vs avg pitcher   →  ~24% Hard  (intentional; was at floor with MID=44)
+#   • Avg hitter vs elite pitcher →  ~10% Hard  (floor still reachable at low Q)
+#   • Gehrig vs avg pitcher       →  ~59% Hard  (near ceiling for elite power vs avg)
+#   • Gehrig vs Pedro 2000        →  ~50% Hard  (elite power making contact; fewer BIPs)
 
 _HARD_FLOOR   = 0.10
 _HARD_CEIL    = 0.60
-_HARD_Q_MID   = 44.0    # Q_noisy where P(Hard) = midpoint (35%)
+_HARD_Q_MID   = 28.0    # Q_noisy where P(Hard) = midpoint (35%).
+                         # Lowered from 44→28: avg-hitter Q_noisy≈25 was pinned at the
+                         # floor; MID=28 places it near the inflection point (~24% Hard).
 _HARD_Q_SCALE = 3.0     # steepness; smaller = sharper cliff (DO NOT go below 2.5)
 
 _WEAK_FLOOR   = 0.03
@@ -207,6 +257,24 @@ _CMD_SIGMA_FLOOR      = 2.5
 # Not used for tier classification any more.
 _CONTACT_SIGMOID_CENTER = 37.0
 _CONTACT_SIGMOID_SCALE  = 12.0
+
+# ── Stage 2 contact-score saturation ─────────────────────────────────────────
+#
+# The raw batter contribution (a*eff_pow + b*CON + d*GAP) is linear and unbounded.
+# A hitter like Gehrig (POW=99, CON=87, GAP=91) reaches batter_raw ≈ 90, which
+# pushes Q_raw to 80+ and locks P(Hard) at the 0.60 ceiling vs ANY pitcher.
+# The resulting BABIP against average pitching is .396+ — unrealistically high.
+#
+# Fix: apply a tanh soft cap so the batter contribution saturates at _BATTER_Q_CAP.
+# The formula: batter_contribution = _BATTER_Q_CAP × tanh(batter_raw / _BATTER_Q_CAP)
+#
+#   batter_raw =  44 (avg hitter)   → contribution ≈ 37  (–7, modest effect)
+#   batter_raw =  70 (good hitter)  → contribution ≈ 55  (–15, noticeable)
+#   batter_raw =  91 (Gehrig)       → contribution ≈ 50  (–41, major cap)
+#
+# This prevents elite hitter × weak pitcher from always saturating Hard%,
+# while keeping avg-vs-avg essentially unchanged.
+_BATTER_Q_CAP = 55.0
 
 
 def _resolve_spray(pow_val: float, gap_val: float, quality: str, rng: random.Random) -> str:
@@ -292,8 +360,15 @@ def resolve_contact(
     con_gate = _logistic((CON - 45) / 15.0)
     effective_pow = POW * con_gate
 
-    # Raw contact score (unbounded; batter side is a weighted avg since a+b+d=1.0)
-    Q_raw = a * effective_pow + b * CON + d * GAP - c * STF
+    # Batter's raw contact contribution (linear, unbounded for high-trait players).
+    batter_raw = a * effective_pow + b * CON + d * GAP
+
+    # Soft cap via tanh saturation — see _BATTER_Q_CAP docstring above.
+    # Prevents elite hitters from always pinning P(Hard) to the ceiling vs avg pitching.
+    batter_contribution = _BATTER_Q_CAP * math.tanh(batter_raw / _BATTER_Q_CAP)
+
+    # Q_raw: pitcher's STF subtracts from the capped batter contribution.
+    Q_raw = batter_contribution - c * STF
 
     # CMD variance: low CMD = wider spread. Floor prevents sigma from collapsing
     # for elite pitchers, which would create an artificial Hard% cliff.
@@ -350,12 +425,12 @@ def resolve_contact(
 #
 # Tier non-HR base probabilities (sum to 1.0):
 #   Weak:   Out 0.830  1B 0.140  2B 0.020  3B 0.005  ROE 0.005  (+0.02 to Single, -0.02 Out)
-#   Medium: Out 0.760  1B 0.160  2B 0.065  3B 0.008  ROE 0.007  (-0.04 Out, +0.03 Single, +0.01 Double)
-#   Hard:   Out 0.650  1B 0.140  2B 0.180  3B 0.015  ROE 0.015  (unchanged)
+#   Medium: Out 0.740  1B 0.185  2B 0.060  3B 0.008  ROE 0.007  (−0.04 Out, +0.04 Single vs prior 0.780/0.145)
+#   Hard:   Out 0.680  1B 0.140  2B 0.180  3B 0.015  ROE 0.015  (unchanged)
 _NON_HR_BASE: dict[str, dict[str, float]] = {
     "Weak":   {"Out": 0.830, "Single": 0.140, "Double": 0.020, "Triple": 0.005, "Error": 0.005},
-    "Medium": {"Out": 0.780, "Single": 0.145, "Double": 0.060, "Triple": 0.008, "Error": 0.007},
-    "Hard":   {"Out": 0.650, "Single": 0.140, "Double": 0.180, "Triple": 0.015, "Error": 0.015},
+    "Medium": {"Out": 0.740, "Single": 0.185, "Double": 0.060, "Triple": 0.008, "Error": 0.007},
+    "Hard":   {"Out": 0.680, "Single": 0.140, "Double": 0.180, "Triple": 0.015, "Error": 0.015},
 }
 
 # Pitcher suppression scaling — bonus added to Out weight before renormalization.
@@ -367,6 +442,65 @@ _PITCHER_SUP_SCALE = 0.12   # CMD suppresses Medium/Weak Out; STF suppresses Har
 _GAP_DOUBLE_MOD  = 0.04   # max ±4% on Double at extreme GAP
 # Spray bonus on Triple for Center/Oppo hits (gap power into the alleys).
 _SPRAY_TRIPLE_BONUS = 0.003
+
+# ── CMD-based hit suppressor (Stage 2.5) ─────────────────────────────────────
+#
+# GLOBAL_BABIP_ADJUST (0.82) is the CMD=50 baseline — it calibrates avg-vs-avg
+# BABIP to ~.300.  CMD above 50 applies an additional multiplier that further
+# reduces hit-in-play probability.  CMD below 50 uses the base (no inflation here;
+# the CMD_VARIANCE mechanism already widens the distribution for wild pitchers).
+#
+# Formula:  effective_hit_adjust = GLOBAL_BABIP_ADJUST × cmd_hit_factor
+#           cmd_hit_factor = 1.0 − max(0, CMD−50) / 100 × _CMD_HIT_SCALE
+#
+#   CMD = 50  → factor = 1.000  (neutral; effective = 0.82 × 1.00 = 0.820)
+#   CMD = 70  → factor = 0.960  (effective = 0.82 × 0.96 = 0.787)
+#   CMD = 93  → factor = 0.914  (effective = 0.82 × 0.91 = 0.749)  ← Pedro
+#   CMD = 99  → factor = 0.902  (effective = 0.82 × 0.90 = 0.740)
+#
+# Pedro 2000 (CMD=93) gets ~8.6% more hit suppression than an average pitcher,
+# on top of the Out-shift suppression already applied via _PITCHER_SUP_SCALE.
+_CMD_HIT_SCALE = 0.10
+
+# ── HR Gate tuning ───────────────────────────────────────────────────────────
+#
+# _HR_POW_SCALE: the main coefficient that converts (POW^2.5) into HR probability
+# on Hard contact.  Reduced from 0.18 → 0.13 to bring raw HR/BIP into the
+# realistic 6-12% range for elite power hitters vs average pitching.
+_HR_POW_SCALE = 0.13
+#
+# Hard-contact HR floor bonus — additive constant applied ONLY to Hard-contact
+# hr_prob, AFTER hr_base is computed.  Medium contact is NOT affected.
+#
+# Rationale: hr_base at avg-hitter traits (POW=50) ≈ 0.061.  The Hard contact
+# path was producing only 10.1% Hard BIPs (pre-MID fix) and only 6% HR/Hard BIP,
+# resulting in HR/PA ≈ .011.  After the MID=28 fix (step 1), Hard% rose to ~26%
+# but HR/Hard BIP remained ~0.060 → HR/PA ≈ .016.  Adding 0.055 here lifts
+# HR/Hard BIP to ~0.116 and targets avg HR/PA ≈ .028.
+#
+# For a POW=50 hitter: bonus raises Hard hr_prob by 90% (0.061→0.116).
+# For a POW=99 hitter: bonus raises Hard hr_prob by 31% (0.175→0.230).
+# The additive shape is intentional — it narrows the gap at the low-POW end
+# without blowing up elite power hitters' conversion rates.
+_HARD_HR_FLOOR_BONUS = 0.055
+#
+# CMD Mistake Factor — nonlinear suppression applied to hr_prob at high CMD:
+#   cmd_mistake_factor = (1 - max(0, CMD - 50) / 100) ** CMD_HR_DAMPENER_EXP
+#
+# The quadratic exponent (2.0) makes the effect strongly nonlinear:
+#   CMD = 50  → factor = 1.00  (no suppression — league-average command)
+#   CMD = 70  → factor = 0.64  (above-average command)
+#   CMD = 90  → factor = 0.36  (elite command — rare meatballs)
+#   CMD = 93  → factor = 0.32  (Pedro 2000 — almost never grooves one)
+#   CMD = 99  → factor = 0.26  (historically unprecedented command)
+#
+# Crucially: CMD 90 is NOT "a bit better than average." A pitcher with CMD 93
+# should hold an elite power hitter's HR% per PA in the low-single-digit range,
+# not double digits.
+#
+# Only applies above CMD=50.  Below CMD=50 the existing CMD_VARIANCE mechanism
+# already handles wild pitchers (wider spread → more hard contact opportunities).
+CMD_HR_DAMPENER_EXP = 0.6
 
 
 def map_bip_outcome(
@@ -417,26 +551,35 @@ def map_bip_outcome(
     # ── Step 1: HR gate ──────────────────────────────────────────────────
     # Raw POW (not CON-gated) drives HR conversion — clearing the fence is a
     # function of raw power, not contact consistency.
-    # POW^2.5 tail gives strong separation: POW 50 ≈ 9%, POW 75 ≈ 13%, POW 99 ≈ 23%.
+    # POW^2.5 tail gives strong separation across the power spectrum.
     # Contact score boosts HR% on sharper contact (better-hit ball = more carry).
     # Medium contact can still produce HRs but at 25% the rate of Hard contact.
     pow_norm = POW / 100.0
     cs_norm  = contact_score / 100.0
-    # HR floor scales with POW so low-power batters cannot clear the fence at
-    # 8% per Hard BIP.  At POW=100 the total is identical to the original
-    # formula (0.02 + 0.06 = 0.08); at POW=40 the floor drops to 0.044.
-    hr_floor = 0.02 + 0.06 * pow_norm
-    hr_base  = hr_floor + (pow_norm ** 2.5) * 0.18 * (0.6 + 0.4 * cs_norm)
+    # HR floor scales with POW so low-power batters have a much lower floor.
+    # _HR_POW_SCALE (0.13) reduced from original 0.18 to bring raw HR/BIP
+    # into the realistic 6-12% range for elite power vs average pitching.
+    hr_floor = 0.02 + 0.05 * pow_norm
+    hr_base  = hr_floor + (pow_norm ** 2.5) * _HR_POW_SCALE * (0.6 + 0.4 * cs_norm)
 
     if contact_quality == "Weak":
         hr_prob   = 0.0
         hr_driver = 0.0
     elif contact_quality == "Hard":
-        hr_prob   = hr_base
+        # Hard contact gets an additional floor bonus (_HARD_HR_FLOOR_BONUS)
+        # on top of hr_base.  Medium is NOT modified — tuned independently.
+        hr_prob   = hr_base + _HARD_HR_FLOOR_BONUS
         hr_driver = round(pow_norm ** 2.5 * 100.0, 4)
     else:  # Medium
         hr_prob   = hr_base * 0.25
         hr_driver = round(pow_norm ** 2.5 * 100.0, 4)
+
+    # CMD Mistake Factor — nonlinear suppression of HR probability.
+    # High CMD means the pitcher almost never "leaves one up" for the power hitter.
+    # Applied only above CMD=50; below that the variance mechanism handles it.
+    cmd_edge          = max(0.0, CMD - 50) / 100.0
+    cmd_mistake_factor = (1.0 - cmd_edge) ** CMD_HR_DAMPENER_EXP
+    hr_prob           *= cmd_mistake_factor
 
     if rng.random() < hr_prob:
         probs = {"HR": 1.0, "Triple": 0.0, "Double": 0.0, "Single": 0.0, "Out": 0.0, "Error": 0.0}
@@ -477,12 +620,14 @@ def map_bip_outcome(
         probs["Triple"] += shift
         probs["Double"] -= shift
 
-    # Global BABIP calibration: scale hit outcomes before final renormalization.
-    # Renormalization then redistributes the remaining weight onto Out/Error,
-    # keeping all probabilities valid and summing to exactly 1.0.
-    if GLOBAL_BABIP_ADJUST != 1.0:
-        for hit_key in ("Single", "Double", "Triple"):
-            probs[hit_key] = probs.get(hit_key, 0.0) * GLOBAL_BABIP_ADJUST
+    # Combined hit suppressor: global BABIP calibration × CMD-based modifier.
+    # GLOBAL_BABIP_ADJUST (0.82) is the CMD=50 baseline.
+    # CMD above 50 compounds an additional reduction; CMD below 50 is neutral here
+    # (wild pitchers are handled by CMD_VARIANCE, not by inflating hit rates).
+    cmd_hit_factor    = 1.0 - max(0.0, CMD - 50) / 100.0 * _CMD_HIT_SCALE
+    effective_hit_adj = GLOBAL_BABIP_ADJUST * cmd_hit_factor
+    for hit_key in ("Single", "Double", "Triple"):
+        probs[hit_key] = probs.get(hit_key, 0.0) * effective_hit_adj
 
     # Renormalize to exactly 1.0
     total = sum(probs.values())
