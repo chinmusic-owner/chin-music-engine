@@ -182,10 +182,35 @@ def estimate_bf(pit: pd.DataFrame) -> pd.Series:
     return outs + h + bb + hbp + sf + sh
 
 def agg_pitching_player_season(pitching: pd.DataFrame) -> pd.DataFrame:
-    sum_cols = [c for c in ["G","GS","H","HR","BB","SO","HBP","IPouts","BFP","SF","SH"] if c in pitching.columns]
+    sum_cols = [c for c in ["G","GS","H","HR","BB","SO","HBP","IPouts","BFP","SF","SH","ER"] if c in pitching.columns]
     grp = pitching.groupby(["playerID","yearID"], as_index=False)[sum_cols].sum()
     grp["BF"] = estimate_bf(grp)
     return grp
+
+
+def get_primary_teams_batting(batting: pd.DataFrame) -> dict:
+    """
+    Returns {(playerID, yearID): teamID} — the team where each hitter had
+    the most AB in that season (handles mid-season trades).
+    """
+    ab_col = "AB" if "AB" in batting.columns else "G"
+    team_ab = batting.groupby(["playerID", "yearID", "teamID"], as_index=False)[ab_col].sum()
+    idx     = team_ab.groupby(["playerID", "yearID"])[ab_col].idxmax()
+    primary = team_ab.loc[idx]
+    return {(r["playerID"], int(r["yearID"])): r["teamID"] for _, r in primary.iterrows()}
+
+
+def get_primary_teams_pitching(pitching: pd.DataFrame) -> dict:
+    """
+    Returns {(playerID, yearID): teamID} — the team where each pitcher had
+    the most IPouts in that season.
+    """
+    ip_col = "IPouts" if "IPouts" in pitching.columns else "G"
+    team_ip = pitching.groupby(["playerID", "yearID", "teamID"], as_index=False)[ip_col].sum()
+    idx     = team_ip.groupby(["playerID", "yearID"])[ip_col].idxmax()
+    primary = team_ip.loc[idx]
+    return {(r["playerID"], int(r["yearID"])): r["teamID"] for _, r in primary.iterrows()}
+
 
 def build_people_lookup(people: pd.DataFrame) -> pd.DataFrame:
     ppl = people.copy()
@@ -199,6 +224,52 @@ def build_people_lookup(people: pd.DataFrame) -> pd.DataFrame:
     return ppl[["playerID", "player_name", "bats", "throws"]]
 
 # ---- League context + traits ----
+
+def league_context_from_pitching(pit_ps: pd.DataFrame) -> pd.DataFrame:
+    """
+    Pitcher-side league context using BF as the denominator — matches the
+    method used inside global_calibration.compute_global_stats().
+
+    Using the PITCHING table (not batting) is critical for pre-1940 seasons
+    where the Lahman batting K totals are under-reported by 30-50% vs the
+    pitching table.  A league-average 1927 pitcher scored k_plus ≈ 1.5 when
+    the batting K rate was used as the denominator, inflating STF into the
+    70-80 range.  Using the pitching table brings the denominator in line with
+    the global reference distribution and produces correct k_plus ≈ 1.0 for
+    era-average pitchers.
+
+    Returns columns: yearID, k_rate, bb_rate, hr_rate, lg_era, babip
+    (same key names as build_pitcher_traits expects via pit_lg.get(...)).
+    """
+    _SAFE = lambda s: s.replace(0, pd.NA)
+
+    cols = [c for c in ["SO","BB","HR","H","HBP","BF","ER","IPouts"]
+            if c in pit_ps.columns]
+    if "HBP" not in pit_ps.columns:
+        pit_ps = pit_ps.copy()
+        pit_ps["HBP"] = 0.0
+
+    agg = pit_ps.groupby("yearID", as_index=False)[
+        [c for c in ["SO","BB","HR","H","HBP","BF","ER","IPouts"] if c in pit_ps.columns]
+    ].sum()
+
+    safe_bf  = _SAFE(agg["BF"])
+    safe_ipo = _SAFE(agg["IPouts"]) if "IPouts" in agg.columns else pd.Series([pd.NA]*len(agg))
+
+    agg["k_rate"]  = agg["SO"] / safe_bf
+    agg["bb_rate"] = agg["BB"] / safe_bf
+    agg["hr_rate"] = agg["HR"] / safe_bf
+    agg["lg_era"]  = agg["ER"] * 27.0 / safe_ipo if "IPouts" in agg.columns else 4.0
+
+    hbp_col = agg["HBP"] if "HBP" in agg.columns else 0
+    bip_den = agg["BF"] - agg["SO"] - agg["BB"] - hbp_col - agg["HR"]
+    agg["babip"] = (agg["H"] - agg["HR"]) / _SAFE(bip_den)
+
+    for col in ["k_rate","bb_rate","hr_rate","lg_era","babip"]:
+        agg[col] = agg[col].fillna(0.0)
+
+    return agg[["yearID","k_rate","bb_rate","hr_rate","lg_era","babip"]]
+
 
 def league_context_from_batting(bat_ps: pd.DataFrame) -> pd.DataFrame:
     # League context by season only (v1). If you want lgID splits later, we can add Teams.csv join.
@@ -216,9 +287,10 @@ def league_context_from_batting(bat_ps: pd.DataFrame) -> pd.DataFrame:
         "CS": "sum" if "CS" in bat_ps.columns else "sum",
     })
 
-    ctx["k_rate"] = ctx["SO"] / ctx["PA"]
-    ctx["bb_rate"] = ctx["BB"] / ctx["PA"]
-    ctx["hr_rate"] = ctx["HR"] / ctx["PA"]
+    ctx["k_rate"]   = ctx["SO"]  / ctx["PA"]
+    ctx["bb_rate"]  = ctx["BB"]  / ctx["PA"]
+    ctx["hr_rate"]  = ctx["HR"]  / ctx["PA"]
+    ctx["xbh_rate"] = ctx["XBH"] / ctx["PA"]
     # BABIP proxy = (H - HR) / BIP
     ctx["babip"] = (ctx["H"] - ctx["HR"]) / ctx["BIP"].replace(0, pd.NA)
     ctx["babip"] = ctx["babip"].fillna(0.0)
@@ -230,7 +302,7 @@ def league_context_from_batting(bat_ps: pd.DataFrame) -> pd.DataFrame:
     success = (sb / attempts).fillna(0.7)  # default-ish if no attempts
     ctx["sb_index"] = (sb / ctx["PA"]) * (0.5 + 0.5 * success)
 
-    return ctx[["yearID","k_rate","bb_rate","hr_rate","babip","sb_index"]]
+    return ctx[["yearID","k_rate","bb_rate","hr_rate","xbh_rate","babip","sb_index"]]
 
 def global_baseline(ctx_by_year: pd.DataFrame) -> Dict[str, float]:
     # simple baseline = mean across years (could be weighted by PA later)
@@ -250,42 +322,52 @@ def build_hitter_traits(row, lg_row, base, C) -> Dict[str, int]:
       contact ← BABIP_plus  = player_BABIP / league_BABIP
       power   ← ISO_plus    = player_ISO   / league_ISO
       eye     ← BB_plus     = player_BB%   / league_BB%
+      ak      ← k_plus_inv  = league_K%    / player_K%  (lower K% → higher AK)
+      gap     ← xbh_plus    = player_XBH%  / league_XBH% (doubles + triples rate)
       speed   ← SB index (era-relative, contextual)
     """
     _FLOOR = 1e-6
     pa  = float(row["PA"])
     bip = float(max(row["BIP"], 0.0))
 
-    bb_rate = safe_div(row["BB"], pa)
-    babip   = safe_div(row["H"] - row["HR"], bip) if bip > 0 else 0.0
-    ab = float(row.get("AB", pa - row.get("BB", 0)))
-    iso = safe_div(
+    bb_rate  = safe_div(row["BB"], pa)
+    k_rate   = safe_div(row["SO"], pa)
+    xbh_rate = safe_div(float(row.get("XBH", 0)), pa)
+    babip    = safe_div(row["H"] - row["HR"], bip) if bip > 0 else 0.0
+    ab       = float(row.get("AB", pa - row.get("BB", 0)))
+    iso      = safe_div(
         float(row.get("2B", 0)) + 2.0 * float(row.get("3B", 0)) + 3.0 * float(row.get("HR", 0)),
         ab,
     )
 
     # Era-adjust via league context
-    lg_bb   = max(float(lg_row.get("bb_rate", 0.085)),  _FLOOR)
-    lg_babip= max(float(lg_row.get("babip",   0.300)),  _FLOOR)
-    lg_iso  = max(float(lg_row.get("lg_avg_iso", 0.130)), _FLOOR)
+    lg_bb   = max(float(lg_row.get("bb_rate",  0.085)), _FLOOR)
+    lg_k    = max(float(lg_row.get("k_rate",   0.140)), _FLOOR)
+    lg_xbh  = max(float(lg_row.get("xbh_rate", 0.065)), _FLOOR)
+    lg_babip = max(float(lg_row.get("babip",   0.300)), _FLOOR)
+    lg_iso   = max(float(lg_row.get("lg_avg_iso", 0.130)), _FLOOR)
 
-    bb_plus   = bb_rate  / lg_bb
-    babip_plus= babip    / lg_babip
-    iso_plus  = iso      / lg_iso
+    bb_plus    = bb_rate  / lg_bb
+    babip_plus = babip    / lg_babip
+    iso_plus   = iso      / lg_iso
+    k_plus_inv = lg_k     / max(k_rate, _FLOOR)   # inverted: lower K% = higher AK
+    xbh_plus   = xbh_rate / lg_xbh
 
     # Speed: SB-based index, era-relative (contextual)
     sb = float(row["SB"]) if "SB" in row and not pd.isna(row["SB"]) else 0.0
     cs = float(row["CS"]) if "CS" in row and not pd.isna(row["CS"]) else 0.0
     att = sb + cs
-    success  = safe_div(sb, att) if att > 0 else 0.0
-    sb_index = safe_div(sb, pa) * (0.5 + 0.5 * (success if att > 0 else 0.7))
-    spd_adj  = (sb_index / lg_row["sb_index"]) if lg_row.get("sb_index", 0) > 0 else 1.0
+    success   = safe_div(sb, att) if att > 0 else 0.0
+    sb_index  = safe_div(sb, pa) * (0.5 + 0.5 * (success if att > 0 else 0.7))
+    spd_adj   = (sb_index / lg_row["sb_index"]) if lg_row.get("sb_index", 0) > 0 else 1.0
     spd_trait = int(round(clamp(50.0 + 25.0 * math.tanh(math.log(max(spd_adj, 1e-6))), 20, 99)))
 
     return {
         "contact": z_score_trait(babip_plus, _GH["babip_plus"]["mean"], _GH["babip_plus"]["std"]),
         "power":   z_score_trait(iso_plus,   _GH["iso_plus"]["mean"],   _GH["iso_plus"]["std"]),
         "eye":     z_score_trait(bb_plus,    _GH["bb_plus"]["mean"],    _GH["bb_plus"]["std"]),
+        "ak":      z_score_trait(k_plus_inv, _GH["k_plus_inv"]["mean"], _GH["k_plus_inv"]["std"]),
+        "gap":     z_score_trait(xbh_plus,   _GH["xbh_plus"]["mean"],   _GH["xbh_plus"]["std"]),
         "speed":   spd_trait,
     }
 
@@ -366,13 +448,15 @@ def upsert_players(sb, rows):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--lahman_dir", default=None)
-    parser.add_argument("--season", type=int, required=True)
+    parser.add_argument("--season",  type=int, required=True)
+    parser.add_argument("--team",    type=str, default=None,
+                        help="Lahman teamID to ingest (e.g. NYA, BOS). Omit for all teams.")
     parser.add_argument("--min_pa", type=int, default=1)
     parser.add_argument("--min_bf", type=int, default=1)
-    parser.add_argument("--push", action="store_true")
+    parser.add_argument("--push",   action="store_true")
     args = parser.parse_args()
 
-    C = DEFAULT_CONSTANTS
+    C = {}  # legacy parameter — trait builders use global z-scores, not constants
     lahman_dir = pick_lahman_dir(args.lahman_dir)
     tables = load_lahman(lahman_dir)
 
@@ -380,24 +464,33 @@ def main():
     bat_ps = agg_batting_player_season(tables.batting)
     pit_ps = agg_pitching_player_season(tables.pitching)
 
-    # Build position / role lookup tables (full-history, season-keyed)
-    pitcher_role_lookup    = compute_pitcher_roles(tables.pitching)
+    # Primary team per player-season (most AB for hitters, most IPouts for pitchers)
+    batting_team_lookup  = get_primary_teams_batting(tables.batting)
+    pitching_team_lookup = get_primary_teams_pitching(tables.pitching)
+
+    # Role / position lookups
+    pitcher_role_lookup     = compute_pitcher_roles(tables.pitching)
     primary_position_lookup = compute_primary_positions(tables.fielding)
 
-    # League context still used for speed trait (SB era-relative) but no longer drives
-    # the four primary traits — those now use global z-scores from _GLOBAL_STATS.
-    ctx = league_context_from_batting(bat_ps)
-    base = global_baseline(ctx)
+    ctx     = league_context_from_batting(bat_ps)
+    pit_ctx = league_context_from_pitching(pit_ps)   # pitching-table league rates
+    base    = global_baseline(ctx)
 
-    # Filter season
+    # Filter to requested season (and optionally team)
     bat_s = bat_ps[bat_ps["yearID"] == args.season].copy()
     pit_s = pit_ps[pit_ps["yearID"] == args.season].copy()
     ctx_s = ctx[ctx["yearID"] == args.season]
     if ctx_s.empty:
-        raise ValueError(f"No league context computed for season {args.season}. Is Batting.csv populated?")
+        raise ValueError(f"No league context for season {args.season}. Is Batting.csv populated?")
     lg_row = ctx_s.iloc[0].to_dict()
 
-    # Join names
+    # Pitcher league context — use pitching table (BF denominator) to match
+    # the global_calibration.py reference distribution and avoid the pre-1940
+    # batting K-rate undercount that inflated early-era pitcher STF.
+    pit_ctx_s = pit_ctx[pit_ctx["yearID"] == args.season]
+    pit_lg_row = pit_ctx_s.iloc[0].to_dict() if not pit_ctx_s.empty else lg_row
+
+    # Join people (names + handedness)
     bat_s = bat_s.merge(ppl, on="playerID", how="left")
     pit_s = pit_s.merge(ppl, on="playerID", how="left")
 
@@ -405,56 +498,73 @@ def main():
           f"(n_h={_GLOBAL_STATS['n_hitter_seasons']:,} / "
           f"n_p={_GLOBAL_STATS['n_pitcher_seasons']:,} qualifying seasons)")
 
-    # Build hitter cards
+    # ── Hitter rows ─────────────────────────────────────────────────────────────
     hitter_rows = []
     for _, r in bat_s.iterrows():
         if r["PA"] < args.min_pa:
             continue
-        # C and base still passed for speed/legacy; primary traits use global z-scores
-        traits  = build_hitter_traits(r, lg_row, base, C)
-        key     = (r["playerID"], int(r["yearID"]))
+        key        = (r["playerID"], int(r["yearID"]))
+        team_id    = batting_team_lookup.get(key)
+        if args.team and team_id != args.team:
+            continue
+        traits     = build_hitter_traits(r, lg_row, base, C)
         hitter_rows.append({
             "player_id":        r["playerID"],
             "player_name":      r["player_name"],
             "season_year":      int(r["yearID"]),
-            "team":             None,
-            "position":         None,
-            **traits,
-            # pitcher traits left null
+            "team":             team_id,
+            "bats":             str(r["bats"])   if r.get("bats")   not in (None, float("nan")) else None,
+            "throws":           str(r["throws"]) if r.get("throws") not in (None, float("nan")) else None,
+            "pa":               int(r["PA"]),
+            **traits,                            # contact, power, eye, ak, gap, speed
+            # pitcher traits left null for hitters
             "stuff":            None,
             "control":          None,
             "movement":         None,
-            # new fields
+            "ip":               None,
             "pitcher_role":     None,
             "primary_position": primary_position_lookup.get(key),
+            "data_source":      "historical",
         })
 
-    # Build pitcher cards
+    # ── Pitcher rows ─────────────────────────────────────────────────────────────
     pitcher_rows = []
     for _, r in pit_s.iterrows():
         if r["BF"] < args.min_bf:
             continue
-        traits  = build_pitcher_traits(r, lg_row, C)
-        key     = (r["playerID"], int(r["yearID"]))
+        key        = (r["playerID"], int(r["yearID"]))
+        team_id    = pitching_team_lookup.get(key)
+        if args.team and team_id != args.team:
+            continue
+        traits     = build_pitcher_traits(r, pit_lg_row, C)
+        ip_val     = float(r.get("IPouts", 0)) / 3.0
+        g          = int(r.get("G",  1))
+        gs         = int(r.get("GS", 0))
+        pitcher_role = "SP" if gs / max(g, 1) >= 0.5 else "RP"
         pitcher_rows.append({
             "player_id":        r["playerID"],
             "player_name":      r["player_name"],
             "season_year":      int(r["yearID"]),
-            "team":             None,
-            "position":         None,
-            # hitter traits left null
+            "team":             team_id,
+            "bats":             str(r["bats"])   if r.get("bats")   not in (None, float("nan")) else None,
+            "throws":           str(r["throws"]) if r.get("throws") not in (None, float("nan")) else None,
+            "ip":               round(ip_val, 1),
+            **traits,                            # stuff, control, movement
+            # hitter traits left null for pitchers
             "contact":          None,
             "power":            None,
             "eye":              None,
+            "ak":               None,
+            "gap":              None,
             "speed":            None,
-            **traits,
-            # new fields
-            "pitcher_role":     pitcher_role_lookup.get(key),
+            "pa":               None,
+            "pitcher_role":     pitcher_role,    # always computed — fixes the null bug
             "primary_position": None,
+            "data_source":      "historical",
         })
 
-    # Merge hitter+pitcher rows by (player_id, season_year) so two-way ends up in one row
-    merged: Dict[Tuple[str,int], Dict] = {}
+    # Merge by (player_id, season_year) — two-way players land in one row
+    merged: Dict[Tuple[str, int], Dict] = {}
     for row in hitter_rows + pitcher_rows:
         key = (row["player_id"], row["season_year"])
         if key not in merged:
@@ -464,23 +574,28 @@ def main():
 
     out_rows = list(merged.values())
 
-    n_with_role = sum(1 for r in out_rows if r.get("pitcher_role"))
-    n_with_pos  = sum(1 for r in out_rows if r.get("primary_position"))
-    print(f"Season {args.season}: built {len(out_rows)} player-season rows "
-          f"({n_with_role} with pitcher_role, {n_with_pos} with primary_position)")
+    n_pit   = sum(1 for r in out_rows if r.get("pitcher_role"))
+    n_pos   = sum(1 for r in out_rows if r.get("primary_position"))
+    team_tag = f" (team={args.team})" if args.team else " (all teams)"
+    print(f"Season {args.season}{team_tag}: built {len(out_rows)} player-season rows "
+          f"({n_pit} pitchers, {n_pos} with primary_position)")
 
     if not args.push:
-        print("Dry run only (no push). Add --push to write to Supabase.")
-        sample = out_rows[0] if out_rows else None
-        if sample:
-            print(f"  Sample hitter: pitcher_role={sample.get('pitcher_role')!r}  "
-                  f"primary_position={sample.get('primary_position')!r}")
+        print("Dry run — add --push to write to Supabase.")
+        for sample in out_rows[:2]:
+            print(
+                f"  {sample['player_name']:22}  team={sample.get('team')!r}"
+                f"  pa={sample.get('pa')!r}  ip={sample.get('ip')!r}"
+                f"  bats={sample.get('bats')!r}  throws={sample.get('throws')!r}"
+                f"  ak={sample.get('ak')!r}  gap={sample.get('gap')!r}"
+                f"  pitcher_role={sample.get('pitcher_role')!r}"
+                f"  data_source={sample.get('data_source')!r}"
+            )
         return
 
-    sb = get_supabase_client()
+    sb   = get_supabase_client()
     resp = upsert_players(sb, out_rows)
     print("Upsert complete.")
-    # supabase-py returns object-ish; print minimal
     try:
         print(f"Inserted/updated rows: {len(resp.data) if resp.data else 0}")
     except Exception:

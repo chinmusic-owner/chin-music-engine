@@ -40,7 +40,16 @@ HBP_CEILING = 0.030
 #     STF=50 → +0.00pp  |  STF=75 → +3.1pp  |  STF=90 → +6.4pp  |  STF=98 → +8.3pp
 #
 # Term 2 — Relative STF-CON edge:
-#   K_STF_CON_COEFF = 0.20: a full 50-pt STF advantage adds 10pp; negative when CON > STF.
+#   K_STF_CON_COEFF = 0.09 (reduced from 0.20, audit 2026-05):
+#   A full 50-pt STF advantage adds 4.5pp; negative when CON > STF.
+#   Reduced because the mid-tier pitcher pool has STF ≈ 37–50 (all below 50 average),
+#   so stf_con_edge is negative for virtually every batter in cross-era pools.
+#   High-CON old-era teams (1954 PHI CON=53.8, 1985 BOS CON=56.1) were getting
+#   a K% suppression of -2.0 to -2.6pp from this term alone — compounding with
+#   AK and BABIP advantages to push their sim W% to .580–.593 against .490 real teams.
+#   At 0.09, the CON-edge contribution stays meaningful but AK is the primary
+#   K-avoidance carrier.  Elite pitchers (STF=90+) retain their full dominance
+#   through K_STF_ABSOLUTE which is unchanged.
 #
 # Term 3 — AK (bat-to-ball skill), symmetric and nonlinear:
 #   HIGH AK (above 50): suppresses K% — good bat-to-ball skill avoids strikeouts.
@@ -53,7 +62,7 @@ HBP_CEILING = 0.030
 #   AK=20 → +3.4pp.  This pulls Avg Pitcher vs low-AK hitters into the high-single-digit
 #   K% range without letting extreme low AK produce implausible strikeout rates.
 K_STF_ABSOLUTE  = 0.25
-K_STF_CON_COEFF = 0.20
+K_STF_CON_COEFF = 0.09
 AK_LOW_EXP      = 0.70    # concave exponent — diminishing returns for each AK point below 50
 AK_LOW_SCALE    = 0.047   # AK=30 → +2.5pp; AK=20 → +3.4pp; AK=0 → +4.7pp (capped by clamp)
 
@@ -238,9 +247,11 @@ def resolve_duel(
 
 _HARD_FLOOR   = 0.10
 _HARD_CEIL    = 0.60
-_HARD_Q_MID   = 28.0    # Q_noisy where P(Hard) = midpoint (35%).
-                         # Lowered from 44→28: avg-hitter Q_noisy≈25 was pinned at the
-                         # floor; MID=28 places it near the inflection point (~24% Hard).
+_HARD_Q_MID   = 30.0    # Q_noisy where P(Hard) = midpoint (35%).
+                         # Raised from 28→30 to reduce league Hard% by ~8–10 pp:
+                         # "good mid-tier" hitters (Q≈30) drop from 43% → 35% Hard;
+                         # typical team avg drops from ~38% → ~30%. Elite hitters
+                         # (Q≈40+, Ruth/Gehrig) remain near the 0.60 ceiling (~58%).
 _HARD_Q_SCALE = 3.0     # steepness; smaller = sharper cliff (DO NOT go below 2.5)
 
 _WEAK_FLOOR   = 0.03
@@ -424,13 +435,21 @@ def resolve_contact(
 #             modified by pitcher suppression and batter GAP/spray.
 #
 # Tier non-HR base probabilities (sum to 1.0):
-#   Weak:   Out 0.830  1B 0.140  2B 0.020  3B 0.005  ROE 0.005  (+0.02 to Single, -0.02 Out)
-#   Medium: Out 0.740  1B 0.185  2B 0.060  3B 0.008  ROE 0.007  (−0.04 Out, +0.04 Single vs prior 0.780/0.145)
-#   Hard:   Out 0.680  1B 0.140  2B 0.180  3B 0.015  ROE 0.015  (unchanged)
+#   Weak:   Out 0.830  1B 0.140  2B 0.020  3B 0.005  ROE 0.005  (unchanged)
+#   Medium: Out 0.740  1B 0.205  2B 0.040  3B 0.008  ROE 0.007  (2B shifted −0.020 → 1B +0.020)
+#   Hard:   Out 0.680  1B 0.190  2B 0.130  3B 0.015  ROE 0.015  (2B shifted −0.050 → 1B +0.050)
+#
+# The 2B→1B shifts are BABIP-neutral: total hit weight (1B+2B+3B) is preserved
+# within each tier so hit/out ratios and BABIP are unchanged.  Only SLG drops
+# because Singles produce 1 TB vs Doubles at 2 TB.
+#
+# Audit reference (2026-05):
+#   Before shift — Hard 2B/hit = 54%, Medium 2B/hit = 24% (excess vs real baseball)
+#   After shift  — Hard 2B/hit = 38%, Medium 2B/hit = 13% (within historical range)
 _NON_HR_BASE: dict[str, dict[str, float]] = {
     "Weak":   {"Out": 0.830, "Single": 0.140, "Double": 0.020, "Triple": 0.005, "Error": 0.005},
-    "Medium": {"Out": 0.740, "Single": 0.185, "Double": 0.060, "Triple": 0.008, "Error": 0.007},
-    "Hard":   {"Out": 0.680, "Single": 0.140, "Double": 0.180, "Triple": 0.015, "Error": 0.015},
+    "Medium": {"Out": 0.740, "Single": 0.205, "Double": 0.040, "Triple": 0.008, "Error": 0.007},
+    "Hard":   {"Out": 0.680, "Single": 0.190, "Double": 0.130, "Triple": 0.015, "Error": 0.015},
 }
 
 # Pitcher suppression scaling — bonus added to Out weight before renormalization.
@@ -467,22 +486,18 @@ _CMD_HIT_SCALE = 0.10
 # _HR_POW_SCALE: the main coefficient that converts (POW^2.5) into HR probability
 # on Hard contact.  Reduced from 0.18 → 0.13 to bring raw HR/BIP into the
 # realistic 6-12% range for elite power hitters vs average pitching.
-_HR_POW_SCALE = 0.13
+_HR_POW_SCALE = 0.12
 #
 # Hard-contact HR floor bonus — additive constant applied ONLY to Hard-contact
 # hr_prob, AFTER hr_base is computed.  Medium contact is NOT affected.
 #
-# Rationale: hr_base at avg-hitter traits (POW=50) ≈ 0.061.  The Hard contact
-# path was producing only 10.1% Hard BIPs (pre-MID fix) and only 6% HR/Hard BIP,
-# resulting in HR/PA ≈ .011.  After the MID=28 fix (step 1), Hard% rose to ~26%
-# but HR/Hard BIP remained ~0.060 → HR/PA ≈ .016.  Adding 0.055 here lifts
-# HR/Hard BIP to ~0.116 and targets avg HR/PA ≈ .028.
-#
-# For a POW=50 hitter: bonus raises Hard hr_prob by 90% (0.061→0.116).
-# For a POW=99 hitter: bonus raises Hard hr_prob by 31% (0.175→0.230).
-# The additive shape is intentional — it narrows the gap at the low-POW end
-# without blowing up elite power hitters' conversion rates.
-_HARD_HR_FLOOR_BONUS = 0.055
+# Reduced from 0.055 → 0.030 (audit 2026-05): the prior floor bonus combined
+# with Hard% of 38–45% was pushing league HR/G to 1.47+.  Cross-era historical
+# target for this team pool is ~0.85–1.0 HR/G.  With Hard% now reduced to ~25–30%
+# (from _HARD_Q_MID=31) the HR gate also fires less often; the floor bonus is
+# trimmed proportionally to keep elite power hitters (POW=90+) in the 15–20%
+# HR/Hard-BIP range while bringing avg-power (POW=50) to ~7–9%.
+_HARD_HR_FLOOR_BONUS = 0.040
 #
 # CMD Mistake Factor — nonlinear suppression applied to hr_prob at high CMD:
 #   cmd_mistake_factor = (1 - max(0, CMD - 50) / 100) ** CMD_HR_DAMPENER_EXP
@@ -732,8 +747,13 @@ def resolve_defense(
     # ── Out ─────────────────────────────────────────────────────────────────
     if bip_outcome == "Out":
         # Ball heading toward the fielder — does he convert it?
-        # Harder hit balls (liners) are trickier despite being "outs" by trajectory.
-        p_catch = _clamp(0.82 + rng_norm * 0.12 + cq_factor, 0.60, 0.97)
+        # Baseline raised from 0.82 → 0.90: the pre-defense "Out" pool already
+        # encodes trajectory into fielder territory; most of those balls should
+        # be converted cleanly.  0.82 was leaking 18–24% as Singles on
+        # Medium/Hard contact, inflating BABIP by ~130–170 bp per tier.
+        # Clamp floor raised 0.60 → 0.72 (even the worst fielder on hard contact
+        # still converts at least 72% of outs); ceiling 0.97 → 0.99.
+        p_catch = _clamp(0.90 + rng_norm * 0.12 + cq_factor, 0.72, 0.99)
         if rng.random() < p_catch:
             rng_check = "reached"
             # HND check: muffed ball → Error

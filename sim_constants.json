@@ -1,7 +1,7 @@
 {
   "constants_version": "2026.01",
   "replacement_level_skillscore": 50,
-  "league_avg_k_pct": 0.13,
+  "league_avg_k_pct": 0.165,
   "league_avg_bb_pct": 0.085,
   "league_avg_hr_per_fb": 0.12,
   "league_avg_babip": 0.3,
