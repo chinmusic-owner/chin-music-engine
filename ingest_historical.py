@@ -85,10 +85,10 @@ _LAHMAN_TO_CM_POS: dict[str, str] = {
     "2B": "IF",
     "3B": "IF",
     "SS": "IF",
-    "OF": "OF",
-    "LF": "OF",
-    "CF": "OF",
-    "RF": "OF",
+    "OF": "OF",   # generic (Lahman shorthand for any outfield slot)
+    "LF": "OF",   # CM scarcity group is still OF …
+    "CF": "OF",   # … but raw_pos is preserved as-is in field_pos so the
+    "RF": "OF",   # engine knows the specific slot (LF / CF / RF).
     "DH": "UTIL",
 }
 # Positions that are events, not defensive slots — excluded from primary_position logic.
@@ -115,9 +115,16 @@ def compute_pitcher_roles(pitching: pd.DataFrame) -> dict[tuple, str]:
     return result
 
 
-def compute_primary_positions(fielding: pd.DataFrame) -> dict[tuple, str]:
+def compute_primary_positions(fielding: pd.DataFrame) -> dict[tuple, tuple[str, str]]:
     """
-    Returns {(playerID, yearID): CM_position_group} for every hitter-season.
+    Returns {(playerID, yearID): (CM_position_group, raw_lahman_pos)} for every hitter-season.
+
+    raw_lahman_pos is the dominant Lahman POS string (e.g. 'SS', '2B', 'OF', 'C', '1B').
+    CM_position_group is the Chin Music scarcity group ('IF', 'OF', '1B', 'C', 'UTIL').
+
+    The raw position is stored in the new `field_pos` DB column so the game engine
+    can build an accurate defensive alignment (real SS/2B/3B names on grounders, etc.).
+    Outfield is kept as 'OF' since Lahman does not split into LF/CF/RF for most eras.
 
     Logic:
       1. Exclude non-defensive appearances (P, PH, PR).
@@ -135,10 +142,11 @@ def compute_primary_positions(fielding: pd.DataFrame) -> dict[tuple, str]:
     idx  = agg.groupby(["playerID", "yearID"])["G"].idxmax()
     best = agg.loc[idx]
 
-    result: dict[tuple, str] = {}
+    result: dict[tuple, tuple[str, str]] = {}
     for _, row in best.iterrows():
-        cm_pos = _LAHMAN_TO_CM_POS.get(row["POS"], "UTIL")
-        result[(row["playerID"], int(row["yearID"]))] = cm_pos
+        raw_pos = str(row["POS"])
+        cm_pos  = _LAHMAN_TO_CM_POS.get(raw_pos, "UTIL")
+        result[(row["playerID"], int(row["yearID"]))] = (cm_pos, raw_pos)
     return result
 
 def compute_pa(bat: pd.DataFrame) -> pd.Series:
@@ -523,7 +531,8 @@ def main():
             "movement":         None,
             "ip":               None,
             "pitcher_role":     None,
-            "primary_position": primary_position_lookup.get(key),
+            "primary_position": (primary_position_lookup.get(key) or (None, None))[0],
+            "field_pos":        (primary_position_lookup.get(key) or (None, None))[1],
             "data_source":      "historical",
         })
 
@@ -560,6 +569,7 @@ def main():
             "pa":               None,
             "pitcher_role":     pitcher_role,    # always computed — fixes the null bug
             "primary_position": None,
+            "field_pos":        None,            # pitchers have no fielding position in this column
             "data_source":      "historical",
         })
 

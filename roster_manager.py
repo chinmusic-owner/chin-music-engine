@@ -174,6 +174,7 @@ def _batter_card_from_row(row: dict) -> dict:
         "bats":         row.get("bats")   or "R",
         "throws":       row.get("throws") or "R",
         "primary_role": "Hitter",
+        "field_pos":    row.get("field_pos"),   # granular Lahman position: SS/2B/3B/1B/C/OF
         "season":       row.get("season_year"),
         "team_id":      row.get("team", ""),
         "traits": {
@@ -335,6 +336,56 @@ def _assemble_roster(
 
 # ── TeamRoster ──────────────────────────────────────────────────────────────────
 
+def _build_defensive_alignment(starters: list, bench: list | None = None) -> dict[str, str]:
+    """
+    Build a real {position: player_name} map using granular Lahman field_pos.
+
+    Infield / C: first player encountered at each slot wins (starters take
+    priority over bench since starters are already ranked by PA descending).
+
+    Outfield assignment:
+      1. If field_pos is a specific slot ('CF', 'LF', 'RF'), assign directly.
+      2. For generic 'OF' (Lahman's standard across most eras): assign by
+         POW ascending — lowest-power OF → CF, corner OFs get LF/RF.
+         CF players are typically contact/speed hitters (lower POW) while
+         corner OFs are power bats (e.g. Ruth POW=99 → RF, Combs POW=55 → CF).
+         Crucially, starters are sorted before bench players so that backup OFs
+         (who may have lower POW than starters) don't steal starting slots.
+    """
+    alignment: dict[str, str] = {}
+    bench = bench or []
+
+    _OF_SLOTS = ("CF", "LF", "RF")
+    _IF_SLOTS = ("C", "1B", "2B", "3B", "SS")
+
+    # Separate starters and bench OFs to ensure starters fill slots first
+    starter_of_generic: list[dict] = []
+    bench_of_generic:   list[dict] = []
+
+    for player, is_starter in [(p, True) for p in starters] + [(p, False) for p in bench]:
+        fp   = player.get("field_pos")
+        name = player.get("name", "")
+        if not fp or not name:
+            continue
+        if fp in _OF_SLOTS:
+            if fp not in alignment:
+                alignment[fp] = name
+        elif fp == "OF":
+            (starter_of_generic if is_starter else bench_of_generic).append(player)
+        elif fp in _IF_SLOTS:
+            if fp not in alignment:
+                alignment[fp] = name
+
+    # Assign generic OF: starters first (sorted by POW asc), bench fills gaps
+    for of_pool in (starter_of_generic, bench_of_generic):
+        of_sorted = sorted(of_pool, key=lambda p: p.get("traits", {}).get("POW", 50))
+        for pos in _OF_SLOTS:
+            if pos not in alignment and of_sorted:
+                alignment[pos] = of_sorted.pop(0).get("name", "")
+
+    return alignment
+
+
 @dataclass
 class TeamRoster:
     """Complete game-ready team object."""
@@ -384,12 +435,19 @@ class TeamRoster:
         # TeamRoster metadata once fielding data is ingested.
         arm = getattr(self, "arm", None) or 55
 
+        # Build real defensive position → player name map from ALL position players
+        # (lineup + bench). Using only the starting 9 leaves out players whose
+        # primary position isn't covered by the top 9 batters by PA (e.g., a 3B
+        # who bats lower in the order still plays defense).
+        def_alignment = _build_defensive_alignment(self.lineup, self.bench)
+
         return {
-            "team_id": self.team_id,
-            "lineup":  self.lineup,
-            "pitcher": starter,
-            "bullpen": bullpen,
-            "arm":     arm,
+            "team_id":            self.team_id,
+            "lineup":             self.lineup,
+            "pitcher":            starter,
+            "bullpen":            bullpen,
+            "arm":                arm,
+            "defensive_alignment": def_alignment,
         }
 
     def print_roster(self) -> None:

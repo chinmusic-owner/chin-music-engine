@@ -47,7 +47,7 @@ import uuid
 from dataclasses import dataclass, field
 
 from pa_wrapper import resolve_pa_seeded
-from narrative_dictionary import narrate
+from narrative_dictionary import narrate, narrate_grounder
 
 
 # ── Seed derivation ─────────────────────────────────────────────────────────────
@@ -89,6 +89,127 @@ _SPD_IH_MOD:  float = 0.00225   # fast batters more likely to beat it out
 _SPD_DP_MOD:  float = 0.003     # slow runners more likely to be doubled up
 
 
+# ── Out-zone tables for FIX 4 (fielder naming) ──────────────────────────────────
+#
+# Each entry is (zone_code, cumulative_probability).  Zones are assigned
+# probabilistically from contact_quality using a deterministic RNG seeded
+# off the PA seed.  The zone drives both the narrative template and the
+# defensive position lookup in print_game_log.
+#
+# Zone codes:
+#   gb_p  — comebacker to pitcher
+#   gb_1b, gb_2b, gb_ss, gb_3b — grounder to that infield position
+#   fb_lf, fb_cf, fb_rf — fly ball to that outfield position
+#   pu_if — infield popup (position rotated round-robin)
+#   ld_if, ld_lf, ld_cf, ld_rf — line drive caught at that zone
+_OUT_ZONES_BY_CQ: dict[str, list[tuple[str, float]]] = {
+    "Weak": [
+        ("gb_p",  0.18),
+        ("gb_1b", 0.33),
+        ("gb_3b", 0.50),
+        ("gb_ss", 0.63),
+        ("gb_2b", 0.75),
+        ("pu_if", 1.00),
+    ],
+    "Medium": [
+        ("gb_ss", 0.13),
+        ("gb_2b", 0.21),
+        ("gb_3b", 0.28),
+        ("gb_1b", 0.35),
+        ("fb_lf", 0.49),
+        ("fb_cf", 0.66),
+        ("fb_rf", 0.77),
+        ("pu_if", 0.84),
+        ("ld_if", 1.00),
+    ],
+    "Hard": [
+        ("gb_ss", 0.05),
+        ("gb_3b", 0.10),
+        ("ld_if", 0.18),
+        ("fb_lf", 0.33),
+        ("fb_cf", 0.56),
+        ("fb_rf", 0.74),
+        ("ld_lf", 0.82),
+        ("ld_cf", 0.91),
+        ("ld_rf", 1.00),
+    ],
+}
+
+# Zone → (defensive position code, narrative template key, display position label)
+_ZONE_META: dict[str, tuple[str, str, str]] = {
+    "gb_p":  ("P",  "OUT_COMEBACKER", "the mound"),
+    "gb_1b": ("1B", "OUT_GROUNDER",   "first base"),
+    "gb_2b": ("2B", "OUT_GROUNDER",   "second base"),
+    "gb_ss": ("SS", "OUT_GROUNDER",   "short"),
+    "gb_3b": ("3B", "OUT_GROUNDER",   "third base"),
+    "fb_lf": ("LF", "OUT_FLY",        "left field"),
+    "fb_cf": ("CF", "OUT_FLY",        "center field"),
+    "fb_rf": ("RF", "OUT_FLY",        "right field"),
+    "pu_if": ("IF", "OUT_POPUP",      "the infield"),
+    "ld_if": ("IF", "OUT_LINER",      "the infield"),
+    "ld_lf": ("LF", "OUT_LINER",      "left field"),
+    "ld_cf": ("CF", "OUT_LINER",      "center field"),
+    "ld_rf": ("RF", "OUT_LINER",      "right field"),
+}
+
+# (Slot-based defensive position proxy removed — real positions from field_pos DB column.)
+
+
+def _assign_out_zone(contact_quality: str, pa_seed: int) -> str:
+    """Return a zone code for a batted-ball out, driven by contact quality."""
+    rng   = random.Random(pa_seed ^ 0xF00D)
+    roll  = rng.random()
+    zones = _OUT_ZONES_BY_CQ.get(contact_quality, _OUT_ZONES_BY_CQ["Medium"])
+    for zone, cum_prob in zones:
+        if roll <= cum_prob:
+            return zone
+    return zones[-1][0]
+
+
+# ── Fatigue model constants (PRD 06) ────────────────────────────────────────────
+#
+# fatigue_level = batters_faced / (STA * 0.35 + 15),  clamped [0.0, 1.0]
+#
+# Stages:  < 0.40  → "fresh"
+#          0.40–0.70 → "working"
+#          0.70–0.90 → "tired"
+#          > 0.90  → "gassed"
+#
+# Each trait begins decaying at its own threshold and cannot fall below 20% of
+# its original value (_MAX_TRAIT_DECAY = 0.80 → at most 80% loss).
+# Decay is non-linear (exponent 1.5) so the curve accelerates late.
+#
+#   STF  starts at fatigue_level > 0.30   (stuff breaks first)
+#   CTL  starts at fatigue_level > 0.50   (command erodes second)
+#   CMD  starts at fatigue_level > 0.70   (location fails last)
+#
+_STF_DECAY_START: float = 0.30
+_CTL_DECAY_START: float = 0.50
+_CMD_DECAY_START: float = 0.70
+_MAX_TRAIT_DECAY: float = 0.80   # → trait floor = 20% of original
+
+
+def _trait_decay_factor(fatigue_level: float, start_threshold: float) -> float:
+    """
+    Return the decay multiplier [0.0, 0.80] for a trait that begins degrading
+    once fatigue_level exceeds *start_threshold*.
+
+    The curve uses a 1.5-power function so decay accelerates as fatigue
+    approaches 1.0 (natural collapse under heavy workload).
+
+      excess = (fatigue_level - start_threshold) / (1.0 - start_threshold)
+      decay  = excess^1.5 * 0.80,  clamped to [0.0, 0.80]
+
+    At fatigue_level == start_threshold  → decay = 0.00  (trait at 100%)
+    At fatigue_level == 1.0             → decay = 0.80  (trait at 20%)
+    """
+    if fatigue_level <= start_threshold:
+        return 0.0
+    span   = 1.0 - start_threshold
+    excess = (fatigue_level - start_threshold) / span
+    return min(_MAX_TRAIT_DECAY, (excess ** 1.5) * _MAX_TRAIT_DECAY)
+
+
 # ── Data structures ─────────────────────────────────────────────────────────────
 
 @dataclass
@@ -107,7 +228,11 @@ class PAEvent:
     runs_scored: int        # Runs that crossed the plate on this PA
     seed: int               # Seed used for this PA (for full determinism replay)
     raw_result: dict        # Full dict returned by resolve_pa_seeded (stage metadata)
+    base_runners_before: list = field(default_factory=list)  # runner cards before this PA
+    outs_recorded:    int  = 0   # Outs added this PA (0-2; DPs correctly contribute 2)
+    fielder_zone:     str  = ""  # Zone code for batted-ball outs (drives fielder narrative)
     baserunning_note: str = ""   # Narrative for any extra-base attempt on this PA
+    fatigue_note: str     = ""   # Fatigue stage transition or pitching change narrative
 
 
 @dataclass
@@ -119,7 +244,12 @@ class BoxScore:
     linescore: dict         # {"away": [int, ...], "home": [int, ...]} — one entry per inning
     pa_events: list         # list[PAEvent]
     innings_played: int
-    walk_off: bool = False
+    walk_off: bool    = False
+    pitcher_log: list = field(default_factory=list)  # per-half-inning PitcherState snapshots
+    away_lineup:    list = field(default_factory=list)  # away batting lineup (player cards)
+    home_lineup:    list = field(default_factory=list)  # home batting lineup (player cards)
+    away_def_align: dict = field(default_factory=dict)  # away defensive alignment {pos: name}
+    home_def_align: dict = field(default_factory=dict)  # home defensive alignment {pos: name}
 
 
 @dataclass
@@ -145,96 +275,167 @@ class GameState:
 @dataclass
 class PitcherState:
     """
-    Tracks the active pitcher and fatigue state for one team's staff.
+    Tracks the active pitcher's fatigue state for one team's staff.  (PRD 06)
 
-    Stamina model
+    Fatigue model
     ─────────────
-    Each pitcher has a STA trait.  max_pa is derived from STA and role:
-        SP  →  round(STA × 0.40)   e.g. STA=75  →  30 PA  (~7 innings)
-        RP  →  round(STA × 0.20)   e.g. STA=50  →  10 PA  (~2 innings)
+    fatigue_level = batters_faced / (STA × 0.35 + 15),  clamped [0.0, 1.0]
 
-    Once pa_faced >= max_pa the pitcher is "over-limit":
-        • effective_card() applies a 2-point STF/CTL penalty per extra batter
-          (floor of 40 on any trait).
-        • should_pull() returns True if:
-            - 6 or more batters faced over max_pa  (hard limit: auto-hook), OR
-            - 2 or more runs allowed while over-limit  (soft limit: manager hook).
+    Stages:
+        < 0.40  → "fresh"     — no meaningful decay
+        0.40–0.70 → "working" — STF begins to decay
+        0.70–0.90 → "tired"   — STF + CTL decaying; CMD just starting
+        > 0.90  → "gassed"    — all three traits under heavy decay
+
+    Trait decay order (sequential, non-linear):
+        STF  starts at fatigue_level > 0.30   (stuff breaks first)
+        CTL  starts at fatigue_level > 0.50   (command erodes second)
+        CMD  starts at fatigue_level > 0.70   (location fails last)
+
+    Floor: no trait can fall below 20% of its original starting value.
+
+    Pull triggers (any one is sufficient):
+        1. fatigue_stage == "gassed"
+        2. batters_faced > STA × 0.35 + 10   (workload hard cap)
+        3. fatigue_stage == "tired" AND runs_allowed_this_inning >= 3
 
     Bullpen cycling
     ───────────────
-    pull_next() replaces current with bullpen[0] and resets per-pitcher counters.
-    If the bullpen is empty the tired starter stays in.
+    pull_next() pops bullpen[0], resets all per-pitcher counters, and
+    snapshots the new pitcher's original traits.
+    If the bullpen is empty the fatigued pitcher stays in.
     """
-    current:          dict
-    pa_faced:         int  = 0
-    runs_while_tired: int  = 0
-    bullpen:          list = field(default_factory=list)
+    current:                 dict
+    original_traits:         dict = field(default_factory=dict)
+    batters_faced:           int  = 0
+    runs_allowed:            int  = 0
+    runs_allowed_this_inning: int = 0
+    bullpen:                 list = field(default_factory=list)
 
-    # Tuning constants
-    _HARD_OVER_LIMIT: int   = 6     # auto-hook after this many batters over limit
-    _SOFT_RUNS_LIMIT: int   = 2     # hook if pitcher allows this many runs while tired
-    _FATIGUE_RATE:    int   = 2     # STF/CTL points lost per extra batter
-    _FATIGUE_FLOOR:   int   = 40    # minimum value after fatigue degrades a trait
+    def __post_init__(self) -> None:
+        # Snapshot the pitcher's traits at the moment they take the mound.
+        # This reference value never changes for this pitcher's outing —
+        # effective_card() computes decay against it every PA.
+        if not self.original_traits:
+            self.original_traits = dict(self.current.get("traits", {}))
 
-    @property
-    def max_pa(self) -> int:
-        sta  = self.current["traits"].get("STA", 60)
-        role = self.current.get("pitcher_role", "SP")
-        mult = 0.40 if role == "SP" else 0.20
-        return max(3, round(sta * mult))
+    # ── Fatigue level & stage ────────────────────────────────────────────────
 
     @property
-    def is_over_limit(self) -> bool:
-        return self.pa_faced >= self.max_pa
+    def fatigue_level(self) -> float:
+        """Workload ratio [0.0, 1.0].  1.0 = pitcher is fully spent."""
+        sta   = self.original_traits.get("STA", 60)
+        limit = sta * 0.35 + 15
+        return min(1.0, self.batters_faced / limit)
 
     @property
-    def tired_pa(self) -> int:
-        """Batters faced above the stamina limit (0 when not yet over-limit)."""
-        return max(0, self.pa_faced - self.max_pa)
+    def fatigue_stage(self) -> str:
+        """Human-readable fatigue stage.  Drives narrative and pull logic."""
+        fl = self.fatigue_level
+        if fl < 0.40:
+            return "fresh"
+        if fl < 0.70:
+            return "working"
+        if fl < 0.90:
+            return "tired"
+        return "gassed"
+
+    # ── Trait decay ──────────────────────────────────────────────────────────
 
     def effective_card(self) -> dict:
-        """Return the pitcher card with fatigue-adjusted STF and CTL."""
-        tp = self.tired_pa
-        if tp <= 0:
-            return self.current
-        penalty = tp * self._FATIGUE_RATE
-        t = self.current["traits"]
+        """
+        Return the pitcher card with fatigue-decayed STF, CTL, CMD.
+
+        Original traits are never mutated; decay is computed fresh each call.
+        Floors are enforced at 20% of each trait's original value (≥ 1).
+        """
+        fl   = self.fatigue_level
+        orig = self.original_traits
+
+        def _decayed(original: float, threshold: float) -> int:
+            factor = _trait_decay_factor(fl, threshold)
+            floor  = max(1, round(original * (1.0 - _MAX_TRAIT_DECAY)))
+            return max(floor, round(original * (1.0 - factor)))
+
         return {
             **self.current,
             "traits": {
-                **t,
-                "STF": max(self._FATIGUE_FLOOR, t["STF"] - penalty),
-                "CTL": max(self._FATIGUE_FLOOR, t["CTL"] - penalty),
+                **self.current.get("traits", {}),
+                "STF": _decayed(orig.get("STF", 50), _STF_DECAY_START),
+                "CTL": _decayed(orig.get("CTL", 50), _CTL_DECAY_START),
+                "CMD": _decayed(orig.get("CMD", 50), _CMD_DECAY_START),
             },
         }
 
+    # ── Pull logic ───────────────────────────────────────────────────────────
+
     def should_pull(self) -> bool:
-        """True if the pitcher should be replaced before the next batter."""
-        if not self.is_over_limit:
-            return False
-        if self.tired_pa >= self._HARD_OVER_LIMIT:
+        """
+        Return True if the pitcher should be replaced before the next batter.
+
+        Three independent triggers (any one is sufficient):
+          1. Stage is "gassed"  (fatigue_level > 0.90)
+          2. Workload exceeds hard cap  (batters_faced > STA × 0.35 + 10)
+          3. Stage is "tired" AND 3+ runs allowed this inning
+        """
+        stage = self.fatigue_stage
+        if stage == "gassed":
             return True
-        if self.runs_while_tired >= self._SOFT_RUNS_LIMIT:
+        sta = self.original_traits.get("STA", 60)
+        if self.batters_faced > (sta * 0.35 + 10):
+            return True
+        if stage == "tired" and self.runs_allowed_this_inning >= 3:
             return True
         return False
 
+    # ── Lifecycle ────────────────────────────────────────────────────────────
+
     def pull_next(self) -> bool:
         """
-        Swap in the next bullpen pitcher.
-        Resets per-pitcher counters.  Returns True if a change was made.
+        Swap in the next bullpen arm (top-down, deterministic).
+        Resets all per-pitcher counters and snapshots the new pitcher's
+        original traits.  Returns True if a change was made.
         """
         if not self.bullpen:
             return False
-        self.current          = self.bullpen.pop(0)
-        self.pa_faced         = 0
-        self.runs_while_tired = 0
+        self.current                  = self.bullpen.pop(0)
+        self.original_traits          = dict(self.current.get("traits", {}))
+        self.batters_faced            = 0
+        self.runs_allowed             = 0
+        self.runs_allowed_this_inning = 0
         return True
 
+    def reset_inning(self) -> None:
+        """Call at the start of every half-inning to reset inning-level run counter."""
+        self.runs_allowed_this_inning = 0
+
     def record_pa(self, runs: int) -> None:
-        """Update counters after one PA has been resolved."""
-        self.pa_faced += 1
-        if self.is_over_limit:
-            self.runs_while_tired += runs
+        """Increment workload counters after one PA has resolved."""
+        self.batters_faced            += 1
+        self.runs_allowed             += runs
+        self.runs_allowed_this_inning += runs
+
+    # ── Audit snapshot ───────────────────────────────────────────────────────
+
+    def snapshot(self) -> dict:
+        """
+        Return the per-inning pitcher_state dict required by PRD 06:
+          { id, name, curr_stf, curr_ctl, curr_cmd, fatigue_level,
+            fatigue_stage, is_fatigued, batters_faced }
+        """
+        card = self.effective_card()
+        t    = card.get("traits", {})
+        return {
+            "id":            self.current.get("player_id", "unknown"),
+            "name":          self.current.get("name", "unknown"),
+            "curr_stf":      t.get("STF", 0),
+            "curr_ctl":      t.get("CTL", 0),
+            "curr_cmd":      t.get("CMD", 0),
+            "fatigue_level": round(self.fatigue_level, 3),
+            "fatigue_stage": self.fatigue_stage,
+            "is_fatigued":   self.fatigue_stage in ("tired", "gassed"),
+            "batters_faced": self.batters_faced,
+        }
 
 
 # ── Team parsing ────────────────────────────────────────────────────────────────
@@ -410,24 +611,58 @@ def _apply_outcome(
             if b[1]:  b[2] = True; br[2] = br[1]; b[1] = False; br[1] = None  # 2B→3B
             if b[0]:  b[1] = True; br[1] = br[0]; b[0] = False; br[0] = None  # 1B→2B
             b[0] = True; br[0] = batter                                # batter→1B
-            br_note = narrate("INFIELD_HIT", batter_name)
             state.score[side] += runs
-            return runs, br_note, "InfieldHit"
+            return runs, "", "InfieldHit"   # br_note="" — primary template handles it
 
-        # ── Stage 2: Groundout — batter out at 1B, possible DP ───────────────
-        state.outs += 1
-        if state.outs < 3 and b[0]:
-            runner    = br[0]
+        # ── Stage 2: Groundout / Fielder's Choice / Double Play ───────────────
+        # outs increment happens inside each branch so the right player is credited.
+        if b[0] and state.outs < 3:
+            # Runner on 1B is in play — evaluate DP, FC, or weak-roller groundout.
+            runner     = br[0]
             runner_spd = runner.get("traits", {}).get("SPD", 50) if runner else 50
-            dp_base   = _DP_BASE.get(contact_quality, 0.475)
-            dp_chance = max(0.05, min(0.80, dp_base + (50 - runner_spd) * _SPD_DP_MOD))
-            if rng_dp.random() < dp_chance:
-                state.outs += 1
+            dp_base    = _DP_BASE.get(contact_quality, 0.475)
+            dp_chance  = max(0.05, min(0.80, dp_base + (50 - runner_spd) * _SPD_DP_MOD))
+
+            if state.outs < 2 and rng_dp.random() < dp_chance:
+                # 6-4-3 DP: batter out at 1B + r1 out at 2B = 2 outs
+                state.outs += 2
+
+                # Snapshot 2B/3B before mutating.
+                r2 = br[1] if b[1] else None   # runner on 2B → advances to 3B
+                r3 = br[2] if b[2] else None   # runner on 3B → stays, or scores
+
+                # Clear all bases; rebuild from surviving runners only.
                 b[0] = False;  br[0] = None
+                b[1] = False;  br[1] = None
+                b[2] = False;  br[2] = None
+
+                if r3 and r2:
+                    runs += 1;  b[2] = True;  br[2] = r2   # r3 scores; r2 takes 3B
+                elif r3:
+                    b[2] = True;  br[2] = r3               # r3 stays
+                elif r2:
+                    b[2] = True;  br[2] = r2               # r2 advances to empty 3B
+
+                state.score[side] += runs
                 br_note = narrate("DOUBLE_PLAY", batter_name)
-            elif contact_quality == "Weak":
+
+            elif contact_quality != "Weak":
+                # True Fielder's Choice: fielder fires to 2B for the force; batter
+                # safely reaches 1B.  One out (the runner) is recorded, not the batter.
+                state.outs += 1          # runner on 1B retired at 2B
+                br[0] = batter           # batter safely takes the open spot at 1B
+                # b[0] stays True
+                return runs, "", "FC"   # br_note="" — primary FC template covers it
+
+            else:
+                # Weak roller: batter out at 1B; runner on 1B holds (no time for 2B)
+                state.outs += 1
                 br_note = narrate("WEAK_ROLLER_NO_DP", batter_name)
-        return 0, br_note, ""
+
+        else:
+            # No runner on 1B: simple groundout — batter out at 1B
+            state.outs += 1
+        return runs, br_note, ""
 
     # ── Singles and errors (batter reaches 1B) ──────────────────────────────
     if outcome in ("Single", "Error"):
@@ -553,17 +788,33 @@ def _play_half_inning(
     Returns:
         (runs_scored_this_half, walk_off_occurred)
     """
-    half_runs = 0
-    walk_off  = False
+    half_runs    = 0
+    walk_off     = False
+    pending_note = ""   # carries PITCHING_CHANGE narrative to the very next PAEvent
+
+    # Reset inning-level run counter so should_pull()'s tired+3-run trigger
+    # only fires on runs allowed in the current half-inning.
+    ps.reset_inning()
 
     while state.outs < 3:
+
         # ── Manager hook: pull tired pitcher before this batter ──────────────
         if ps.should_pull():
-            ps.pull_next()          # swap in next bullpen arm; resets per-pitcher counters
+            old_name = ps.current.get("name", "unknown")
+            changed  = ps.pull_next()          # swap in next bullpen arm; resets counters
+            if changed:
+                new_name     = ps.current.get("name", "unknown")
+                pending_note = narrate("PITCHING_CHANGE", new_name)
+                # Reset inning counter for the new pitcher's accountability window
+                ps.reset_inning()
 
-        # Snapshot pre-PA state for the receipt (bool flags)
-        bases_snap  = list(state.bases)
-        outs_before = state.outs
+        # Snapshot fatigue stage BEFORE this PA so we can detect transitions
+        stage_before = ps.fatigue_stage
+
+        # Snapshot pre-PA state for the receipt
+        bases_snap   = list(state.bases)
+        runners_snap = list(state.base_runners)   # runner cards (or None) at each base
+        outs_before  = state.outs
 
         # Pull the next batter in the 1–9 order (wraps across inning boundaries)
         idx    = state.batter_idx[batting_side]
@@ -590,25 +841,65 @@ def _play_half_inning(
         )
         half_runs += runs
 
-        # Update pitcher's fatigue counters for this PA
+        # Outs added by this PA (0 for hits/walks, 1 for routine outs,
+        # 2 for double plays, possibly 2 for baserunner throw-outs on same play).
+        outs_recorded = state.outs - outs_before
+
+        # Assign fielder zone for true batted-ball outs (not DP, FC, or IH).
+        # DP uses DOUBLE_PLAY_PRIMARY; FC uses FIELDERS_CHOICE; IH uses INFIELD_HIT.
+        # K has no zone. The zone drives fielder-named narratives in print_game_log.
+        if (outcome == "Out"
+                and resolved_outcome not in ("InfieldHit", "FC")
+                and outs_recorded == 1):
+            fielder_zone = _assign_out_zone(contact_quality, br_seed)
+        else:
+            fielder_zone = ""
+
+        # Update pitcher's fatigue counters AFTER the PA resolves
         ps.record_pa(runs)
+
+        # ── Fatigue narrative ─────────────────────────────────────────────────
+        pitcher_name = ps.current.get("name", "unknown")
+        stage_after  = ps.fatigue_stage
+        fatigue_note = pending_note          # consume any queued pitching-change line
+        pending_note = ""
+
+        if stage_after != stage_before:
+            # Stage transition — tag it once (prioritise pitching-change over transition)
+            if stage_after == "tired" and not fatigue_note:
+                fatigue_note = narrate("PITCHER_TIRED", pitcher_name)
+            elif stage_after == "gassed" and not fatigue_note:
+                fatigue_note = narrate("PITCHER_GASSED", pitcher_name)
+        elif runs > 0 and stage_after in ("tired", "gassed") and not fatigue_note:
+            # Collapse: fatigued pitcher allows runs (no transition this PA).
+            # Choose language that matches how the run actually scored —
+            # "hard contact" is wrong when the run came via a walk or HBP.
+            _collapse_outcome = resolved_outcome or outcome
+            if _collapse_outcome in ("BB", "HBP"):
+                fatigue_note = narrate("PITCHER_COLLAPSE_WALK", pitcher_name)
+            else:
+                fatigue_note = narrate("PITCHER_COLLAPSE", pitcher_name)
 
         # Record the receipt — pitcher_id/name reflect who actually faced the batter
         pa_events.append(PAEvent(
-            inning           = state.inning,
-            half             = state.half,
-            pa_number        = pa_counter[0],
-            batter_id        = batter.get("player_id", "unknown"),
-            batter_name      = batter.get("name", "unknown"),
-            pitcher_id       = ps.current.get("player_id", "unknown"),
-            pitcher_name     = ps.current.get("name", "unknown"),
-            outcome          = resolved_outcome or outcome,
-            outs_before      = outs_before,
-            bases_before     = bases_snap,
-            runs_scored      = runs,
-            seed             = seed,
-            raw_result       = raw_result,
-            baserunning_note = br_note,
+            inning               = state.inning,
+            half                 = state.half,
+            pa_number            = pa_counter[0],
+            batter_id            = batter.get("player_id", "unknown"),
+            batter_name          = batter.get("name", "unknown"),
+            pitcher_id           = ps.current.get("player_id", "unknown"),
+            pitcher_name         = ps.current.get("name", "unknown"),
+            outcome              = resolved_outcome or outcome,
+            outs_before          = outs_before,
+            outs_recorded        = outs_recorded,
+            bases_before         = bases_snap,
+            base_runners_before  = runners_snap,
+            runs_scored          = runs,
+            seed                 = seed,
+            raw_result           = raw_result,
+            fielder_zone         = fielder_zone,
+            baserunning_note     = br_note,
+            fatigue_note         = fatigue_note,
         ))
 
         # Walk-off: home takes the lead in the bottom of inning >= 9
@@ -655,15 +946,23 @@ def simulate_game(
     away_arm = int(away_team.get("arm", 55)) if isinstance(away_team, dict) else 55
     home_arm = int(home_team.get("arm", 55)) if isinstance(home_team, dict) else 55
 
+    # Real defensive alignment: {position: player_name} built from field_pos data.
+    # away team defends when home bats (bottom half) and vice versa.
+    away_def_align = (away_team.get("defensive_alignment", {})
+                      if isinstance(away_team, dict) else {})
+    home_def_align = (home_team.get("defensive_alignment", {})
+                      if isinstance(home_team, dict) else {})
+
     # PitcherState persists across all innings; fatigue accumulates all game long
     away_ps = PitcherState(current=away_pitcher, bullpen=list(away_bullpen))
     home_ps = PitcherState(current=home_pitcher, bullpen=list(home_bullpen))
 
-    state      = GameState()
+    state       = GameState()
     pa_events: list[PAEvent] = []
-    pa_counter = [0]                        # mutable so _play_half_inning can increment it
-    linescore  = {"away": [], "home": []}
-    walk_off   = False
+    pa_counter  = [0]                        # mutable so _play_half_inning can increment it
+    linescore   = {"away": [], "home": []}
+    pitcher_log = []                         # per-half-inning PitcherState snapshots
+    walk_off    = False
     last_inning = 1
 
     while True:
@@ -678,6 +977,11 @@ def simulate_game(
             fielder_arm=home_arm,
         )
         linescore["away"].append(away_runs)
+        pitcher_log.append({
+            "inning": current_inning, "half": "top",
+            "pitching_team": home_id,
+            **home_ps.snapshot(),
+        })
         _end_half_inning(state)             # state.half → "bottom"
 
         # Home already leads after top of inning >= 9 → they don't need to bat
@@ -694,6 +998,11 @@ def simulate_game(
             check_walkoff=(current_inning >= 9),
         )
         linescore["home"].append(home_runs)
+        pitcher_log.append({
+            "inning": current_inning, "half": "bottom",
+            "pitching_team": away_id,
+            **away_ps.snapshot(),
+        })
         _end_half_inning(state)             # state.half → "top", state.inning += 1
 
         # Walk-off: home won mid-inning
@@ -712,6 +1021,11 @@ def simulate_game(
         pa_events      = pa_events,
         innings_played = last_inning,
         walk_off       = walk_off,
+        pitcher_log    = pitcher_log,
+        away_lineup    = away_lineup,
+        home_lineup    = home_lineup,
+        away_def_align = away_def_align,
+        home_def_align = home_def_align,
     )
 
     if verbose:
@@ -817,8 +1131,8 @@ def print_game_log(box: BoxScore) -> None:
             }
             pitcher_order[pit_side].append(ev.pitcher_id)
         ps = pitcher_stats[ev.pitcher_id]
-        if ev.outcome in OUTS:
-            ps["outs"] += 1
+        # outs_recorded correctly counts all outs (1 for routine, 2 for DP)
+        ps["outs"] += ev.outs_recorded
         if ev.outcome == "K":
             ps["k"] += 1
         if ev.outcome in HITS:
@@ -841,6 +1155,7 @@ def print_game_log(box: BoxScore) -> None:
         "Out":         "OUT",
         "Error":       "REACHED_ON_ERROR",
         "InfieldHit":  "INFIELD_HIT",
+        "FC":          "FIELDERS_CHOICE",
     }
 
     # ── 2. Play-by-play ──────────────────────────────────────────────────────────
@@ -855,54 +1170,255 @@ def print_game_log(box: BoxScore) -> None:
     print("  PLAY BY PLAY")
     print(f"{'─' * W}")
 
-    current_key      = None
-    current_pit      = None      # pitcher_id of whichever arm is on the mound
-    current_pit_name = None      # name of that pitcher (for PITCHER_TIRED line)
+    def _build_hr_narrative(ev_: "PAEvent", score_: dict[str, int]) -> str:
+        """Return a situation-aware HR narrative string for this PAEvent."""
+        bat_side_  = "away" if ev_.half == "top" else "home"
+        pit_side_  = "home" if ev_.half == "top" else "away"
+        bat_team_  = away   if ev_.half == "top" else home
+        runs_      = ev_.runs_scored
+        name_      = ev_.batter_name
+
+        # ── Multi-run HRs: name the runners who score ─────────────────────────
+        if runs_ >= 4:
+            return narrate("HOME_RUN_GRAND_SLAM", name_)
+        if runs_ == 3:
+            scorers_  = [r["name"] for r in (ev_.base_runners_before or []) if r]
+            runner1_  = scorers_[0] if len(scorers_) > 0 else "the first runner"
+            runner2_  = scorers_[1] if len(scorers_) > 1 else "the second runner"
+            return narrate("HOME_RUN_THREE_RUN", name_, runner1=runner1_, runner2=runner2_)
+        if runs_ == 2:
+            scorers_  = [r["name"] for r in (ev_.base_runners_before or []) if r]
+            runner1_  = scorers_[0] if scorers_ else "the runner"
+            return narrate("HOME_RUN_TWO_RUN", name_, runner1=runner1_)
+
+        # ── Solo HR: choose template by game situation ─────────────────────────
+        score_bat_before_ = score_[bat_side_]
+        score_pit_before_ = score_[pit_side_]
+        score_bat_after_  = score_bat_before_ + runs_
+
+        go_ahead_ = score_bat_after_ > score_pit_before_
+        was_close_ = abs(score_bat_before_ - score_pit_before_) <= 1
+        late_      = ev_.inning >= 7
+
+        if late_ and go_ahead_ and was_close_:
+            return narrate("HOME_RUN_TIEBREAKER", name_, team=bat_team_)
+        if go_ahead_:
+            return narrate("HOME_RUN_GOAHEAD", name_, team=bat_team_)
+        if late_:
+            return narrate("HOME_RUN_SOLO_LATE", name_)
+        return narrate("HOME_RUN", name_)
+
+    def _build_scorer_tag(ev_: "PAEvent") -> str:
+        """
+        Return a scoring suffix like ' — Garciaparra scores.' for any non-HR
+        play that scores at least one run.  HR narratives already name their
+        scorers, so skip them here.  Returns "" when no runs scored.
+        """
+        if ev_.runs_scored <= 0 or ev_.outcome == "HR":
+            return ""
+
+        runners = ev_.base_runners_before   # [r1_card|None, r2_card|None, r3_card|None]
+        bases   = ev_.bases_before          # [bool, bool, bool]  — 1B/2B/3B occupancy
+
+        def _rname(idx: int) -> str:
+            if idx >= len(runners) or idx >= len(bases):
+                return ""
+            if not bases[idx]:
+                return ""
+            r = runners[idx]
+            return (r or {}).get("name", "") if r else ""
+
+        r1, r2, r3 = _rname(0), _rname(1), _rname(2)
+        scorers: list[str] = []
+
+        if ev_.outcome == "Triple":
+            # All runners on base score
+            scorers = [n for n in [r3, r2, r1] if n]
+        elif ev_.outcome == "InfieldHit":
+            # Only the 3B runner scores on an infield hit
+            if r3:
+                scorers = [r3]
+        elif ev_.outcome in ("BB", "HBP"):
+            # Force-advancement: only r3 scores (loaded bases forces r3 home)
+            if r3:
+                scorers = [r3]
+        elif ev_.outcome == "Out":
+            # The only way a run scores on an Out is a DP when r2+r3 both existed
+            # (r3 is forced home as r2 takes 3B).  Only r3 scores.
+            if r3:
+                scorers = [r3]
+        else:
+            # Single, Double, Error: r3 and r2 always score (deterministic);
+            # r1 also scores if runs_scored exceeds the det count (baserunning decision).
+            det = 0
+            if r3:
+                scorers.append(r3); det += 1
+            if r2:
+                scorers.append(r2); det += 1
+            if ev_.runs_scored > det and r1:
+                scorers.append(r1)
+
+        if not scorers:
+            return ""
+        if len(scorers) == 1:
+            return f" — {scorers[0]} scores."
+        if len(scorers) == 2:
+            return f" — {scorers[0]} and {scorers[1]} score."
+        return f" — {', '.join(scorers[:-1])}, and {scorers[-1]} all score."
+
+    # Running score — updated after each event so HR situation detection
+    # always reads the score as it stood BEFORE the current plate appearance.
+    running_score: dict[str, int] = {"away": 0, "home": 0}
+    grounder_history: list[str] = []    # last-2 grounder templates; prevents repeat phrasing
+
+    current_key = None
+    _mid_inning_change = False   # flag: current PA is a mid-inning pitcher change
+    # Track the last known pitcher separately for each half so alternating
+    # Pedro / Hoyt / Pedro across innings is not mis-read as a substitution.
+    # Key = "top" or "bottom" (which side is pitching).
+    # Value = pitcher_id of the last arm seen pitching in that half-context,
+    #         or None before the very first appearance for that side.
+    last_pit_by_half: dict[str, str | None] = {"top": None, "bottom": None}
 
     for ev in box.pa_events:
-        key = (ev.inning, ev.half)
+        key  = (ev.inning, ev.half)
+        half = ev.half
 
         if key != current_key:
             current_key = key
-            bat_team    = away if ev.half == "top" else home
-            half_label  = "TOP" if ev.half == "top" else "BOT"
-            label       = f"  INN {ev.inning} {half_label}  ({bat_team} batting) "
+            bat_team   = away if half == "top" else home
+            half_label = "TOP" if half == "top" else "BOT"
+            label      = f"  INN {ev.inning} {half_label}  ({bat_team} batting) "
             print(f"\n{label}{'─' * max(0, W - len(label))}")
-            # Pitcher announcement at top of each half-inning
-            if ev.pitcher_id != current_pit:
-                if current_pit is None:
-                    # Game opener — use PITCHER_STARTS
+
+            # Pitcher announcement — compare against the last arm for THIS half.
+            prev_pit = last_pit_by_half[half]
+            if ev.pitcher_id != prev_pit:
+                if prev_pit is None:
+                    # First time this pitching side has appeared — game opener line.
                     print(f"  ⚾  {narrate('PITCHER_STARTS', ev.pitcher_name)}")
                 else:
-                    # Between-inning change
-                    print(f"  ⚾  {narrate('PITCHER_CHANGE', ev.pitcher_name)}")
-                current_pit      = ev.pitcher_id
-                current_pit_name = ev.pitcher_name
+                    # Between-inning substitution (different arm than last time this
+                    # side pitched).  fatigue_note carries mid-inning changes, but a
+                    # between-inning swap has no fatigue_note, so announce it here.
+                    print(f"  ⚾  {narrate('PITCHING_CHANGE', ev.pitcher_name)}")
+                last_pit_by_half[half] = ev.pitcher_id
 
-        elif ev.pitcher_id != current_pit:
-            # Mid-inning change — outgoing pitcher was tired; new arm enters
-            print(f"\n  {narrate('PITCHER_TIRED', current_pit_name)}")
-            print(f"  ⚾  {narrate('PITCHER_CHANGE', ev.pitcher_name)}")
-            current_pit      = ev.pitcher_id
-            current_pit_name = ev.pitcher_name
+        elif ev.pitcher_id != last_pit_by_half[half]:
+            # Mid-inning substitution — fatigue_note on this PAEvent carries the
+            # PITCHING_CHANGE narrative.  Set flag so the note prints BEFORE this
+            # PA (it announces the new pitcher, not reacts to the previous play).
+            _mid_inning_change = True
+            last_pit_by_half[half] = ev.pitcher_id
 
-        # Build play narrative
-        outcome_key = _OUTCOME_KEY.get(ev.outcome, "OUT")
-        narrative   = narrate(outcome_key, ev.batter_name)
+        # _mid_inning_change was set in the elif branch just above; default False otherwise.
+        is_mid_inning_change = _mid_inning_change
+        _mid_inning_change = False   # reset for the next iteration
 
-        # Build run note
-        if ev.runs_scored == 1:
-            run_note = "  " + narrate("RUN_SCORES")
-        elif ev.runs_scored > 1:
-            run_note = "  " + narrate("RUNS_SCORE", count=ev.runs_scored)
+        # Build play narrative.
+        # ── Double play detection ────────────────────────────────────────────
+        # outs_recorded == 2 with outcome "Out" is the unique DP fingerprint:
+        # _apply_outcome only posts two outs via this path when a DP fires.
+        # Use DOUBLE_PLAY_PRIMARY as the sole main-line narrative — it already
+        # tells the whole story, so the ↳ sub-note is suppressed.
+        is_double_play = (ev.outcome == "Out" and ev.outs_recorded == 2)
+
+        if is_double_play:
+            outcome_key = "DOUBLE_PLAY_PRIMARY"
+        elif ev.outcome == "Out":
+            outcome_key = "OUT"   # fallback; overridden below if zone is available
         else:
-            run_note = ""
+            outcome_key = _OUTCOME_KEY.get(ev.outcome, "OUT")
 
-        outs_str = f"[{ev.outs_before} out{'s' if ev.outs_before != 1 else ' '}]"
-        base_str = _base_str(ev.bases_before)
-        print(f"  {outs_str:<9} {base_str}  {narrative}{run_note}")
-        if ev.baserunning_note:
-            print(f"             {'':5}    ↳ {ev.baserunning_note}")
+        # ── Build narrative — single source of truth: ev fields drive all choices ──
+        if ev.outcome == "HR":
+            narrative = _build_hr_narrative(ev, running_score)
+        elif ev.outcome == "FC":
+            # STEP 5: name the specific runner thrown out at second (always 1B runner)
+            r1_card     = ev.base_runners_before[0] if ev.base_runners_before else None
+            runner_out  = (r1_card or {}).get("name", "the runner") if r1_card else "the runner"
+            narrative   = narrate("FIELDERS_CHOICE", ev.batter_name, runner_out=runner_out)
+        elif ev.outcome == "Out" and ev.fielder_zone and not is_double_play:
+            # Zone-aware fielder-named out narrative using real defensive alignment.
+            # Defensive team: home defends when away bats (top), away defends when home bats (bottom).
+            zone_meta = _ZONE_META.get(ev.fielder_zone)
+            if zone_meta:
+                def_pos, tmpl_key, pos_name = zone_meta
+                def_align = box.home_def_align if ev.half == "top" else box.away_def_align
+
+                if def_pos == "P":
+                    fielder_name = ev.pitcher_name
+                elif def_pos == "IF":
+                    if_positions = [p for p in ["SS", "2B", "3B", "1B"] if p in def_align]
+                    if if_positions:
+                        pos_key = if_positions[ev.pa_number % len(if_positions)]
+                        fielder_name = def_align[pos_key]
+                    else:
+                        fielder_name = "the infielder"
+                else:
+                    fielder_name = def_align.get(def_pos, f"the {def_pos}")
+
+                if tmpl_key == "OUT_GROUNDER":
+                    narrative = narrate_grounder(
+                        ev.batter_name, fielder_name, def_pos, pos_name,
+                        grounder_history,
+                    )
+                else:
+                    narrative = narrate(tmpl_key, ev.batter_name,
+                                        fielder=fielder_name, pos=pos_name)
+            else:
+                narrative = narrate(outcome_key, ev.batter_name)
+        else:
+            narrative = narrate(outcome_key, ev.batter_name)
+
+        # STEP 6: embed scorer names for all non-HR run-scoring plays
+        narrative += _build_scorer_tag(ev)
+
+        # ── Inning closure: 3rd-out plays get closing language ───────────────
+        _INNING_CLOSERS = [
+            "Side retired.", "Three out.", "Inning over.",
+            "That's three.", "And three.",
+        ]
+        is_third_out = (ev.outs_before + ev.outs_recorded >= 3)
+        if is_third_out:
+            # Strip count-specific phrases that mislead on final out
+            for _stale in ("One away.", "one away.", "Two away.", "two away.",
+                           "One down.", "one down.", "One out.", "one out.",
+                           "Routine.", "routine."):
+                narrative = narrative.replace(_stale, "").rstrip()
+            # FC on 3rd out: batter hit the grounder, runner is the 3rd out.
+            if ev.outcome == "FC":
+                r1_card    = ev.base_runners_before[0] if ev.base_runners_before else None
+                runner_out = (r1_card or {}).get("name", "the runner") if r1_card else "the runner"
+                narrative  = (
+                    f"{ev.batter_name} hits a grounder — "
+                    f"{runner_out} thrown out at second. Side retired."
+                )
+            else:
+                _closer = random.choice(_INNING_CLOSERS)
+                if narrative and not narrative.endswith("."):
+                    narrative += "."
+                narrative += f" {_closer}"
+
+        outs_str   = f"[{ev.outs_before} out{'s' if ev.outs_before != 1 else ' '}]"
+        base_str   = _base_str(ev.bases_before)
+        base_label = f"on: {base_str}" if any(ev.bases_before) else "     "
+
+        # PITCHING_CHANGE announcements (is_mid_inning_change) print BEFORE the PA
+        # so the new pitcher is identified before his first batter.
+        # TIRED / GASSED / COLLAPSE notes print AFTER the play (reactive).
+        if ev.fatigue_note and is_mid_inning_change:
+            print(f"  ⚡  {ev.fatigue_note}")
+
+        print(f"  {outs_str:<9} {base_label}  {narrative}")
+
+        if ev.fatigue_note and not is_mid_inning_change:
+            print(f"  ⚡  {ev.fatigue_note}")
+
+        # Advance the running-score tracker AFTER this PA is displayed so that
+        # HR situation detection always sees the score as it was before the hit.
+        bat_side_ev = "away" if ev.half == "top" else "home"
+        running_score[bat_side_ev] += ev.runs_scored
 
     # ── 3. Batting stats ─────────────────────────────────────────────────────────
     BAT_HDR = f"  {'Name':<24}  AB   H  HR RBI  BB"
