@@ -4,7 +4,7 @@
 
 **Engine status:** PA Engine FROZEN as of calibration session May 2026. Game Engine, Roster Manager, and simulation tooling are active. Do not modify `pa_engine.py` or `sim_constants.json` calibration constants without running a new mid-tier validation.
 
-**Last updated:** May 19, 2026 — 1954 AL historical replay validation complete.
+**Last updated:** May 19, 2026 — PRD 06 (Fatigue & Substitution Engine) complete; defensive position mapping, narrative alignment, and immersion fixes applied.
 
 ---
 
@@ -16,6 +16,7 @@
 4. [Simulation Tooling](#4-simulation-tooling)
 5. [Historical Validation — 1954 AL Replay](#5-historical-validation)
 6. [Calibration Log](#6-calibration-log)
+7. [Narrative System Reference](#7-narrative-system-reference)
 
 ---
 
@@ -204,31 +205,48 @@ k_pct = k_base
 ```python
 @dataclass
 class PAEvent:
-    inning:          int
-    half:            str      # "top" (away bats) or "bottom" (home bats)
-    pa_number:       int      # 1-indexed global PA counter
-    batter_id:       str
-    batter_name:     str
-    pitcher_id:      str
-    pitcher_name:    str
-    outcome:         str      # resolved outcome string from pa_wrapper
-    outs_before:     int      # outs at start of PA (0, 1, or 2)
-    bases_before:    list     # [1B_occ, 2B_occ, 3B_occ] bool snapshot
-    runs_scored:     int      # runs that crossed on this PA
-    seed:            int      # PA seed (for full deterministic replay)
-    raw_result:      dict     # full dict from resolve_pa_seeded (stage metadata)
-    baserunning_note: str     # narrative for any extra-base attempt
+    inning:               int
+    half:                 str   # "top" (away bats) or "bottom" (home bats)
+    pa_number:            int   # 1-indexed global PA counter across the whole game
+    batter_id:            str
+    batter_name:          str
+    pitcher_id:           str
+    pitcher_name:         str
+    outcome:              str   # resolved outcome string (see pa_wrapper values + engine extensions)
+    outs_before:          int   # outs at start of PA (0, 1, or 2)
+    bases_before:         list  # [1B_occ, 2B_occ, 3B_occ] bool snapshot before this PA
+    runs_scored:          int   # runs that crossed the plate on this PA
+    seed:                 int   # PA seed (for full deterministic replay)
+    raw_result:           dict  # full dict from resolve_pa_seeded (stage metadata)
+    base_runners_before:  list  # runner player-cards before this PA (used by HR/scorer narratives)
+    outs_recorded:        int   # outs added this PA (0, 1, or 2; DPs contribute 2)
+    fielder_zone:         str   # zone code for batted-ball outs ("fly_center", "ground_short", …)
+    baserunning_note:     str   # narrative for any extra-base attempt on this PA
+    fatigue_note:         str   # fatigue stage transition or pitching-change narrative
 
 @dataclass
 class BoxScore:
-    away_team_id:   str
-    home_team_id:   str
-    final_score:    dict     # {"away": int, "home": int}
-    linescore:      dict     # {"away": [int, …], "home": [int, …]} — one per inning
-    pa_events:      list     # list[PAEvent]
-    innings_played: int
-    walk_off:       bool
+    away_team_id:    str
+    home_team_id:    str
+    final_score:     dict  # {"away": int, "home": int}
+    linescore:       dict  # {"away": [int, …], "home": [int, …]} — one entry per inning
+    pa_events:       list  # list[PAEvent]
+    innings_played:  int
+    walk_off:        bool
+    pitcher_log:     list  # per-half-inning PitcherState snapshots
+    away_lineup:     list  # away batting lineup (player cards, order = 1–9)
+    home_lineup:     list  # home batting lineup (player cards, order = 1–9)
+    away_def_align:  dict  # away defensive alignment {"SS": "Mark Koenig", "CF": "Earle Combs", …}
+    home_def_align:  dict  # home defensive alignment
 ```
+
+**Engine-extended `outcome` values** (resolved by `game_engine.py` after `pa_wrapper` returns `"Out"`):
+
+| Value | Description |
+|-------|-------------|
+| `"InfieldHit"` | Batter safe on weak/slow grounder; no DP possible |
+| `"FC"` | Fielder's choice; batter safe at 1B, lead runner retired |
+| `"DOUBLE_PLAY"` | Ground-ball DP; 2 outs recorded; explicit base-state resolver applied |
 
 ---
 
@@ -290,39 +308,61 @@ Outcomes:
 
 ---
 
-### Pitcher state machine — `PitcherState`
+### Pitcher state machine — `PitcherState` (PRD 06)
+
+`PitcherState` is the single source of truth for pitcher fatigue. Original traits are snapshotted at mound entry and never mutated; `effective_card()` recomputes decay fresh each PA.
 
 ```python
 @dataclass
 class PitcherState:
-    current:          dict   # active pitcher card
-    pa_faced:         int    # PAs faced by current pitcher this game
-    runs_while_tired: int    # runs allowed after stamina limit
-    bullpen:          list   # queue of remaining pitchers
+    current:                  dict  # active pitcher card (passed to pa_wrapper)
+    original_traits:          dict  # immutable snapshot of traits at mound entry
+    batters_faced:            int   # total batters faced this outing
+    runs_allowed:             int   # total runs allowed this outing
+    runs_allowed_this_inning: int   # resets each half-inning
+    bullpen:                  list  # remaining pitchers in pop order
 ```
 
-**Stamina limits:**
+**Fatigue level:**
 
-| Role | Formula | Example (STA=75) |
-|------|---------|------------------|
-| SP | `round(STA × 0.40)` | 30 PA ≈ 7 innings |
-| RP | `round(STA × 0.20)` | 15 PA ≈ 3 innings |
+```
+fatigue_level = batters_faced / (STA × 0.35 + 15),  clamped [0.0, 1.0]
+```
 
-**Fatigue penalty:** once `pa_faced >= max_pa`, each additional batter reduces STF and CTL by 2 points, floored at 40.
+**Fatigue stages:**
 
-**Hook triggers** (either condition pulls the pitcher):
-- 6+ batters faced over the stamina limit (hard auto-hook)
-- 2+ runs allowed while over-limit (soft manager hook)
+| Range | Stage | Effect |
+|-------|-------|--------|
+| < 0.40 | `"fresh"` | No decay |
+| 0.40–0.70 | `"working"` | STF begins to decay |
+| 0.70–0.90 | `"tired"` | STF + CTL decaying; CMD just starting |
+| > 0.90 | `"gassed"` | All three traits under heavy decay |
 
-**Bullpen cycling:** `pull_next()` pops `bullpen[0]` and resets `pa_faced`. If the bullpen is empty, the tired starter remains.
+**Trait decay order** (sequential, non-linear):
+
+| Trait | Decay starts at | Interpretation |
+|-------|-----------------|----------------|
+| `STF` | fatigue_level > 0.30 | Stuff breaks first |
+| `CTL` | fatigue_level > 0.50 | Control erodes second |
+| `CMD` | fatigue_level > 0.70 | Location fails last |
+
+Decay is non-linear (accelerates at high fatigue). Floor: no trait can fall below 20% of its original starting value.
+
+All decay operates exclusively through `effective_card()` → the modified card is passed to `resolve_pa_seeded`. `pa_engine.py` is never modified.
+
+**Pull triggers** (any one is sufficient):
+
+1. `fatigue_stage == "gassed"` (fatigue_level > 0.90)
+2. `batters_faced > STA × 0.35 + 10` (hard workload cap)
+3. `fatigue_stage == "tired"` AND `runs_allowed_this_inning >= 3` (manager hook)
+
+**Bullpen cycling:** `pull_next()` pops `bullpen[0]`, resets all per-pitcher counters, and snapshots the new pitcher's original traits. If the bullpen is empty, the fatigued pitcher stays in.
 
 ---
 
 ### Narrative layer — `narrative_dictionary.py`
 
-`NARRATIVE_TEMPLATES` maps event keys to lists of 5+ variant strings. `print_game_log()` calls `random.choice()` to select a template and fills in `{name}`.
-
-Key event types: `STRIKEOUT_LOOKING`, `STRIKEOUT_SWINGING`, `WALK_PATIENT`, `SINGLE_CLEAN`, `DOUBLE_GAP`, `TRIPLE_LEGGED`, `HOME_RUN`, `GROUNDOUT_DP`, `FLYOUT_WARNING`, `INFIELD_HIT`, `WEAK_ROLLER_NO_DP`, `PITCHER_TIRED`, `PITCHER_HOOK`, `RECKLESS_ADVANCE`, `THROWN_OUT`, `SMART_HOLD`, `ADVANCE_EXTRA`.
+`NARRATIVE_TEMPLATES` maps event keys to lists of 5+ variant strings. `print_game_log()` calls `random.choice()` to select a template and fills placeholders. See [Section 7](#7-narrative-system-reference) for full key list and routing rules.
 
 ---
 
@@ -383,6 +423,20 @@ Loads from a local JSON pilot file instead of Supabase. Same output shape as `lo
 
 ---
 
+### `_build_defensive_alignment(starters, bench) → dict`
+
+Constructs the `defensive_alignment` map `{position: player_name}` used for fielder naming in narratives.
+
+**Priority rules:**
+1. Starters are assigned before bench players — a low-PA bench player can never steal a position from a starter.
+2. Non-OF positions (`C`, `1B`, `2B`, `3B`, `SS`, `P`) are assigned directly from `field_pos`.
+3. Players with specific Lahman `field_pos` values (`CF`, `LF`, `RF`) are assigned to that exact slot.
+4. Players with generic `field_pos == "OF"` are sorted by `POW` ascending and assigned CF → LF → RF in that order (lowest power → center field; highest power → right field). This heuristic correctly places historical archetypes (e.g., 1927 NYA: Combs=CF, Meusel=LF, Ruth=RF).
+
+The resulting dict is stored on the `for_game_engine()` output dict under the key `"defensive_alignment"` and is propagated into `BoxScore.away_def_align` / `BoxScore.home_def_align`.
+
+---
+
 ### Player card schema (Supabase `players` table)
 
 **Batters:**
@@ -398,6 +452,7 @@ Loads from a local JSON pilot file instead of Supabase. Same output shape as `lo
 | `biq` | `BIQ` | Z-score calibrated |
 | `pa` | Lineup sort key | Real plate appearances from Lahman |
 | `bats` | Handedness | `"R"`, `"L"`, `"B"` |
+| `field_pos` | Defensive position | Raw Lahman position (`CF`, `LF`, `RF`, `SS`, `2B`, etc.); generic `OF` for players without a specific outfield assignment in source data |
 
 **Pitchers:**
 
@@ -568,6 +623,130 @@ All changes are listed in chronological order. The PA Engine is frozen at the st
 | BABIP | .289 |
 | RS/G | 3.55–3.87 |
 | W% spread (8-team pool) | 0.125 |
+
+---
+
+## 7. Narrative System Reference
+
+### Template keys (`narrative_dictionary.py`)
+
+All keys map to a list of 5+ variant strings. Templates use `{name}` (batter or pitcher) and position-specific placeholders (`{fielder}`, `{runner_out}`, etc.). `print_game_log()` calls `random.choice()` and never reuses the same template for `OUT_GROUNDER` within the last 2 selections.
+
+**At-bat outcomes:**
+
+| Key | Fires when |
+|-----|-----------|
+| `STRIKEOUT` | outcome == `"K"` |
+| `WALK` | outcome == `"BB"` |
+| `HIT_BY_PITCH` | outcome == `"HBP"` |
+| `SINGLE` | outcome == `"Single"` |
+| `DOUBLE` | outcome == `"Double"` |
+| `TRIPLE` | outcome == `"Triple"` |
+| `HOME_RUN` | Solo HR, innings 1–6 |
+| `HOME_RUN_SOLO_LATE` | Solo HR, innings 7+ |
+| `HOME_RUN_GOAHEAD` | Go-ahead HR (any inning) |
+| `HOME_RUN_TIEBREAKER` | Tie-breaking HR, innings 7+ |
+| `HOME_RUN_TWO_RUN` | 2-run HR; renders scorer name |
+| `HOME_RUN_THREE_RUN` | 3-run HR; renders both scorer names |
+| `HOME_RUN_GRAND_SLAM` | Grand slam; renders all three scorer names |
+| `INFIELD_HIT` | Resolved infield hit (weak grounder, batter beats throw) |
+| `WEAK_ROLLER_NO_DP` | Weak contact, no DP possible |
+| `FIELDERS_CHOICE` | FC outcome; `{runner_out}` = retired runner |
+| `DOUBLE_PLAY` | Primary DP narrative (ground ball framing) |
+| `REACHED_ON_ERROR` | Defense error, batter reaches |
+
+**Batted-ball outs:**
+
+| Key | Contact zone |
+|-----|-------------|
+| `OUT_FLY` | Fly ball to outfield (includes `{fielder}`) |
+| `OUT_GROUNDER` | Infield groundout (includes `{fielder}`, position-aware language) |
+| `OUT_POPUP` | Infield/foul popup (includes `{name}` batter + `{fielder}`) |
+| `OUT_LINER` | Line drive caught |
+| `OUT_COMEBACKER` | Weak grounder back to pitcher |
+| `GROUNDER_HARD` | Hard-contact groundout variant |
+| `GROUNDER_WEAK` | Weak-contact groundout variant |
+
+**Baserunning:**
+
+| Key | Fires when |
+|-----|-----------|
+| `ADVANCE_EXTRA` | Runner takes extra base safely |
+| `SMART_HOLD` | Runner holds at conservative base |
+| `THROWN_OUT_BASES` | Runner thrown out on bases (not at home/third) |
+| `THROWN_OUT_AT_HOME` | Runner thrown out at the plate |
+| `THROWN_OUT_AT_THIRD` | Runner thrown out at third |
+
+**Pitcher lifecycle (PRD 06):**
+
+| Key | Fires when |
+|-----|-----------|
+| `PITCHER_STARTS` | First batter of game for each starter |
+| `PITCHER_CHANGE` | Subsequent inning begins, same pitcher |
+| `PITCHING_CHANGE` | Mid-inning substitution; prints *before* the PA |
+| `PITCHER_TIRED` | Stage transitions to `"tired"` |
+| `PITCHER_GASSED` | Stage transitions to `"gassed"` |
+| `PITCHER_COLLAPSE` | Tired/gassed pitcher allows run(s) via hit; prints *after* PA |
+| `PITCHER_COLLAPSE_WALK` | Tired/gassed pitcher allows run(s) via `BB`/`HBP`; prints *after* PA |
+
+**Misc:**
+
+| Key | Fires when |
+|-----|-----------|
+| `RUN_SCORES` | Single runner scores on a non-HR play |
+| `RUNS_SCORE` | Multiple runners score on a non-HR play |
+| `WALK_OFF` | Walk-off hit/walk ends the game |
+
+---
+
+### Fielder routing — `zone_to_fielder()`
+
+On batted-ball outs the game engine assigns a `fielder_zone` code to `PAEvent`. `print_game_log()` resolves the zone to a player name via `defensive_alignment`:
+
+| Zone code | Default position |
+|-----------|-----------------|
+| `fly_left` | LF |
+| `fly_center` | CF |
+| `fly_right` | RF |
+| `fly_warning` | Nearest OF (CF default) |
+| `ground_first` | 1B |
+| `ground_second` | 2B |
+| `ground_third` | 3B |
+| `ground_short` | SS |
+| `ground_pitcher` | P |
+| `popup_infield` | Rotates: 3B → SS → 2B → 1B → C |
+| `line_[zone]` | Fielder at that zone |
+
+`defensive_alignment` is built by `_build_defensive_alignment()` in `roster_manager.py` and stored in `BoxScore.away_def_align` / `BoxScore.home_def_align`. Specific Lahman `field_pos` values (`CF`, `LF`, `RF`) are used directly; generic `OF` values are assigned CF/LF/RF by ascending `POW` order (lowest-POW outfielder → CF).
+
+---
+
+### Inning closure logic
+
+`print_game_log()` detects when `outs_before + outs_recorded >= 3` (third out). On the third out it:
+
+1. Strips any "One away." / "Two down." count phrases from the narrative (stale post-out commentary).
+2. For `FC` outcomes: renders `"[Batter] hits a grounder — [Runner] thrown out at second. Side retired."` (names both batter and retired runner).
+3. For all other outs: appends a random closing phrase from `_INNING_CLOSERS` (e.g., `"Side retired."`, `"Three out."`, `"Inning over."`, `"And three."`).
+
+---
+
+### Fatigue note sequencing
+
+Fatigue notes (`PAEvent.fatigue_note`) are printed relative to the PA narrative based on their type:
+
+- **Mid-inning pitching change** (`PITCHING_CHANGE`): prints *before* the PA line so the reader sees the new pitcher enter before the at-bat resolves.
+- **Collapse / stage transition** (`PITCHER_TIRED`, `PITCHER_GASSED`, `PITCHER_COLLAPSE`, `PITCHER_COLLAPSE_WALK`): prints *after* the PA line as a reactive observation.
+
+The `PITCHER_COLLAPSE` vs `PITCHER_COLLAPSE_WALK` split ensures "hard contact" language never fires on a walk or HBP — when the run-scoring outcome is `BB` or `HBP`, `PITCHER_COLLAPSE_WALK` is used instead.
+
+---
+
+### Ground ball template repetition prevention
+
+`OUT_GROUNDER` templates are pooled and filtered to prevent consecutive identical lines. `print_game_log()` maintains a rolling window of the last 2 grounder templates used per game log call; any template that appears in that window is excluded from `random.choice()`. If the filtered pool is empty, the window is cleared and selection proceeds normally.
+
+Position-aware language weighting is also applied: `3B`/`SS` fielder zones prefer "long throw" phrasing, `2B` prefers "flip" / "easy play", `1B` prefers "takes it himself", `P` routes to `OUT_COMEBACKER`.
 
 ---
 
